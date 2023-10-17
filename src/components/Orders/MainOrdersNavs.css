@@ -1,0 +1,107 @@
+.upperNavContainer {
+    z-index: 4;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.upperNavContainer> :not(:first-child):not(:last-child) {
+    padding: 10px 5px 10px 5px;
+}
+
+.upperNavContainer> :first-child {
+    padding: 10px 5px 10px 0;
+}
+
+.upperNavContainer> :last-child {
+    padding: 10px 0 10px 5px;
+}
+
+/* .upperNavContainer .upperNavItemContainer {
+     padding: 10px;
+ }
+  */
+.upperNavItem {
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    width: 100%;
+    height: 100%;
+    border-radius: 10px !important;
+    cursor: pointer;
+    padding: 10px;
+    position: relative;
+}
+
+.upperNavItemContainer .active {
+    color: white !important;
+    text-decoration: none;
+    background-image: linear-gradient(-45deg, #2cbdae, #70e0b0);
+}
+
+.upperNavItem:not(.active) {
+    color: gray !important;
+    border-bottom: 4px solid #2cbdae;
+    background-color: rgb(255, 255, 255);
+    /* box-shadow: 5px 5px 10px #88888857; */
+    transition: all 0.3s;
+    box-shadow:
+        /* inset 0 -10px 10px -10px #00000049, */
+        5px 5px 10px #88888857;
+}
+
+.upperNavItem:not(.active):hover {
+    transition: all 0.3s;
+    background-color: rgb(228, 226, 226);
+    border-bottom: 2px solid #2cbdae;
+    text-decoration: none;
+}
+
+.upperNavItem .mainImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* width: 100%; */
+    transition: 0.3s transform;
+}
+
+.upperNavItem .backImage {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.upperNavItem .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-left: 10px; */
+    /* width: 100%; */
+}
+
+.upperNavItem .mainImage img {
+    transition: 0.3s transform;
+}
+
+.upperNavItem:not(.active):hover .mainImage img {
+    transform: rotate(-15deg) scale(1.5) translateX(-5px) translateY(-10px);
+}
+
+.upperNavItem .mainImage img {
+    width: 30px;
+    height: 30px;
+}
+
+.upperNavItem .backImage img {
+    width: 100px;
+    height: 100px;
+}
+
+.upperNavItem:not(.active) .title {
+    transition: 0.3s transform;
+}
+
+.upperNavItem:not(.active) .title {
+    transform: scale(1.1);
+}

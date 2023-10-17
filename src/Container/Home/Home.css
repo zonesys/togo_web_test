@@ -1,0 +1,33 @@
+.contact-header {
+    margin-inline-end: 9.5rem;
+}
+
+
+.search-input::placeholder {
+    color: #cececeab;
+    font-family: 'neosansarabic';
+}
+
+#search-close-icon {
+    position: absolute;
+    inset-inline-end: -8px;
+    inset-block-start: 2px;
+    opacity: 0.5;
+}
+
+.my-steps .rs-steps-item-title{ 
+    color: white;
+}
+.my-steps .rs-steps-item-tail{
+    border-color: white;
+}
+
+.custom-link {
+    color: lightblue;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.custom-link:hover {
+    color: blue;
+}

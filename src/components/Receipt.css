@@ -1,0 +1,5 @@
+/* @media print {
+    .modal-footer, #root{
+        display: none !important;
+    }
+} */

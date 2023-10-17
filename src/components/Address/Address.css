@@ -1,0 +1,10 @@
+.Address img{
+    height: 45px;
+}
+.Address > div{
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}

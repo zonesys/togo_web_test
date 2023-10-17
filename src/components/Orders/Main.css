@@ -1,0 +1,195 @@
+/*
+ * Main css File
+*/
+
+.Orders {
+  background-color: brown;
+  /* propertys here */
+}
+
+table.table.table-bordered.table-hover {
+  width: 95%;
+}
+
+.table>:not(:first-child) {
+  border-top: 2px solid var(--bs-gray-200);
+}
+
+button.accordion-button:focus:not(:focus-visible) {
+  box-shadow: none;
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover,
+.btn:hover {
+  text-decoration: none;
+}
+
+thead th {
+  text-align: center;
+}
+
+td {
+  text-align: center;
+}
+
+.nav-tabs .nav-link {
+  white-space: nowrap;
+}
+
+.highlight-row {
+  background-color: rgba(0, 0, 0, .075);
+}
+
+.togo-button {
+  background-image: linear-gradient(to left, #26a69a 0%, #69d4a5 100%);
+  color: white;
+}
+
+.togo-dropdown {
+  border: 2px solid var(--bs-gray-300);
+  /* border-radius: 20px; */
+}
+
+input[type='radio']:after {}
+
+.togo-text-secondary {
+  color: #656767;
+}
+
+.togo-table td,
+.togo-table th {
+  text-align: left;
+}
+
+.togo-table thead::-webkit-scrollbar {
+  visibility: hidden;
+}
+
+.m-inline-e-2 {
+  margin-inline-end: 0.5rem;
+}
+
+@media print {
+  .togo-header {
+    display: none;
+  }
+}
+
+
+.btn-grad {
+  border: none;
+  border-radius: 5px;
+  position: relative;
+  background-image: linear-gradient(to right,
+      hsl(154, 55%, 62%),
+      hsl(168, 50%, 47%));
+  z-index: 0;
+}
+
+.btn-grad::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 5px;
+  background-image: linear-gradient(to bottom,
+      hsl(168, 50%, 47%),
+      hsl(168, 50%, 47%));
+  z-index: -1;
+  transition: opacity 0.3s linear;
+  opacity: 0;
+}
+
+.btn-grad:hover::before {
+  opacity: 1;
+}
+
+.btn-grad-circle {
+  border: none;
+  border-radius: 50%;
+  position: relative;
+  background-image: linear-gradient(to right,
+      hsl(154, 55%, 62%),
+      hsl(168, 50%, 47%));
+  z-index: 1;
+}
+
+.btn-grad-circle::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  background-image: linear-gradient(to bottom,
+      hsl(168, 50%, 47%),
+      hsl(168, 50%, 47%));
+  z-index: -1;
+  transition: opacity 0.3s linear;
+  opacity: 0;
+}
+
+.btn-grad-circle:hover::before {
+  opacity: 1;
+}
+
+.input-inner-shadow {
+  -moz-box-shadow: inset 0 0 10px #d4d4d4;
+  -webkit-box-shadow: inset 0 0 10px #d4d4d4;
+  box-shadow: inset 0 0 10px #d4d4d4;
+}
+
+.custome-link {
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+  background-color: #26a69a !important;
+}
+
+.custome-link:hover {
+  background-color: #1f8379 !important;
+}
+
+.alignItemsLeft td {
+  text-align: left;
+}
+
+.alignItemsLeft th {
+  text-align: left;
+}
+
+.alignItemsRight td {
+  text-align: right;
+}
+
+.alignItemsRight th {
+  text-align: right;
+}
+
+.customListGroup .list-group-item {
+  margin-bottom: 20px;
+  border-radius: 20px;
+  background-color: white !important;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+
+/* -------------( date picker )-------------- */
+
+.react-datepicker-wrapper{
+  text-align: center;
+}
+
+.react-datepicker-wrapper > div > input{
+  cursor: pointer;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.react-datepicker-wrapper > div > input:hover{
+  background-color: lightgray;
+}

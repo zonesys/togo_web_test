@@ -1,0 +1,210 @@
+/*
+ * App css File
+*/
+
+@font-face {
+    src: url(../../assets/fonts/neosansarabic.ttf);
+    font-family: neosansarabic;
+}
+
+@font-face {
+    src: url(../../assets/fonts/PTSans-Bold.ttf);
+    font-family: "PT Sans";
+}
+
+.App {
+    /* background-color: #c9c9c9; */
+    /* propertys here */
+}
+
+.thead {
+    text-align: center;
+}
+
+html,
+body {
+    background: #e2e8f024 !important;
+    height: 100%;
+    font-family: 'neosansarabic' !important;
+    font-weight: 600;
+}
+
+#root {
+    height: 100%;
+}
+
+.togo-outling {
+    background-image: linear-gradient(to left, #26a69a 0%, #69d4a5 100%);
+    padding: 2px;
+    border-radius: 22px;
+}
+
+.togo-border-full {
+    border-color: #69d4a5;
+}
+
+.togo-label {
+    color: #80888f;
+}
+
+.togo-border {
+    border-image: linear-gradient(to left, #26a69a 0%, #69d4a5 100%) 100% 0 100% 0/0px 0 2px 0;
+    border-bottom: 2px solid;
+}
+
+.rounded-22 {
+    border-radius: 22px;
+}
+
+.mainbg {
+    background-image: url(../../assets/mainlog.png);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: bottom;
+    height: 100%;
+}
+
+.togo-checkbox>.form-check-input:checked {
+    background-color: var(--bs-teal);
+    border-color: var(--bs-teal);
+}
+
+/* ------ scroll bar ------ */
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 5px lightgray; */
+    border-radius: 10px;
+    background-color: #e5e5e5;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #848484;
+    /* box-shadow: inset 0 0 5px grey; */
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    /* background: lightgray; */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* togo custom modal large */
+
+.togo-custom-modal-lg .modal-content {
+    border-radius: 20px;
+}
+
+.togo-custom-modal-lg .modal-header {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: -20px;
+    height: 50px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.5rem;
+}
+
+.togo-custom-modal-lg .modal-body {
+    margin-top: 40px;
+}
+
+/* togo custom modal small */
+
+.togo-custom-modal-sm .modal-content {
+    border-radius: 20px;
+}
+
+.togo-custom-modal-sm .modal-header {
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    height: 50px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.5rem;
+}
+
+.togo-custom-modal-sm .modal-body {
+    margin-top: 40px;
+}
+
+/* togo custom card large */
+
+.togo-custom-card-lg .card-content {
+    border-radius: 20px;
+}
+
+.togo-custom-card-lg .card-header {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: -20px;
+    height: 50px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.togo-custom-card-lg .card-body {
+    margin-top: 40px;
+}
+
+/* togo custom card small */
+
+.togo-custom-card-sm .card-content {
+    border-radius: 20px;
+}
+
+.togo-custom-card-sm .card-header {
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    height: 50px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.togo-custom-card-sm .card-body {
+    margin-top: 40px;
+}
+
+@media print {
+    .print-container {
+        zoom: 74%;
+    }
+}
+
+.modal-radius-20 .modal-content {
+    border-radius: 20px;
+}
+
+.modal-radius-20 .modal-header {
+    border-radius: 20px 20px 0 0;
+}
+
+hr {
+    margin: 5px 0 5px 0 !important;
+    /* border: none;
+    height: 5px !important; */
+}

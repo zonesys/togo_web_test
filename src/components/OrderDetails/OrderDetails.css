@@ -1,0 +1,45 @@
+.w-250px {
+    width: 250px;
+    font-size: 1.2rem;
+}
+
+.ActionButtons * {
+    margin: 5px;
+    border: none;
+}
+
+/* edited  (the following styles) */
+
+.showLine {
+    display: none
+  }
+
+@media only screen and (max-width: 991px) {
+    .showLine {
+      display: block;
+      width: 74%;
+      margin: auto
+    }
+}
+
+.showLine2 {
+  display: none
+}
+
+@media only screen and (max-width: 991px) {
+  .showLine2 {
+    display: block;
+    margin: auto
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .mtcon {
+     margin-top: 20px;
+  }
+}
+
+.defaultLine {
+  width: 80%;
+  margin: auto
+}

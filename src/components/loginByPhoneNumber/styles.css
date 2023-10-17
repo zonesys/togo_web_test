@@ -1,0 +1,48 @@
+.upperBackground {
+    position: absulote;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 350px;
+    /* background-color: #ededed; */
+    /* background-image: url('../../assets/images/background_3.jpg'); */
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.712), rgba(0, 0, 0, 0.664)), url('../../assets/images/background_3.jpg');
+    /* filter: blur(8px);
+    -webkit-filter: blur(8px); */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+.register {
+    position: absolute;
+    right: 20px;
+    bottom: 25px;
+    color: #34af9c;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.register:hover {
+    color: #216e63;
+}
+
+.logo-container {
+    position: relative;
+}
+
+.logo {
+    height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid;
+}
+
+.text-grad {
+    background: -webkit-linear-gradient(#216e63, #34af9c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

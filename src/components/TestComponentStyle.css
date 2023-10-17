@@ -1,0 +1,54 @@
+/* 
+.toggleButtonsContainer {
+    display: flex;
+    justify-content: left;
+}
+
+.toggleButtonsContainer .toggleButton:first-child {
+    border-radius: 20px 0 0 20px;
+}
+
+.toggleButtonsContainer .toggleButton:last-child {
+    border-radius: 0 20px 20px 0;
+}
+
+.toggleButton {
+    display: flex;
+    justify-content: left;
+    padding: 10px;
+    width: 200px;
+    cursor: pointer;
+    border: 2px solid #26a69a;
+    transition: 0.3s;
+}
+
+.radio {
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background-color: #26a69a;
+}
+
+.innerRadio {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    margin: 2.5px 0 0 2.5px;
+    background-color: white;
+}
+
+.active .radio {
+    background-color: white;
+}
+
+.active .innerRadio {
+    background-color: #26a69a;
+}
+
+.active {
+    background-color: #26a69a; 
+    border: none;
+    color: white
+} */

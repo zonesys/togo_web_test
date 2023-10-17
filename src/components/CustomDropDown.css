@@ -1,0 +1,37 @@
+.custom-drop {
+    z-index: 5;
+    padding: 10px;
+    background-color: white;
+    opacity: 1;
+    border-radius: 15px;
+    border: 1px solid #68D2A5;
+    border-bottom: 10px solid #68D2A5;
+    position: absolute;
+    font-size: 0.8rem;
+    box-shadow: /* inset 0 -10px 10px -10px #00000049, */ 0px 5px 15px rgba(0, 0, 0, 0.24);
+    animation-name: startAnimation;
+    animation-duration: 0.2s;
+    animation-timing-function: ease-out;
+}
+
+@keyframes startAnimation {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.custom-list-group .list-group-item {
+    border: none;
+    border-bottom: 1px solid rgb(221, 221, 221);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.custom-list-group .list-group-item:hover {
+    background-color: rgb(233, 231, 231);
+}

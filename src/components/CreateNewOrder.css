@@ -1,0 +1,89 @@
+.toggleButtonsContainer {
+    display: block;
+    /* justify-content: space-between; */
+}
+
+/* .toggleButtonsContainer .toggleButton:first-child {
+    border-radius: 20px 0 0 20px;
+}
+
+.toggleButtonsContainer .toggleButton:last-child {
+    border-radius: 0 20px 20px 0;
+} */
+
+.toggleButton {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    width: 180px;
+    cursor: pointer;
+    border: 2px solid #26a69a;
+    transition: background-color 0.3s;
+    border-radius: 20px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.radio {
+    position: absolute;
+    left: 0px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    margin-left: 10px;
+    background-color: #26a69a;
+}
+
+.innerRadio {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: 5px;
+    background-color: white;
+}
+
+.toggleButtonsContainer .active .radio {
+    background-color: white;
+}
+
+.toggleButtonsContainer .active .innerRadio {
+    background-color: #26a69a;
+}
+
+.toggleButtonsContainer .active {
+    background-color: #26a69a;
+    /* linear-gradient(to left, #26a69a 0%, #69d4a5 100%) */
+    color: white;
+    /* padding-top: 2px; */
+}
+
+/* ///////////////////////////////////////////////////////// */
+
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    background-color: #ECECEC;
+    border-radius: 10px;
+    padding: 10px;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.grid-item {
+    color: gray;
+    background-color: white;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    cursor: pointer;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 5px;
+    transition: all 0.1s;
+}
+
+.grid-item:hover {
+    box-shadow: rgba(95, 100, 105, 0.473) 0px 8px 24px;
+    transform: scale(1.05);
+}

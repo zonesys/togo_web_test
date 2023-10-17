@@ -1,0 +1,13 @@
+tbody{
+    font-weight: 100;
+}
+
+td{
+    vertical-align: middle !important;
+}
+
+.table-responsive{
+    display: flex !important;
+    justify-content: center;
+}
+

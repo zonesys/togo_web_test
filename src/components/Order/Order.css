@@ -1,0 +1,51 @@
+/*
+ * Order css File
+*/
+.custom-lbl{
+    border: 1px solid;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.order-prop-label {
+    color: var(--rs-gray-500);
+}
+
+.active-order {
+    border-bottom: 5px solid #26a69a;
+}
+
+.waiting-for-bid{ 
+    color: #5DCD46;
+}
+
+.bid-available{
+    color: #FFAB00;
+}
+
+.bid-accepted{
+    color: #8950fc;
+}
+
+.out-for-delivery{
+    color: #3699ff;
+}
+
+.picked-up{
+    color: #0F9EDB;
+}
+
+.order-finished{
+    color: #28a69a;
+} /*( delivered) */
+
+.btn-grad {
+    background-image: linear-gradient(to left, #26a69a 0%, #69d4a5 100%);
+    background-size: 200% auto;
+    transition: 0.5s !important;
+    border: mediumseagreen;
+}
+
+.btn-grad:hover {
+    background-position: right center;
+}

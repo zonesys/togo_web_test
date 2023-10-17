@@ -1,0 +1,215 @@
+/* ----------( arrow time line )--------- * /
+
+/* Typography */
+.arrowEn .textEn {
+	color: #ffffff;
+	position: relative;
+  left: 32%;
+  transition: 0.3s 
+}
+
+.arrowEn .textEn .svg-iconEn {
+  position: absolute;
+  right: -30px;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  z-index: 4;
+}
+
+.arrowsEn {
+	display: block;
+	width: 100%;
+	margin: 0 auto;
+	overflow: hidden; /* forces this div to 'contain' it's floated children */
+	padding: 6px 0;
+	position: relative;
+}
+
+
+/* Arrows - i.e. the box and the wedge */
+.arrowEn {
+	float: left;
+	margin: 0;
+	width: 20%;
+	padding: 25px 10px;
+	position: relative;
+  cursor: pointer;
+  transition: 0.3s ;
+}
+
+/* edited */
+.arrowEn:hover {
+  background-color: #237971;
+}
+
+/* edited */
+/* .arrow:hover .text {
+  color: black;
+} */
+
+.arrowEn div {
+  transition: 0.3s ;
+  z-index: 3;
+}
+
+.arrowEn:hover div {
+  left:8% !important;
+  top: 5px !important;
+  width: 60px !important;
+  height: 60px !important; 
+  background: linear-gradient(90deg, #26a69a, #69d4a5) !important;
+  border: 5px solid white;
+}
+
+
+.arrowEn:after {
+	border-top: 34px solid transparent;
+	border-bottom: 34px solid transparent;
+	border-left: 17px solid transparent; /* unnecessary here... it's only for reference. */
+	content: "";
+	height: 0;
+	position: absolute;
+	right: -17px;
+	top: 0;
+	width: 0;
+	z-index: 2;
+}
+
+.arrowEn:last-child:after {
+	border: none;
+	right: 0;
+}
+
+
+/* Colour each section */
+.step1En {background-color: #26a69a;}
+
+.step2En {background-color: #69d4a5;}
+
+.step3En {background-color: #26a69a;}
+
+
+/* Colour the wedge to match it's associated box */
+.arrowEn.step1En:after {
+   border-left: 17px solid #26a69a;
+  transition: 0.3s ; 
+}
+
+.arrowEn.step2En:after { 
+  border-left: 17px solid #69d4a5;
+  transition: 0.3s ;
+ }
+
+/* edited */
+.arrowEn.step1En:hover:after { 
+  border-left: 17px solid #237971; 
+}
+
+/* edited */
+.arrowEn.step2En:hover:after { 
+  border-left: 17px solid #237971; 
+}
+
+.arrowEn:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.arrowEn:last-child {
+  border-radius: 0 6px 6px 0;
+}
+
+/* edited */
+.arrowEn:hover .textEn {
+  left: 35%;
+}
+
+@media only screen and (max-width: 1440px) {
+	.arrowEn { width: 31.5%;}
+  .arrowEn:first-child {
+    border-radius: 6px 0 0 0;
+  }
+  
+  .arrowEn:last-child {
+    border-radius: 0 0 6px 0;
+  }
+
+  /* Typography */
+  .arrowEn .textEn {
+    left: 30%;
+  }
+
+  /* edited */
+  .arrowEn:hover .textEn {
+    left: 33%;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+	/*.arrows {overflow: visible;}*/ /* May be needed for some browsers. Need to test. */
+	
+	.arrowEn {
+		float: none;
+		padding: 25px 30px;
+		text-align: left;
+		width: 100%;
+	}
+	
+	.arrowEn:first-child {
+		border-radius: 6px 6px 0 0;
+	}
+	
+	.arrowEn:last-child {
+		border-radius: 0 0 6px 6px;
+	}
+	
+	.arrowEn:after {
+		top: auto;
+		bottom: -23px;
+		left: 30px;
+		background-color: transparent;
+		border-top: 15px solid transparent;
+		border-right: 15px solid transparent;
+		border-bottom: 10px solid transparent;
+		border-left: 17px solid transparent;
+	}
+	
+	.arrowEn.step1En:after {
+		border-top-color: #26a69a;
+		border-left-color: transparent
+	}
+	
+	.arrowEn.step2En:after {
+		border-top-color: #69d4a5;
+		border-left-color: transparent;
+	}
+
+  /* edited */
+  .arrowEn.step1En:hover:after { 
+    border-top: 17px solid #237971; 
+  }
+
+  /* edited */
+  .arrowEn.step2En:hover:after { 
+    border-top: 17px solid #237971; 
+  }
+
+  /* edited */
+  .arrowEn.step1En:hover:after { 
+    border-left: 17px solid transparent;
+  }
+
+  /* edited */
+  .arrowEn.step2En:hover:after { 
+    border-left: 17px solid transparent; 
+  }
+
+  .arrowEn .textEn {
+    left: 20%;
+  }
+
+  /* edited */
+  .arrowEn:hover .textEn {
+    left: 23%;
+  }
+}

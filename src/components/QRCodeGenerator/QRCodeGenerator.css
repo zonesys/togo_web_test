@@ -1,0 +1,67 @@
+.qr-code-canvas {
+    margin-top: 100px;
+}
+
+canvas {
+    display: flex;
+    margin: 0 auto;
+}
+
+.login-num {
+    position: absolute;
+    left: 20px;
+    top: 420px;
+}
+
+.accordion-body {
+    font-size: 1rem;
+}
+
+.accordion-button {
+    font-size: 1.5rem;
+    /* color: white;
+    border: none;
+    border-radius: 5px;
+    position: relative;
+    background-image: linear-gradient(to right,
+            hsl(154, 55%, 62%),
+            hsl(168, 50%, 47%));
+    z-index: 0; */
+}
+
+/* .accordion-button::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 5px;
+    background-image: linear-gradient(to bottom,
+            hsl(168, 50%, 47%),
+            hsl(168, 50%, 47%));
+    z-index: -1;
+    transition: opacity 0.3s linear;
+    opacity: 0;
+}
+
+.accordion-button:hover::before {
+    opacity: 1;
+} */
+
+.main-card {
+    position: absolute;
+    left: 100px;
+    right: 100px;
+    top: 100px;
+    min-height: 500px;
+}
+
+.upperBackground {
+    position: absulote;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 350px;
+    background-color: #ededed;
+}
