@@ -13,6 +13,11 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import { imgBaseUrl } from "../../Constants/GeneralCont"; /* edited (new import) */
 
 import { Badge } from "react-bootstrap"; /* edited (new import) */
+import { Button } from "react-bootstrap";
+
+import {
+    updateActiveOrderSellPrice
+} from "../../APIs/AdminPanelApis";
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -102,6 +107,13 @@ class Address extends Component {
                     <img src={MoneyIcon} className="m-inline-e-2" alt="money" />
                     <div className="flex-grow-1">Price</div>
                     <div>{this.props.price + " NIS"}</div>
+                    {!!localStorage.getItem("AdminToken") && <div>
+                        <Button className="mx-2" onClick={() => {
+                            updateActiveOrderSellPrice().then((res) => {
+                                // to be continued
+                            })
+                        }}>edit</Button>
+                    </div>}
                 </div>}
 
                 <hr className="mb-3" />

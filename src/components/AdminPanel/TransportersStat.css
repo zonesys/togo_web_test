@@ -1,0 +1,8 @@
+/* td {
+    display: flex;
+    justify-content: right;
+} */
+
+td {
+    text-align: right;
+}

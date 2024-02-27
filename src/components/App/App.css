@@ -208,3 +208,97 @@ hr {
     /* border: none;
     height: 5px !important; */
 }
+
+/* ///////////////////( modal )//////////////////// */
+
+/* [class^="card-header"] .btn-close {
+    color: white !important;
+    fill: white !important;
+    stroke: white !important;
+} */
+
+.card-header-lg {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    top: -25px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    height: 50p;
+}
+
+.card-header-sm {
+    position: absolute;
+    left: 20px;
+    top: -20px;
+    background: linear-gradient(90deg, #26a69a, #69d4a5);
+    color: white;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 0.7re;
+}
+
+/* ///////////////////( togo gradiant burron )//////////////////// */
+
+
+.btn-grad {
+    border: none;
+    border-radius: 5px;
+    position: relative;
+    background-image: linear-gradient(to right,
+        hsl(154, 55%, 62%),
+        hsl(168, 50%, 47%));
+    z-index: 0;
+    font-size: 1rem !important;
+  }
+  
+  .btn-grad::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 5px;
+    background-image: linear-gradient(to bottom,
+        hsl(168, 50%, 47%),
+        hsl(168, 50%, 47%));
+    z-index: -1;
+    transition: opacity 0.3s linear;
+    opacity: 0;
+  }
+  
+  .btn-grad:hover::before {
+    opacity: 1;
+  }
+  
+  .btn-grad-circle {
+    border: none;
+    border-radius: 50%;
+    position: relative;
+    background-image: linear-gradient(to right,
+        hsl(154, 55%, 62%),
+        hsl(168, 50%, 47%));
+    z-index: 1;
+  }
+  
+  .btn-grad-circle::before {
+    position: absolute;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 50%;
+    background-image: linear-gradient(to bottom,
+        hsl(168, 50%, 47%),
+        hsl(168, 50%, 47%));
+    z-index: -1;
+    transition: opacity 0.3s linear;
+    opacity: 0;
+  }
+  
+  .btn-grad-circle:hover::before {
+    opacity: 1;
+  }

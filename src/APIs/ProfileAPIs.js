@@ -36,6 +36,16 @@ export const getWallet = async () => {
     return axios.post(apiUrl, params);
 };
 
+export const getViewBalalnce = async () => {
+
+    var params = new URLSearchParams();
+    params.append("customerId", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
+    params.append("CheckTypeFunction", "getViewBalalnce");
+
+    return axios.post(apiUrl, params);
+};
+
 /* edited (update web notification token for FCM) */
 export function updateWebNotificationToken(newWebToken) {
     var params = new URLSearchParams();
@@ -72,5 +82,79 @@ export function getAllGovernorates() {
     params.append("transporterId", localStorage.getItem("userId"));
     params.append("tokenDevice", localStorage.getItem("TokenDevice"));
     params.append("langId", (localStorage.getItem("Language") || "en") === "en" ? 1 : 2);
+    return axios.post(apiUrl, params);
+}
+
+export function createSubaccount(
+    subaccountName,
+    subaccountPhone,
+    subaccountUsername,
+    subaccountPassword,
+    canCreateOrder,
+    canViewBalance
+) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "createSubaccount");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    params.append("subaccountName", subaccountName);
+    params.append("subaccountPhone", subaccountPhone);
+    params.append("subaccountUsername", subaccountUsername);
+    params.append("subaccountPassword", subaccountPassword);
+    params.append("canCreateOrder", canCreateOrder);
+    params.append("canViewBalance", canViewBalance);
+    return axios.post(apiUrl, params);
+}
+
+export function getSubaccounts() {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getSubaccounts");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    return axios.post(apiUrl, params);
+}
+
+export function updateCanCreateOrders(subaccountId, updatedStatus) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "updateCanCreateOrders");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    params.append("subaccountId", subaccountId);
+    params.append("updatedStatus", updatedStatus);
+    return axios.post(apiUrl, params);
+}
+
+export function updateCanViewWallet(subaccountId, updatedStatus) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "updateCanViewWallet");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    params.append("subaccountId", subaccountId);
+    params.append("updatedStatus", updatedStatus);
+    return axios.post(apiUrl, params);
+}
+
+export function updateBlockedAccount(subaccountId, updatedStatus) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "updateBlockedAccount");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    params.append("subaccountId", subaccountId);
+    params.append("updatedStatus", updatedStatus);
+    return axios.post(apiUrl, params);
+}
+
+export function checkSubaccountUserName(usernameStr) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "checkSubaccountUserName");
+    params.append("merchantId", localStorage.getItem("userId"));
+    params.append("merchantToken", localStorage.getItem("TokenDevice"));
+    params.append("usernameStr", usernameStr);
     return axios.post(apiUrl, params);
 }

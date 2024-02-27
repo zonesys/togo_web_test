@@ -33,6 +33,7 @@ const App = () => {
     if (localStorage.getItem("Adminid") != undefined || localStorage.getItem("userId") != undefined)
         onMessageListener().then((payload) => {
             setNotReload(!notReload);
+            console.log("test");
             console.log(payload.notification.title);
 
             // show a popup notification

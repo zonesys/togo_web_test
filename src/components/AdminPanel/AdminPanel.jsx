@@ -511,7 +511,7 @@ const OrdersColumn = ({ index, title, orders, ordersCount, loading, searchAndFil
         if (!!val) {
 
             // console.log(ordersState)
-            let tempOrders = ordersState.filter(order => (order.id.includes(val) || (order.foreignOrderId && order.foreignOrderId === val) || (order.fromCity && order.fromCity.toLowerCase().includes(val.toLowerCase())) || (order.toCity && order.toCity.toLowerCase().includes(val.toLowerCase())) || (order.receiverName && order.receiverName.toLowerCase().includes(val.toLowerCase())) || (order.clientBusinessName && order.clientBusinessName.toLowerCase().includes(val.toLowerCase())) || (order.transporterAccountName && order.transporterAccountName.toLowerCase().includes(val.toLowerCase())) || (order.DateLoad && order.DateLoad.includes(val)) || (order.foreign_order_error && order.foreign_order_error == 1 && val.includes('!'))));
+            let tempOrders = ordersState.filter(order => (order.id.includes(val) || (order.foreignOrderId && order.foreignOrderId === val) || (order.foreignOrderBarcode && order.foreignOrderBarcode === val) || (order.fromCity && order.fromCity.toLowerCase().includes(val.toLowerCase())) || (order.toCity && order.toCity.toLowerCase().includes(val.toLowerCase())) || (order.receiverName && order.receiverName.toLowerCase().includes(val.toLowerCase())) || (order.clientBusinessName && order.clientBusinessName.toLowerCase().includes(val.toLowerCase())) || (order.transporterAccountName && order.transporterAccountName.toLowerCase().includes(val.toLowerCase())) || (order.DateLoad && order.DateLoad.includes(val)) || (order.foreign_order_error && order.foreign_order_error == 1 && val.includes('!'))));
 
             setSearchedOrders(tempOrders)
         } else {

@@ -189,7 +189,8 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
     }
 
     const saveReviewed = () => {
-        // console.log(reviewList);
+        console.log(reviewList);
+        return;
 
         const isToReview = currentPage === "previous-orders";
 

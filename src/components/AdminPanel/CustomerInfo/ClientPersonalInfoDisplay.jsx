@@ -119,7 +119,7 @@ export default function ClientPersonalInfoDisplay({ id }) {
 
     useEffect(() => {
         GetClientPersonalInfo(id).then((res) => {
-            // console.log(res.data)
+            console.log(res.data)
             setIsBlocked(res.data.server_response.IsBlocked == 1 ? true : false);
             setOriginalProfileImage(res.data.server_response.img);
             setProfileImage(imgBaseUrl + res.data.server_response.img);
@@ -127,10 +127,14 @@ export default function ClientPersonalInfoDisplay({ id }) {
         })
     }, [refreshPersonalInfo, refresh])
 
+    function formatAmount(number) {
+        return !!number ? parseFloat(number).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0.00"
+      }
+
     useEffect(() => {
         getUserTotalTempBalance(id).then((res) => {
             // console.log(res.data);
-            setTempBalance(res.data)
+            setTempBalance(formatAmount(res.data))
         })
     }, [refresh])
 
@@ -575,6 +579,14 @@ export default function ClientPersonalInfoDisplay({ id }) {
                                                 <tr>
                                                     <th scope="row">Odoo ID</th>
                                                     <td>{personalInfo?.OdooId}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Total Escrow In</th>
+                                                    <td>{personalInfo?.escrowTotalIn} NIS</td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Total Escrow Out</th>
+                                                    <td>{personalInfo?.escrowTotalOut} NIS</td>
                                                 </tr>
                                                 <tr>
                                                     <th scope="row">Total Balance</th>

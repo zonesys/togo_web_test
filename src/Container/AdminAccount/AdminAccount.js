@@ -19,6 +19,8 @@ import { IoIosExit } from 'react-icons/io';
 import WithdrawRequests from "../../components/AdminPanel/WithdrawRequests";
 import SupersetComponent from "../../components/AdminPanel/SupersetComponent";
 import Stat from "../../components/AdminPanel/Stat";
+import TransportersStat from "../../components/AdminPanel/TransportersStat";
+import Loans from "../../components/AdminPanel/Loans";
 import Test2 from "../../components/AdminPanel/Test2";
 
 export default function AdminAccount({ /* match: { path } */ path, notReload }) {
@@ -27,12 +29,14 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
         { "id": 1, "name": "Home", "active": "active", "route": "adminpanel/" },
         { "id": 1, "name": "Food Orders", "active": "", "route": "food-orders" },
         { "id": 2, "name": "System Actions", "active": "", "route": "system-actions" },
-        { "id": 3, "name": "Transporters", "activ e": "", "route": "all-transporters" },
+        { "id": 3, "name": "Transporters", "active": "", "route": "all-transporters" },
         { "id": 4, "name": "Clients", "active": "", "route": "all-clients" },
         { "id": 5, "name": "Search", "active": "", "route": "order-search" },
         { "id": 6, "name": "Withdraw Requests", "active": "", "route": "withdraw-requests" },
         { "id": 7, "name": "Superset", "active": "", "route": "superset" },
         { "id": 8, "name": "Stat.", "active": "", "route": "stat" },
+        { "id": 9, "name": "Transporters Stat.", "active": "", "route": "transporters-stat" },
+        { "id": 10, "name": "Loans", "active": "", "route": "loans" },
         /* { "id": 8, "name": "Test", "active": "", "route": "test_2" }, *//* test */
     ])
 
@@ -191,6 +195,8 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
             <AdminPrivateRoute path={`${path}/superset`} component={SupersetComponent} />
             <AdminPrivateRoute path={`${path}/test_2`} component={Test2} />
             <AdminPrivateRoute path={`${path}/stat`} component={Stat} />
+            <AdminPrivateRoute path={`${path}/transporters-stat`} component={TransportersStat} />
+            <AdminPrivateRoute path={`${path}/loans`} component={Loans} />
         </>
     );
 };

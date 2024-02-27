@@ -14,11 +14,13 @@ import {
     /*transactionsByOrderForAdmin, */
     getTimeLineForAdmin,
     deleteOrderBeforePickupForAdmin,
+    forceReturnOrder,
     deleteNewOrderForAdmin,
     forceFinishOrder,
     forcePickup,
     AdminCheckTripCost,
     AdminAcceptOfferReq,
+    AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
     alterActiveOrderCOD
@@ -78,6 +80,7 @@ const AdminOrderDetails = () => {
     const [transactions, setTransactions] = useState([]);
 
     const [showCancelActiveModal, setShowCancelActiveModal] = useState(false);
+    const [showReturnActiveModal, setShowReturnActiveModal] = useState(false);
     const [showFinishModal, setShowFinishModal] = useState(false);
     const [showPickupModal, setShowPickupModal] = useState(false);
     const [showUndoCanceledModal, setShowUndoCanceledModal] = useState(false);
@@ -94,6 +97,9 @@ const AdminOrderDetails = () => {
 
     const handleCloseCancelActiveModal = () => setShowCancelActiveModal(false);
     const handleShowCancelActiveModal = () => setShowCancelActiveModal(true);
+
+    const handleCloseReturnActiveModal = () => setShowReturnActiveModal(false);
+    const handleShowReturnActiveModal = () => setShowReturnActiveModal(true);
 
     const handleCloseFinishModal = () => setShowFinishModal(false);
     const handleShowFinishModal = () => setShowFinishModal(true);
@@ -112,6 +118,24 @@ const AdminOrderDetails = () => {
     const handleCancleActiveOrder = (orderId) => {
         setLoading(true);
         deleteOrderBeforePickupForAdmin(orderId).then((res) => {
+
+            if (res.data === "TokenError" || res.data === "OrderNotFound2" || res.data === "OrderNotFound1" || res.data === "OrderStatusNotUpdated" || res.data === "deliveryWayNotFound" || res.data === "orderAlreadyPickedUp!") {
+                dispatch(toastNotification("Error", res.data, "error"));
+            } else {
+                // dispatch(toastNotification("Canceled", "Order Canceled", "success"));
+                setLoading(false);
+                setRefresh(!refresh);
+                handleCloseCancelActiveModal();
+            }
+        })
+
+        /* setRefresh(!refresh);
+        handleCloseCancelActiveModal(); */
+    }
+
+    const handleReturnActiveOrder = (orderId) => {
+        setLoading(true);
+        forceReturnOrder(orderId).then((res) => {
 
             if (res.data === "TokenError" || res.data === "OrderNotFound2" || res.data === "OrderNotFound1" || res.data === "OrderStatusNotUpdated" || res.data === "deliveryWayNotFound" || res.data === "orderAlreadyPickedUp!") {
                 dispatch(toastNotification("Error", res.data, "error"));
@@ -470,7 +494,12 @@ const AdminOrderDetails = () => {
         return (
 
             <React.Fragment>
-                {orderDetails && <Container fluid className='ps-5 pe-5 pb-5'>
+                
+                <div className="container-fluid">
+
+                </div>
+
+                {orderDetails && <Container fluid mt={5} className='p-5 pe-5 pb-5'>
 
                     <div style={{ position: "absolute", left: 0, right: 0, backgroundColor: "#ededed", height: "140px", zIndex: "-1" }}></div>
 
@@ -488,9 +517,9 @@ const AdminOrderDetails = () => {
 
                                         {
                                             IsStuckOrder == "1" ? <Badge bg="light" style={{ color: "red" }}>{translate("ORDER_DETAILS.ORDER_STUCK")}</Badge> :
-                                                IsReturnedOrder == "1" && IsReturnAccepted == "0" ? <Badge bg="light" style={{ color: "#ff4444" }}>{translate("ORDER_DETAILS.REQUEST_RETURN")}</Badge> :
-                                                    IsReturnedOrder == "1" && IsReturnAccepted == "1" && order_status == "Delivered" ? <Badge bg="light" style={{ color: "#ff4444" }}>{translate("ORDER_DETAILS.ORDER_RETURNED")}</Badge> :
-                                                        IsReturnedOrder == "1" && IsReturnAccepted == "1" ? <Badge bg="light" style={{ color: "#ff4444" }}>{translate("ORDER_DETAILS.ORDER_RETURNING")}</Badge> :
+                                                IsReturnedOrder == "1" && /* IsReturnAccepted == "0" */ false ? <Badge bg="light" style={{ color: "#ff4444" }}>{translate("ORDER_DETAILS.REQUEST_RETURN")}</Badge> :
+                                                    IsReturnedOrder == "1" && /* IsReturnAccepted == "1" */ true && /* order_status == "Delivered" */ true ? <Badge bg="light" style={{ color: "#FFC107" }}>Order Returned</Badge> :
+                                                        IsReturnedOrder == "1" && /* IsReturnAccepted == "1" */ false ? <Badge bg="light" style={{ color: "#ff4444" }}>{translate("ORDER_DETAILS.ORDER_RETURNING")}</Badge> :
                                                             order_status == "Deleted" ? <Badge bg="light" style={{ color: "#ff4444" }}>{order_status}</Badge> :
                                                                 <Badge bg="light" style={{ color: "#35b09d" }}>{order_status}</Badge>
                                         }
@@ -588,6 +617,10 @@ const AdminOrderDetails = () => {
                                             Cancel Active Order
                                         </Button>}
 
+                                        {order_status !== "Deleted" && order_status !== "Delivered" && order_status !== "Waiting for Bids" && <Button style={styles.actionButton} variant="danger" onClick={handleShowReturnActiveModal}>
+                                            Return Active Order
+                                        </Button>}
+
                                         {order_status !== "Deleted" && order_status !== "Delivered" && order_status !== "Waiting for Bids" && <Button style={styles.actionButton} variant="danger" onClick={handleShowFinishModal}>
                                             Force Finishd Order
                                         </Button>}
@@ -619,6 +652,21 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                                 <Button variant="danger" disabled={loading ? true : false} onClick={() => { handleCancleActiveOrder(orderId) }}>
                                                     {loading && <Spinner animation="border" size="lg" />} Yes, Cancel Order {orderId}
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
+
+                                        <Modal show={showReturnActiveModal} onHide={handleCloseReturnActiveModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Return Order {orderId}</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body /* className="mt-5" */>Are you sure you wnat to return order {orderId} ?</Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseReturnActiveModal}>
+                                                    No
+                                                </Button>
+                                                <Button variant="danger" disabled={loading ? true : false} onClick={() => { handleReturnActiveOrder(orderId) }}>
+                                                    {loading && <Spinner animation="border" size="lg" />} Yes, Return Order {orderId}
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
@@ -892,6 +940,96 @@ const AdminOrderDetails = () => {
                                                                 </Button>
                                                             </Modal.Footer>
                                                         </Modal>
+
+                                                        {/* -------------------------- */}
+
+                                                        {/* <Button
+                                                            disabled={costs.isEnoughBalance == "1" ? false : true}
+                                                            variant={costs.isEnoughBalance == "1" ? "danger" : "warning"}
+                                                            style={{ fontSize: "0.7rem", width: "100px" }}
+                                                            onClick={() => { if (costs.isEnoughBalance == "1") { handleShow(); setBidReqTransName(costs.TransporterName); setBidReqTransRate(costs.TotalRate); setBidReqTransId(costs.IdTransporterBidRequist); setBidReqTransPrice(costs.BidCost); setBidReqTransImg(costs.TransporterPersonalImg) } }}
+                                                        >
+                                                            {costs.isEnoughBalance == "1" ? "DO NOT CLICK!!!" : "Not Available"}
+                                                        </Button> */}
+                                                        {/*  <Modal show={show} onHide={handleClose} centered>
+                                                            <Modal.Header closeButton>
+                                                                <Modal.Title>Accept Offer</Modal.Title>
+                                                            </Modal.Header>
+
+                                                            <Modal.Body>
+                                                                <div className="" style={{ fontSize: "1.5rem" }}>
+                                                                    <div className="w-100 d-flex justify-content-center">
+                                                                        <div style={{
+                                                                            background: "linear-gradient(90deg, #26a69a, #69d4a5)",
+
+                                                                            width: "80px",
+                                                                            height: "80px",
+                                                                        }}
+                                                                            className="d-flex justify-content-center rounded-circle align-self-center">
+                                                                            <img
+                                                                                style={{
+                                                                                    width: "80%",
+                                                                                    height: "80%",
+                                                                                    objectFit: "cover"
+                                                                                }}
+                                                                                className="rounded-circle align-self-center bg-white"
+                                                                                src={`${imgBaseUrl}${bidReqTransImg}`}
+                                                                                alt={"img"}
+
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-between">
+                                                                        <div>Transporter:</div>
+                                                                        <div>{bidReqTransName}</div>
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-between">
+                                                                        <div>Bid Price:</div>
+                                                                        <div>{bidReqTransPrice}</div>
+                                                                    </div>
+                                                                    <div className="w-100 d-flex justify-content-center">
+                                                                        <Rating name="size-large" size="large" defaultValue={bidReqTransRate} precision={0.1} readOnly />
+                                                                    </div>
+                                                                </div>
+                                                            </Modal.Body>
+                                                            <Modal.Footer>
+                                                                <Button variant="secondary" onClick={handleClose}>
+                                                                    Cancel
+                                                                </Button>
+                                                                <Button
+                                                                    disabled={loadingAcceptOffer ? true : false}
+                                                                    variant="primary"
+                                                                    onClick={() => {
+                                                                        // console.log(CustomerId, bidReqTransId, orderId, bidReqTransPrice);
+                                                                        setLoadingAcceptOffer(true);
+                                                                        AdminAcceptOfferReqFIX(CustomerId, bidReqTransId, orderId, bidReqTransPrice).then((resp) => {
+                                                                            // console.log(resp.data);
+                                                                            if (
+                                                                                resp.data == "ClientChargeBalanace" ||
+                                                                                resp.data == "TransporterNeedCharge" ||
+                                                                                resp.data == "ChargeBalanace" ||
+                                                                                resp.data == "deliveryWayNotFound" ||
+                                                                                resp.data == "OrderNotFound" ||
+                                                                                resp.data == "OrderAlreadyTaken" ||
+                                                                                resp.data == "TransporterNeedCharge" ||
+                                                                                resp.data == "OrderNotAccept" ||
+                                                                                resp.data == "BidChanged" ||
+                                                                                resp.data == "Blocked" ||
+                                                                                resp.data == "TokenError"
+                                                                            ) {
+                                                                                dispatch(toastNotification("Error!", resp.data, "error"));
+                                                                            } else if (resp.data.indexOf("Success") !== -1) {
+                                                                                setRefresh(!refresh);
+                                                                            }
+                                                                            setLoadingAcceptOffer(false);
+                                                                        })
+                                                                    }}
+                                                                >
+                                                                    {loadingAcceptOffer && <Spinner animation="border" size="sm" />}
+                                                                    Accept
+                                                                </Button>
+                                                            </Modal.Footer>
+                                                        </Modal> */}
                                                     </td>
                                                 </tr>
                                             })}

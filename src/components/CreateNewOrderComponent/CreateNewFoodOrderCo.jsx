@@ -4,7 +4,9 @@ import translate from "../../i18n/translate";
 import { ReactComponent as SendIcon } from "../../assets/images/send.svg";
 import {
     food_getCustomers,
-    food_getClientAreas
+    food_getClientAreas,
+    food_addCustomer,
+    food_createFoodOrder
 } from "../../APIs/OrdersAPIs";
 import { GetTransporterClients } from "../../APIs/OrdersAPIs"
 import { ReactComponent as FoodIcon } from "../../assets/images/food.svg";
@@ -40,6 +42,7 @@ export default function CreateNewFoodOrderCo(props) {
     let dispatch = useDispatch();
     const intl = useIntl();
 
+    const [refresh, setRefresh] = useState(false);
     const [packageType, setPackageType] = useState("1");
     const [customers, setCustomers] = useState([]);
     const [searchedCustomers, setSearchedCustomers] = useState([]);
@@ -48,6 +51,10 @@ export default function CreateNewFoodOrderCo(props) {
     const [showAddCustomerOption, setShowAddCustomerOption] = useState(false);
     const [showAddCustomerModal, setShowAddCustomerModal] = useState(false);
     const [restaurantAreas, setRestaurantAreas] = useState([]);
+    const [selectedAreaId, setSelectedAreaId] = useState("");
+    const [showError, setShowError] = useState(false);
+    const [validated, setValidated] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
 
     const customerPhoneRef = useRef();
 
@@ -66,7 +73,7 @@ export default function CreateNewFoodOrderCo(props) {
 
             setLoadingCustomers(false);
         })
-    }, [])
+    }, [refresh])
 
     const filterCustomerHandler = (subNumber) => {
         const filteredCustomers = customers.filter(customer => customer.phone.includes(subNumber));
@@ -105,6 +112,7 @@ export default function CreateNewFoodOrderCo(props) {
 
     const handleCloseAddCustomerModal = () => {
         setShowAddCustomerModal(false);
+        setSelectedAreaId("");
     }
 
     const getRestaurantAreas = () => {
@@ -121,7 +129,7 @@ export default function CreateNewFoodOrderCo(props) {
                     tempArr.push({ "id": area.areaId, "name": area.areaName, "description": area.description, "price": area.price, selected: false });
                 });
 
-                console.log(tempArr);
+                // console.log(tempArr);
 
                 setRestaurantAreas(tempArr);
             }
@@ -138,6 +146,7 @@ export default function CreateNewFoodOrderCo(props) {
             }
         });
 
+        setSelectedAreaId(areaId);
         setRestaurantAreas(updatedAreas);
     }
 
@@ -161,117 +170,49 @@ export default function CreateNewFoodOrderCo(props) {
                                     <Card.Title className="mt-2">{translate("CREATE_NEW_ORDER.ORDER_INFO")}</Card.Title>
                                 </Card.Header> */}
 
-                            <Form id="orderForm" /* validated={validated} */ noValidate onSubmit={(event) => {
+                            <Form id="orderForm" validated={validated} noValidate onSubmit={(event) => {
                                 event.preventDefault();
                                 event.stopPropagation();
 
                                 const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
 
-                                // console.log(formDataObj);
-
                                 const form = event.currentTarget;
-                                if (form.checkValidity() === true) {
-                                    // if all set, create order here: (get data from formDataObj)
-
-                                    // nono
-
-                                    let CreatedBy = "";
+                                if (form.checkValidity() === true && !!selectedCustomerAddressId.id) {
 
                                     let DeliveryParams = {
-                                        deliveryWay: deliveryType,
-                                        TypeLoad: packageType,
-                                        CostLoad: formDataObj.codAmount != undefined ? formDataObj.codAmount : "",
-                                        returnedCost: formDataObj.returnedAmount != undefined ? formDataObj.returnedAmount : "",
-                                        DetailsLoad: formDataObj.notes != undefined ? formDataObj.notes : "",
-                                        LengthLoad: formDataObj.length != undefined ? formDataObj.length : "",
-                                        WidthLoad: formDataObj.width != undefined ? formDataObj.width : "",
-                                        HeightLoad: formDataObj.height != undefined ? formDataObj.height : "",
-                                        WeightLoad: formDataObj.weight != undefined ? formDataObj.weight : "",
-                                        currency: formDataObj.currency != undefined ? formDataObj.currency : "1",
-                                        qrCode: ""
+                                        prepTime: formDataObj.prepTime,
+                                        CostLoad: formDataObj.cod
                                     };
 
-                                    // console.log(DeliveryParams);
-                                    // console.log(dileveryAddress)
+                                    const AddressClint = {
+                                        ReciverAddressId: selectedCustomerAddressId.id
+                                    };
 
-                                    let AddressClint = {};
+                                    /* console.log(" --------( formDataObj )-------- ")
+                                    console.log(formDataObj);
+                                    console.log(" --------( DeliveryParams )-------- ")
+                                    console.log(DeliveryParams);
+                                    console.log(" --------( AddressClint )-------- ")
+                                    console.log(AddressClint)    */                                 
 
-                                    if (isNewAddress) {
-                                        AddressClint = {
-                                            IdCity: pickUpAddress.cityId,
-                                            IdArea: pickUpAddress.areaId,
-                                            IdGov: pickUpAddress.governoratId,
-                                            IdProv: pickUpAddress.provinceId,
-                                            OtherDetails: pickUpAddress.details,
-                                            LatSender: pickUpAddress.latitude,
-                                            LongSender: pickUpAddress.longitude,
-                                            SenderAddressId: pickUpAddress.id,
+                                    food_createFoodOrder(JSON.stringify(DeliveryParams), JSON.stringify(AddressClint)).then((res) => {
+                                        // console.log(res.data)
 
-                                            IdCityDes: formDataObj.city,
-                                            IdAreaDes: formDataObj.area,
-                                            IdGovDes: formDataObj.governorate,
-                                            IdProvDes: formDataObj.province,
-                                            OtherDetailsDes: formDataObj.address != undefined ? formDataObj.address : "",
-                                            addressName: formDataObj.placeName != undefined ? formDataObj.placeName : "",
-                                            LatReciver: "",
-                                            LongReciver: "",
-                                            ReceiverAddressNum: formDataObj.receiverPhone,
-                                            zipCode: "00000",
-                                            country: "Palestine",
-                                            isShared: "false",
-                                            additionalInfo: formDataObj.addressinfo != undefined ? formDataObj.addressinfo : "",
-                                        };
-                                    } else {
-                                        AddressClint = {
-                                            IdCity: pickUpAddress.cityId,
-                                            IdArea: pickUpAddress.areaId,
-                                            IdGov: pickUpAddress.governoratId,
-                                            IdProv: pickUpAddress.provinceId,
-                                            OtherDetails: pickUpAddress.details,
-                                            LatSender: pickUpAddress.latitude,
-                                            LongSender: pickUpAddress.longitude,
-                                            SenderAddressId: pickUpAddress.id,
+                                        if (res.data.status == "error") {
+                                            dispatch(toastNotification("Error!", "something went wrong", "error"));
+                                            console.log(res.data.error)
+                                        } else {
+                                            const orderId = res.data.orderId;
+                                            history.push("/account/Order/" + orderId);
+                                        }
+                                    })
 
-                                            IdCityDes: dileveryAddress.cityId,
-                                            IdAreaDes: dileveryAddress.areaId,
-                                            OtherDetailsDes: dileveryAddress.details,
-                                            LatReciver: dileveryAddress.latitude,
-                                            LongReciver: dileveryAddress.longitude,
-                                            ReciverAddressId: dileveryAddress.id,
-                                            ReceiverAddressNum: dileveryAddress.phone_number
-                                        };
-                                    }
+                                    // alert("enable api call!");
 
-                                    if (isReturnedOrder) {
-                                        const queryParams = new URLSearchParams(window.location.search);
-                                        const oldOrderId = queryParams.get('id');
-                                        DeliveryParams.oldOrderId = oldOrderId;
-                                    }
-
-                                    // console.log(pickUpAddress);
-
-                                    if (isTransporter()) {
-                                        setLoadingSubmit(true);
-
-                                        CreatedBy = "Transporter";
-
-                                        DeliveryParams.ClientMobileNumber = selectedClient.PhoneNumber;
-                                        DeliveryParams.DeliveryPrice = deliveryCostRef.current.value;
-
-                                        createOrderHandler(DeliveryParams, CreatedBy, AddressClint);
-                                    } else {
-                                        setLoadingSubmit(true);
-
-                                        CreatedBy = "ClientNew";
-
-                                        // console.log(DeliveryParams);
-                                        // console.log(AddressClint);
-
-                                        createOrderHandler(DeliveryParams, CreatedBy, AddressClint);
-                                    }
-
+                                    setLoadingSubmit(true);
                                     setShowError(false);
                                 } else {
+                                    setLoadingSubmit(false);
                                     setShowError(true);
                                 }
 
@@ -297,7 +238,7 @@ export default function CreateNewFoodOrderCo(props) {
                                                                 onChange={(e) => { filterCustomerHandler(e.target.value) }}
                                                                 ref={customerPhoneRef}
                                                             />
-                                                            {/* showAddCustomerOption */true && <Button
+                                                            {showAddCustomerOption && <Button
                                                                 className="btn-grad ms-3"
                                                                 onClick={() => { handleShowAddCustomerModal(); getRestaurantAreas() }}
                                                             >
@@ -385,8 +326,13 @@ export default function CreateNewFoodOrderCo(props) {
                                             </div>
 
                                             <div className="row">
-                                                <div className="col-lg-12">
-                                                    test
+                                                <div className="col-lg-3">
+                                                    <Form.Control
+                                                        type="number"
+                                                        placeholder="price..."
+                                                        name="cod"
+                                                        required
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -401,8 +347,16 @@ export default function CreateNewFoodOrderCo(props) {
                                             </div>
 
                                             <div className="row">
-                                                <div className="col-lg-12">
-                                                    test
+                                                <div className="col-lg-3">
+                                                    <Form.Control
+                                                        type="number"
+                                                        step="5"
+                                                        min="5"
+                                                        defaultValue="5"
+                                                        placeholder="prep time..."
+                                                        name="prepTime"
+                                                        required
+                                                    />
                                                 </div>
                                             </div>
                                         </div>
@@ -411,17 +365,17 @@ export default function CreateNewFoodOrderCo(props) {
                                     {/* ------------------( validation )------------------ */}
                                     <ListGroup.Item className="py-4" style={{ backgroundColor: "#ededed" }}>
                                         <div className="container-fluid">
-                                            {/* showError */false && <span style={{ color: "#d9534f" }}>
+                                            {showError && <span style={{ color: "#d9534f" }}>
                                                 <i className="bi bi-info-circle"></i>{" "}
                                                 {translate("CREATE_NEW_ORDER.REQUIRED_ERROR")}
                                             </span>}
                                             {true ? <Button
                                                 className="btn-grad"
                                                 style={{ width: "30%", float: "right" }}
-                                                disabled={/* loadingSubmit */false}
+                                                disabled={loadingSubmit}
                                                 type="submit"
                                             >
-                                                {/* loadingSubmit */false && <Spinner animation="border" size="sm" />}
+                                                {loadingSubmit && <Spinner animation="border" size="sm" />}
                                                 {translate("CREATE_NEW_ORDER.SUBMIT_ORDER")}
                                             </Button> : <span className="h6" style={{ color: "#26a69a", float: "right" }}>{translate("TEMP.SUCCISSFULLY_PUBLISHED_CLIENT")}</span>}
                                         </div>
@@ -449,10 +403,40 @@ export default function CreateNewFoodOrderCo(props) {
 
                         const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
 
-                        console.log('Customer Name:', formDataObj.customerName);
+                        // console.log(formDataObj);
 
-                        // Close the modal
-                        handleCloseAddCustomerModal();
+                        // check validity
+                        if (selectedAreaId == "" && !!!customerPhoneRef.current.value) {
+                            // show error
+
+
+                        } else {
+                            const customerName = formDataObj.customerName;
+                            const customerDescription = formDataObj.customerDescription;
+                            const areaId = selectedAreaId;
+                            const customerPhome = customerPhoneRef.current.value;
+
+                            // console.log(customerPhome, customerName, customerDescription, areaId)
+
+                            // customerPhoneNumber, clientName, description, areaId
+                            food_addCustomer(customerPhome, customerName, customerDescription, areaId).then((res) => {
+
+                                // console.log(res.data)
+
+                                // set selected customer
+                                const tempAreaName = res.data.response.area_name;
+                                const tempAddressId = res.data.response.address_id;
+
+                                const tempSelectedCustomer = { area: tempAreaName, details: customerDescription, id: tempAddressId, name: customerName, phone: customerPhome };
+
+                                setSelectedCustomerAddressId(tempSelectedCustomer);
+
+                                // Close the modal
+                                setSelectedAreaId("");
+                                handleCloseAddCustomerModal();
+                                setRefresh(!refresh);
+                            })
+                        }
                     }}>
                         <div className="d-flex justify-content-between">
                             <Form.Group className="mb-3" style={{ width: "48%" }} controlId="exampleForm.ControlInput1">
@@ -499,7 +483,7 @@ export default function CreateNewFoodOrderCo(props) {
                             <Button className="me-2 w-25" variant="secondary" onClick={handleCloseAddCustomerModal}>
                                 {translate("CREATE_NEW_ORDER.CANCEL")}
                             </Button>
-                            <Button type="submit" className="ms-3 w-25 btn-grad">
+                            <Button disabled={selectedAreaId == "" ? true : false} type="submit" className="ms-3 w-25 btn-grad">
                                 {translate("CREATE_NEW_ORDER.ADD_NEW_CUSTOMER")}
                             </Button>
                         </div>

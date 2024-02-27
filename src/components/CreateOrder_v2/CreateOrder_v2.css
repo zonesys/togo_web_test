@@ -1,0 +1,73 @@
+.list-divs .list-group-item {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    background-color: white !important;
+    border-bottom: 5px solid #27a79a;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    padding: 0;
+}
+
+/* .list-divs .div-title {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #5ecda32d;
+    border-radius: 20px;
+    position: relative;
+    color: #26a69a;
+    border-bottom: 5px solid #5ecda3;
+} */
+
+.list-divs .div-title {
+    text-align: center;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #27a79a;
+    border-radius: 5px;
+    position: relative;
+    color: white;
+}
+
+/* .list-divs .div-title [class^="title-icon"] {
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #26a69a;
+    height: 30px;
+    width: 70px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 50px;
+} */
+
+.list-divs .div-title [class^="title-icon"] {
+    position: absolute;
+    left: 3px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 30px;
+    width: 70px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.list-divs .div-title .title-icon-fill {
+    fill: white;
+}
+
+.list-divs .div-title .title-icon-fill path {
+    fill: white;
+}
+
+.list-divs .div-title .title-icon-stroke path {
+    stroke: white;
+}
+
+.list-divs .div-title .title-icon-stroke {
+    stroke: white;
+}

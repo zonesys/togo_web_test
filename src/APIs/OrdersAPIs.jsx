@@ -34,8 +34,13 @@ export function getFunctions(functionType, pageNumber, transporterFunctionfilter
             params.append("searchStr", searchStr);
     }
 
-    return axios
-        .post(apiUrl, params, {
+    console.log("--------------------------------")
+    console.log("functionType: " + functionType)
+    console.log("PAGE_SIZE: " + PAGE_SIZE)
+    console.log("pageNumber: " + pageNumber)
+    console.log("searchStr: " + searchStr)
+
+    return axios.post(apiUrl, params, {
             headers: requestHeaders,
         });
 }
@@ -470,36 +475,26 @@ export function CreateAddressReq(formData) {
 
 export function CreateNewOrderReq(DeliveryParams, CreatedBy, AddressClint, isNewAddress) {
 
-    /* edited (test data) */
-    /*console.log("Created by: " + CreatedBy);
-    console.log("------------------------------");
-    console.log("DeliveryParams:");
-    console.log(DeliveryParams);
-    console.log("------------------------------");
-    console.log("AddressClint:");
-    console.log(AddressClint);*/
-
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "OrderBidEnginParams");
     params.append("DeliveryParams", DeliveryParams);
-
     params.append("AddressClint", AddressClint);
-
     params.append("isNewAddress", isNewAddress);
-
     params.append("CustomerId", localStorage.getItem("userId"));
-
     params.append("TokenDevice", localStorage.getItem("TokenDevice"));
+    params.append("CreatedBy", CreatedBy);
 
-    params.append("CreatedBy", CreatedBy);  /* edited */
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
 
-    /* edited (test data) */
-    /*console.log("------------------------------");
-    console.log("params:");
-    for (let p of params) {
-        console.log(p);
-      }*/
+export function food_createFoodOrder(deliveryParams, addresses) {
 
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "food_createFoodOrder");
+    params.append("deliveryParams", deliveryParams);
+    params.append("addresses", addresses);
+    params.append("clientCustomerId", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
@@ -1374,6 +1369,33 @@ export function getLogestechsAreaByName(searchStr) {
     params.append("CheckTypeFunction", "getLogestechsAreaByName");
     params.append("customerId", localStorage.getItem("userId"));
     params.append("searchStr", searchStr);
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function food_addCustomer(customerPhoneNumber, clientName, description, areaId) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "food_addCustomer");
+    params.append("clientCustomerId", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
+    params.append("langId", (localStorage.getItem("Language") || "en") === "en" ? "1" : "2");
+    params.append("customerPhoneNumber", customerPhoneNumber);
+    params.append("areaId", areaId);
+    params.append("clientName", clientName);
+    params.append("description", description);
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function createOrder_v2(deliveryParams, addressesParams, returnedParams) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "createOrder_v2");
+    params.append("deliveryParams", deliveryParams);
+    params.append("returnedParams", returnedParams);
+    params.append("addresses", addressesParams);
+    params.append("customerId", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }

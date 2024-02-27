@@ -33,6 +33,7 @@ import { Form, FloatingLabel, Spinner, Button, Modal } from 'react-bootstrap';
 import { PAGE_SIZE } from "../../APIs/AuthenticationAPIs";
 import Transactions from "../FinancialTransactions/FinancialTransactions";
 import CreateNewOrderCo from "../CreateNewOrderComponent/CreateNewOrderCo";
+import CreateOrder_v2 from "../CreateOrder_v2/CreateOrder_v2";
 import CreateNewFoodOrderCo from "../CreateNewOrderComponent/CreateNewFoodOrderCo";
 import AssignToDialog from "../AssignToDialog";
 import DatePicker from 'react-datepicker';
@@ -171,6 +172,19 @@ const Main = ({ socket, token }) => {
             - MY_ORDERS -> to get all in process orders
             - DELIVERED -> to get all finished orders
         */
+
+        /* if (functionType === "TransporterGetOrder" || functionType === "ShowClientOrder") {
+            transporterFunctionfilter = "NEW_ORDERS";
+        } else if (functionType === "TransporterOrderCurrent" || functionType === "ClientShowBidRequistsAccepted") {
+            transporterFunctionfilter = "MY_ORDERS";
+        } else if (functionType === "TransporterHistoryOrder" || functionType === "ClientHistoryOrder") {
+            transporterFunctionfilter = "DELIVERED";
+        } else if (functionType === "TransporterReviewedOrder" || functionType === "ClientReviewedOrder") {
+            transporterFunctionfilter = "REVIEWED";
+        } else {
+            transporterFunctionfilter = "none";
+        } */
+        
         if (functionType === "TransporterGetOrder" || functionType === "TransporterOrderCurrent" || functionType === "TransporterHistoryOrder" || functionType === "TransporterReviewedOrder") {
 
             switch (functionType) {
@@ -195,9 +209,11 @@ const Main = ({ socket, token }) => {
             functionType = "getTransporterRelatedOrdersByPage";
         }
 
+        console.log(functionType + " - " + activePage + " - " + transporterFunctionfilter + " - " + searchStr)
+
         getFunctions(functionType, activePage, transporterFunctionfilter, searchStr)
             .then(resp => {
-                // console.log(resp.data) // temp test
+                console.log(resp.data) // temp test
                 if (resp === 'NotActiveNow') {
                     dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
                 } else {
@@ -356,9 +372,9 @@ const Main = ({ socket, token }) => {
                             Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCOD}</span> NIS
                         </div>
 
-                        <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                        {localStorage.getItem("userId") == 302 && <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                             Delivered Orders Total Comission: <span style={{ color: "red" }}>{totalComission}</span> NIS
-                        </div>
+                        </div>}
 
                         <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                             Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCost}</span> NIS
@@ -381,9 +397,9 @@ const Main = ({ socket, token }) => {
                                 Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCODTrans}</span> NIS
                             </div>
 
-                            <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                            {/* <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                 Delivered Orders Total Comission (including VAT): <span style={{ color: "red" }}>{totalComissionTrans}</span> NIS
-                            </div>
+                            </div> */}
 
                             <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                 Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostTrans}</span> NIS
@@ -510,7 +526,7 @@ const Main = ({ socket, token }) => {
                             <ExportExcel currentPage={currentPage} ordersNum={1000} />
                         </>}
 
-                        {currentPage === "create-order" && (isFoodClient() ? <CreateNewFoodOrderCo /> : <CreateNewOrderCo />)}
+                        {currentPage === "create-order" && (isFoodClient() ? <CreateNewFoodOrderCo /> : <CreateOrder_v2 />)}
                     </>
                 )}
             </Box>

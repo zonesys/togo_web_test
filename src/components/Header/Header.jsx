@@ -23,7 +23,7 @@ import { AiFillHome } from 'react-icons/ai';
 import { RiTeamFill } from 'react-icons/ri';
 import { FaBoxes } from 'react-icons/fa';
 import { Link } from "react-router-dom";
-import { getWallet, updateWebNotificationToken } from "../../APIs/ProfileAPIs";
+import { getWallet, updateWebNotificationToken, getViewBalalnce } from "../../APIs/ProfileAPIs";
 import { getTotalOrdersNum } from "../../APIs/OrdersAPIs";
 import { setWallet, toastMessage } from "../../Actions/GeneralActions";
 import { LOGOUT } from "../../Actions/ActionsTypes";
@@ -244,8 +244,15 @@ function Header({/* socket */ }) {
     useEffect(() => {
         /*setLoaded(!loaded);*/
         if (authenticated) {
+            /* localStorage.getItem("userId") != 41 */ /* isTransporter() */ true ? 
             getWallet().then(({ data: { server_response } }) => {
                 dispatch(setWallet(server_response[0].TransporterBalance));
+            }).catch(err => {
+                dispatch(toastMessage(err));
+            })
+            :
+            getViewBalalnce().then((res) => {
+                dispatch(setWallet(res.data.balance));
             }).catch(err => {
                 dispatch(toastMessage(err));
             })
@@ -354,6 +361,8 @@ function Header({/* socket */ }) {
                                         onClick={() => { history.push("/account/cities-prices") }}>{translate("HEADER.CITIES_PRICES")}</MenuItem>}
                                     <MenuItem icon={<IoMdGitNetwork />}
                                         onClick={() => { history.push("/account/my-network") }}>{translate("NETWORK.NETWORK_TITLE")}</MenuItem>
+                                    {!isTransporter() && <MenuItem icon={<IoMdGitNetwork />}
+                                        onClick={() => { history.push("/account/my-users") }}>{translate("HEADER.MANAGE_SUBUSERS")}</MenuItem>}
                                     {/* {localStorage.getItem("userId") == "40" && <MenuItem icon={<RiTeamFill />}
                                     onClick={() => { history.push("/account/team-admin") }}>{translate("TEMP.MANAGE_TEAMS")}</MenuItem>} */}
                                     <MenuItem icon={<IoIosCard />}

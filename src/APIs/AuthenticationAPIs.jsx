@@ -9,7 +9,7 @@ const requestHeaders = {
     "Content-Type": `application/x-www-form-urlencoded`,
 };
 
-export const PAGE_SIZE = 10;
+export const PAGE_SIZE = 100;
 
 export function getUserCreditialParams() {
     var requestParams = new URLSearchParams();

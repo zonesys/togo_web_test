@@ -231,6 +231,7 @@ export default {
             "TOTAL_ORDERS": "إجمالي الطلبات",
             "REQUEST_WITHDRAWAL": "طلب سحب",
             "MANAGE_CLIENTS": "إدارة العملاء",
+            "MANAGE_SUBUSERS": "إدارة الحسابات الفرعية",
         },
         WALLET: {
             "BALANCE": "الرصيد"

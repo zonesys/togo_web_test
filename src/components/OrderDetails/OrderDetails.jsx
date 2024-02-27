@@ -647,7 +647,7 @@ const OrderDetails = () => {
                                         {/* Print order pill */}
                                         {/* (order_status !== 'Waiting for Bids') */}
                                         {/* (order_status !== 'Waiting for Bids' && isTransporter()) || !isTransporter() */}
-                                        {true && <>
+                                        {order_status !== 'Waiting for Bids' && <>
                                             <Button
                                                 variant="outline-primary"
                                                 onClick={() => {

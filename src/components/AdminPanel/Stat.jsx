@@ -4,7 +4,9 @@ import "./Stat.css"; import {
     GetAllClientsNum,
     GetAllTransportersNum,
     getTotalTempBalance,
-    getOrdersCount
+    getOrdersCount,
+    getTotalTodayCOD,
+    getTotalTodayActiveCount
 } from "../../APIs/AdminPanelApis";
 import Transporter from "../../assets/images/transporter_icon.png";
 import Transporter_white from "../../assets/images/transporter_icon_white.png";
@@ -13,18 +15,23 @@ import Merchant_white from "../../assets/images/merchant_icon_white.png";
 import { Spinner } from "react-bootstrap";
 import { GiRabbit } from 'react-icons/gi';
 import RabbitIcon from '../../assets/icons/rabbit.png';
+import Bugs_Bunny from '../../assets/Bugs_Bunny.png';
 
 export default function Stat() {
     const [creditAmount, setCreditAmount] = useState(0); // total escrow
     const [totalEscrowBalance, setTotalEscrowBalance] = useState(0); // total in escrow (active money)
+    const [totalTodayCOD, setTotalTodayCOD] = useState(0); // total today COD
     const [totalClients, setTotalClinets] = useState(); // number of clients
     const [totalTransporters, setTotalTransporters] = useState(); // number of transporters
+    const [todayActiveCount, setTodayActiveCount] = useState(0); // number today active orders
 
     const [transportersLoading, setTransportersLoading] = useState(false);
     const [clientsLoading, setClientsLoading] = useState(false);
     const [inEscrowLoading, setInEscrowLoading] = useState(false);
     const [escrowLoading, setEscrowLoading] = useState(false);
     const [loanLoading, setLoanLoading] = useState(false);
+    const [todayCODLoading, setTodayCODLoading] = useState(false);
+    const [todayActiveLoading, setTodayActiveLoading] = useState(false);
 
     const [tempBalance, setTempBalance] = useState(0);
 
@@ -63,6 +70,38 @@ export default function Stat() {
         });
     }, []);
 
+    /* get total today COD */
+    useEffect(() => {
+        setTodayCODLoading(true);
+        getTotalTodayCOD().then((res) => {
+            // console.log(res.data);
+
+            if (res.data.status == "error") {
+                console.log(res.data.error);
+            } else {
+                setTotalTodayCOD(res.data.totalCOD);
+            }
+            
+            setTodayCODLoading(false);
+        });
+    }, []);
+
+    /* get total today active count */
+    useEffect(() => {
+        setTodayActiveLoading(true);
+        getTotalTodayActiveCount().then((res) => {
+            console.log(res.data);
+
+            if (res.data.status == "error") {
+                console.log(res.data.error);
+            } else {
+                setTodayActiveCount(res.data.total_active);
+            }
+            
+            setTodayActiveLoading(false);
+        });
+    }, []);
+
     useEffect(() => {
         setTransportersLoading(true);
         setClientsLoading(true);
@@ -88,7 +127,7 @@ export default function Stat() {
 
         const rabbits = [];
         for (let i = 0; i < millions; i++) {
-            rabbits.push(<div key={i} className="ms-1" style={{width: "50px"}}><img src={RabbitIcon} /></div>);
+            rabbits.push(<div key={i} className="ms-1" style={{width: "40px"}}><img src={Bugs_Bunny} /></div>);
         }
 
         return (
@@ -138,7 +177,7 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total New Orders</span>
                         </div>
 
@@ -153,7 +192,7 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total Active Orders</span>
                         </div>
 
@@ -168,7 +207,7 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total Finished Orders</span>
                         </div>
 
@@ -186,7 +225,7 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total in Escrow</span>
                         </div>
 
@@ -201,7 +240,7 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total Escrow</span>
                         </div>
 
@@ -216,13 +255,46 @@ export default function Stat() {
                 <div className="col-lg pt-3">
                     <div className="stat-card">
                         <div className="card-header">
-                            <img src={Transporter_white} alt="" />
+                            {/* <img src={Transporter_white} alt="" /> */}
                             <span>Total Loan Balance</span>
                         </div>
 
                         <div className="card-body">
                             <div className="bg" style={{ backgroundImage: "url(" + Transporter + ")", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}></div>
                             {loanLoading ? <Spinner animation="border" size="lg" /> : tempBalance}{" NIS"}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            {/* total finished orders cod for today */}
+            <div className="row d-flex justify-content-center">
+                <div className="col-lg pt-3">
+                    <div className="stat-card">
+                        <div className="card-header">
+                            {/* <img src={Transporter_white} alt="" /> */}
+                            <span>Total COD Collected Today</span>
+                        </div>
+
+                        <div className="card-body">
+                            <div className="bg" style={{ backgroundImage: "url(" + Transporter + ")", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}></div>
+                            {todayCODLoading ? <Spinner animation="border" size="lg" /> : totalTodayCOD}{" NIS"}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-lg pt-3">
+                    <div className="stat-card">
+                        <div className="card-header">
+                            {/* <img src={Transporter_white} alt="" /> */}
+                            <span>Total Today Active Orders Count</span>
+                        </div>
+
+                        <div className="card-body">
+                            <div className="bg" style={{ backgroundImage: "url(" + Transporter + ")", backgroundRepeat: "no-repeat", backgroundPosition: "right" }}></div>
+                            {todayActiveLoading ? <Spinner animation="border" size="lg" /> : todayActiveCount}
                         </div>
                     </div>
                 </div>

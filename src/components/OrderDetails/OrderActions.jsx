@@ -5,19 +5,18 @@ import { Badge } from "react-bootstrap";
 export default function OrderActions({ actions }) {
 
     const formatAction = (record) => {
-
-        if (record.action_id == 30 && record.title != "foreign delivery cost") {
+        if (record.action_id == 30 && record.title_en != "foreign delivery cost") {
             return <div className="d-flex justify-content-start">
                 <div style={{ width: "40%" }}>
-                    <div style={{ fontWeight: "bold", color: "#03A65A" }}>{record.title}</div>
+                    <div style={{ fontWeight: "bold", color: "#03A65A" }}>{record.title_en}</div>
                     <div>{record.time_stamp.split(" ")[0] + " "}<Badge bg="primary">{record.time_stamp.split(" ")[1]}</Badge></div>
                 </div>
-                <div style={{ width: "60%" }}>{record.description}</div>
+                <div style={{ width: "60%" }}>{record.description_en}</div>
             </div>
         }
 
         const tempHolder = <div style={{ width: "40%" }}>
-            <div style={{ fontWeight: "bold", color: "#03A65A" }}>{record.description}</div>
+            <div style={{ fontWeight: "bold", color: "#03A65A" }}>{record.description_en}</div>
             <div>{record.time_stamp.split(" ")[0] + " "}<Badge bg="primary">{record.time_stamp.split(" ")[1]}</Badge></div>
         </div>
 

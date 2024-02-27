@@ -72,6 +72,9 @@ export default function LoginByPhoneNumber() {
                 } else if (res.data === "NotUpdated") {
                     dispatch(toastNotification("Error", "Something went wrong!", "error"));
                     setLoadingSend(false);
+                } else if (res.data.includes("not togo user")) {
+                    dispatch(toastNotification("Error", res.data, "error"));
+                    setLoadingSend(false);
                 } else {
                     // console.log(res.data.split("-")[1]);
                     setCustomerId(res.data.split("-")[1]);
@@ -113,7 +116,7 @@ export default function LoginByPhoneNumber() {
     async function tokenFunc() {
         data = await getUserToken();
         if (data) {
-            // console.log("Token is", data);
+            console.log("Token is", data);
 
             updateWebNotificationToken(data).then((res) => {
                 // console.log(res.data);
@@ -155,7 +158,7 @@ export default function LoginByPhoneNumber() {
                     setLloadingLogin(false);
                 } else {
 
-                    // console.log(res.data);
+                    // console.log("login data: " + res.data);
 
                     localStorage.setItem("fullName", res.data.fullName);
                     localStorage.setItem("userId", res.data.userId);
@@ -170,6 +173,7 @@ export default function LoginByPhoneNumber() {
                     }
                     
 
+                    // console.log("before permissions check");
                     // request notification permission and get FCM token
                     requestPermission();
 

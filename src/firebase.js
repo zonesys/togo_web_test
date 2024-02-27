@@ -14,13 +14,13 @@ const firebaseConfig = {
     messagingSenderId: "861859089841",
     appId: "1:861859089841:web:5b55bc6bc5573930694190",
     measurementId: "G-4DSC9GYT3S"
-};
+  };
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const messaging = getMessaging(firebaseApp);
 const { REACT_APP_VAPID_KEY } = process.env;
-const publicKey = "BIJNnjVSMyNKOKAPkyJw9GK7wZaVjkGMeq_Y56tvvYGT47_0j52lPduzSvSwNu092yKbLmSU8jJQQI8fMqE08UU";
+const publicKey = "BK1onSdP3jZqkXPuhNnpXw-vjS4k-jhUtQwWnWnolR7xqBNopgcenixt2b7CP4Uat8yosMY2KC0LTN8exLmEWbk";
 
 // console.log(publicKey);
 
@@ -43,8 +43,8 @@ export const getUserToken = async (/* setTokenFound */) => {
 export const onMessageListener = () =>
     new Promise((resolve) => {
         onMessage(messaging, (payload) => {
-            // console.log(payload);
-            // console.log(messaging)
+            console.log(payload);
+            console.log({messaging})
             resolve(payload);
         });
     });

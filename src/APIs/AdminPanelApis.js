@@ -280,6 +280,26 @@ export function getTotalBalance(/* accountId */) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
+// total today COD
+export function getTotalTodayCOD() {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getTotalTodayCOD");
+    params.append("id", localStorage.getItem("Adminid"));
+    params.append("token", localStorage.getItem("AdminToken"));
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+// total today active count
+export function getTotalTodayActiveCount() {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getTotalTodayActiveCount");
+    params.append("id", localStorage.getItem("Adminid"));
+    params.append("token", localStorage.getItem("AdminToken"));
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
 /* edited (get last order id) */
 export function getLastOrderId(/* accountId */) {
     var params = new URLSearchParams();
@@ -562,6 +582,16 @@ export function deleteOrderBeforePickupForAdmin(orderId) {
     return axios.post(apiUrl, params);
 }
 
+export function forceReturnOrder(orderId) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "forceReturnOrder");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
+    params.append("orderId", orderId);
+
+    return axios.post(apiUrl, params);
+}
+
 export function deleteNewOrderForAdmin(orderId) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "deleteNewOrderForAdmin");
@@ -584,7 +614,7 @@ export function isAdminLogedIn() {
 export function testApi() {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "testApi");
-    
+
     params.append("AdminToken", localStorage.getItem("AdminToken"));
 
     return axios.post(apiUrl, params);
@@ -782,6 +812,19 @@ export function AdminAcceptOfferReq(ClientId, TransporterId, OrderId, OldPrice) 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
+export function AdminAcceptOfferReqFIX(ClientId, TransporterId, OrderId, OldPrice) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "AdminAcceptOfferReqFIX");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
+    params.append("OrderId", OrderId);
+    params.append("TransporterId", TransporterId);
+    params.append("OldPrice", OldPrice);
+    params.append("ClientId", ClientId);
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
 export function AdminRemoveAddErrorMark(orderId, status) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "AdminRemoveAddErrorMark");
@@ -900,5 +943,46 @@ export function adminLogin($id, $token, $code) {
     params.append("id", $id);
     params.append("token", $token);
     params.append("code", $code);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function updateActiveOrderSellPrice($orderId, $transporterId, $merchantId, $oldAmount, $newAmount) {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "updateActiveOrderSellPrice");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
+    params.append("orderId", $orderId);
+    params.append("transporterId", $transporterId);
+    params.append("merchantId", $merchantId);
+    params.append("oldAmount", $oldAmount);
+    params.append("newAmount", $newAmount);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function getTransportersStat() {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getTransportersStat");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function getCODCollectedLastWeek() {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getCODCollectedLastWeek");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function getLoans() {
+
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getLoans");
+    params.append("adminId", localStorage.getItem("Adminid"));
+    params.append("adminToken", localStorage.getItem("AdminToken"));
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }

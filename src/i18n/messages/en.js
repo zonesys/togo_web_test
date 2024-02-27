@@ -238,6 +238,7 @@ const EN_LOCALE = {
             "TOTAL_ORDERS": "Total Orders",
             "REQUEST_WITHDRAWAL": "Request Withdrawal",
             "MANAGE_CLIENTS": "Manage Clients",
+            "MANAGE_SUBUSERS": "Manage Subaccounts",
         },
         WALLET: {
             "BALANCE": "Balance"
