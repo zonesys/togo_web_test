@@ -16,7 +16,6 @@ import { toastNotification } from "../../Actions/GeneralActions";
 import { onMessageListener } from "../../firebase";
 // import * as Sticker from '../../Sticker.jsx'
 import { WayBill3 } from "../../Container/testPrint/wayBill"
-import TestComp from "../../Container/TestComponent";
 import PrintAll from "../../Container/testPrint/printAll";
 const App = () => {
 
