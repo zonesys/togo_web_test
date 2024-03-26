@@ -11,6 +11,7 @@ export default function ContactUs() {
                         <div className="card-body">
                             <h4 className="card-title">Contact Us</h4>
                             <h1 className="card-text h1">email: noc@zone.ps</h1>
+                            
                         </div>
                     </div>
                 </div>

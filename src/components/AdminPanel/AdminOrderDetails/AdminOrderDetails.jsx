@@ -23,7 +23,8 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    alterActiveOrderCOD
+    alterActiveOrderCOD,
+    getOliveryStatus
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";
 import { Alert, AlertDescription, AlertIcon, AlertTitle } from "@chakra-ui/alert";
@@ -94,6 +95,8 @@ const AdminOrderDetails = () => {
     const [bidReqTransName, setBidReqTransName] = useState();
 
     const [loadingAcceptOffer, setLoadingAcceptOffer] = useState(false);
+
+    const [oliveryStatus, setOliveryStatus] = useState("");
 
     const handleCloseCancelActiveModal = () => setShowCancelActiveModal(false);
     const handleShowCancelActiveModal = () => setShowCancelActiveModal(true);
@@ -357,6 +360,17 @@ const AdminOrderDetails = () => {
         })
     }, [refresh])
 
+    useEffect(() => {
+        /* get all actions related to this order */
+        getOliveryStatus(orderId).then((res) => {
+            if (res && res.data) {
+                console.log({res})
+                console.log(res.data.status)
+                setOliveryStatus(res.data.status);
+            }
+        })
+    }, [refresh])
+
     /* transportation timeline (to show all the transporters that worked with this order) */
     useEffect(() => {
         getTimeLineForAdmin(orderId).then((res) => {
@@ -559,6 +573,15 @@ const AdminOrderDetails = () => {
                                                         <span style={{ color: "#35b09d" }}>{DetailsLoad}</span>
                                                     </td>
                                                 </tr>
+
+                                                {<tr>
+                                                    <th scope="row">
+                                                        <span>Olivery Status</span>
+                                                    </th>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span style={{ color: "#35b09d" }}>{oliveryStatus}</span>
+                                                    </td>
+                                                </tr>}
 
                                                 {IsStuckOrder == 1 && IsReturnedOrder == 0 && <tr>
                                                     <th scope="row">

@@ -986,3 +986,36 @@ export function getLoans() {
     params.append("adminToken", localStorage.getItem("AdminToken"));
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
+
+export function getOliveryStatus(oliveryOrderId) {
+    // var params = new URLSearchParams();
+    // params.append("CheckTypeFunction", "getOliveryStatus");
+    // params.append("username", "0568866124");
+    // params.append("password", "123123123");
+    // params.append("orderId", oliveryOrderId);
+    console.log({oliveryOrderId})
+    var formData = new FormData();
+    formData.append("CheckTypeFunction", "getOliveryStatus");
+    formData.append("username", "0568866124");
+    formData.append("password", "123123123");
+    formData.append("orderId", oliveryOrderId);
+    return axios.post(apiUrl, formData, { headers: requestHeaders });
+}
+
+// export function getOliveryStatus(orderId) {
+//     // var params = new URLSearchParams();
+//     // params.append("CheckTypeFunction", "getCustomerInfoForWayBill");
+//     // params.append("orderId", orderId);
+//     // params.append("id", localStorage.getItem("Adminid"));
+//     // params.append("token", localStorage.getItem("AdminToken"));
+
+//     return axios.post("https://redline.olivery.app/get_order_detail", {
+//         "jsonrpc": "2.0", 
+//             "params": {        
+//                 "login":"0568866124",
+//                 "password": "123123123",
+//                 "db":"redline",
+//                 "order_id": orderId
+//             }
+//         });
+// }

@@ -14,7 +14,10 @@ import AdminAccount from "../../Container/AdminAccount/AdminAccount";
 import { useDispatch } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { onMessageListener } from "../../firebase";
-
+// import * as Sticker from '../../Sticker.jsx'
+import { WayBill3 } from "../../Container/testPrint/wayBill"
+import TestComp from "../../Container/TestComponent";
+import PrintAll from "../../Container/testPrint/printAll";
 const App = () => {
 
     let dispatch = useDispatch();
@@ -66,6 +69,35 @@ const App = () => {
                         <Route path="/" component={Home} exact />
                         <Route path="/privacy-policy" component={PrivacyPolicy} exact />
                         <Route path="/contact-us" component={ContactUs} exact />
+                        <Route path="/testPrint" component={() => {
+                            return (
+                                <div>
+                                    <WayBill3
+                                        transporterImgSrc={"https://dev.togo.ps/togo/MobileAPi/img/PersonalImg/image1660121614124.jpg?t=0.6941913539420765"}
+                                        clientImgSrc={"https://dev.togo.ps/togo/MobileAPi/img/BusinessLogo/image1634560141266.jpg?t=0.869448993020816"}
+                                        clientName=" شركة الارض الفلسطينية"
+                                        clientPhone="+972599876543"
+                                        foreignBarcode="57238592421358485845"
+                                        senderAddress="Near super market abu mohammad street-234"
+                                        senderCity="Ramallah"
+                                        receiverAddress="Near Rafidia Hostpital"
+                                        receiverCity="Nablus"
+                                        receiverPhone="+972599233432"
+                                        cod="30323"
+                                        date="03/02/2022"
+                                        orderId="1198642"
+                                        note="التوصيل عند الساعة ١٠ صباحا "
+                                    />
+                                </div>
+                            )
+                        }} />
+                        <Route path="/testPrintAll" component={() => {
+                            return (
+                                <PrintAll/>
+
+                            )
+                        }} />
+
                     </Switch>
                 </Router>
                 <Toast />
