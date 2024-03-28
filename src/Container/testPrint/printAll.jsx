@@ -1,7 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as htmlToImage from "html-to-image"
 import { useReactToPrint } from "react-to-print";
 import { WayBill3 } from "./wayBill";
+import Loader from "../../components/Loader/Loader"
+import { getBidAcceptedPrintInfo } from "../../APIs/OrdersAPIs";
+import { imgBaseUrl } from "../../Constants/GeneralCont";
 let device, zebraPrinter;
 let refIndex = 0;
 let readyStatus;
@@ -60,17 +63,58 @@ function convertImg(component) {
         pixelRatio: 10,
     });
 }
+
 export default function PrintAll() {
+   
+
     const componentRef = useRef([]);
     const containerRef = useRef();
-    getDefaultDevice();
     const printService = useReactToPrint({
         content: () => containerRef.current,
     });
 
+    let [isLoading, setLoading] = useState(true);
+    let [wayBillList, setWaybillList] = useState([]);
+
+    useEffect(() => {
+        getDefaultDevice();
+
+        getBidAcceptedPrintInfo().then((res) => {
+            console.log(res.data)
+            setLoading(false);
+            try {
+              let updatedWayBill = res.data.slice(0,5).map((order, index) => {
+                    return(
+                        <div ref={ele => componentRef.current[index] = ele} key={index}>
+                            <WayBill3
+                                transporterImgSrc={imgBaseUrl+order.transporterImgSrc}
+                                clientImgSrc={imgBaseUrl+order.clientImgSrc}
+                                clientName={order.clientName}
+                                clientPhone={order.clientPhone}
+                                receiverName={order.receiverName}
+                                foreignBarcode={order.foreignBarcode}
+                                receiverAddress={order.receiverAddress}
+                                receiverCity={order.receiverCity}
+                                receiverPhone={order.receiverPhone}
+                                cod={order.cod}
+                                date={order.date.toString().split(" ")[0]}
+                                orderId={order.orderId}
+                                note={order.note}
+                            />
+                        </div>
+                    )
+                })
+
+                setWaybillList(updatedWayBill)
+            } catch (error) {
+                console.log("loading orders error: " + error);
+            }
+        })
+    }, [])
+
 
     const printhtmlToImage = async () => {
-        try{
+        try {
             refIndex = 0;
             const result = await convertImg(componentRef.current[0])
             if (device === undefined) {
@@ -80,8 +124,8 @@ export default function PrintAll() {
                 return;
             }
             printImg(result, componentRef.current);
-        }catch(error){
-            console.log("printhtmlToImage error: "+error)
+        } catch (error) {
+            console.log("printhtmlToImage error: " + error)
         }
 
 
@@ -96,72 +140,29 @@ export default function PrintAll() {
 
 
     }
-    const orders = [
-        {
-            transporterImgSrc: "https://dev.togo.ps/togo/MobileAPi/img/PersonalImg/image1660121614124.jpg?t=0.6941913539420765",
-            clientImgSrc: "https://dev.togo.ps/togo/MobileAPi/img/BusinessLogo/image1634560141266.jpg?t=0.869448993020816",
-            clientName: "شركة الارض الفلسطينية",
-            clientPhone: "+972599876543",
-            foreignBarcode: "8754345202366",
-            receiverAddress: "Near Rafidia Hostpital",
-            receiverCity: "Nablus",
-            receiverPhone: "+972599233432",
-            cod: "30323",
-            date: "03/02/2022",
-            orderId: "1198642",
-            note: "التوصيل عند الساعة ١٠ صباحا ",
-        },
-        {
-            transporterImgSrc: "https://dev.togo.ps/togo/MobileAPi/img/PersonalImg/image1660121614124.jpg?t=0.6941913539420765",
-            clientImgSrc: "https://dev.togo.ps/togo/MobileAPi/img/BusinessLogo/image1634560141266.jpg?t=0.869448993020816",
-            clientName: "شركة الارض الفلسطينية",
-            clientPhone: "+972599876543",
-            foreignBarcode: "56423444243",
-            receiverAddress: "AL Masyon",
-            receiverCity: "Ramallah",
-            receiverPhone: "+972598062708",
-            cod: "3500",
-            date: "07/08/2023",
-            orderId: "1182352",
-            note: "التوصيل عند الساعة ١٠ صباحا ",
-        },
 
 
 
-    ]
-
-    const wayBillList = orders.map((order, index) => {
-        //componentRef.current[index] = React.createRef();
-        return (
-            <div ref={ele => componentRef.current[index] = ele} key={index}>
-                <WayBill3
-                    transporterImgSrc={order.transporterImgSrc}
-                    clientImgSrc={order.clientImgSrc}
-                    clientName={order.clientName}
-                    clientPhone={order.clientPhone}
-                    foreignBarcode={order.foreignBarcode}
-                    receiverAddress={order.receiverAddress}
-                    receiverCity={order.receiverCity}
-                    receiverPhone={order.receiverPhone}
-                    cod={order.cod}
-                    date={order.date}
-                    orderId={order.orderId}
-                    note={order.note}
-                />
-            </div>
-
-        )
-    })
     return (
         <div className="d-flex flex-column align-items-center justify-content-start">
-            <button
-                style={{ width: "200px", margin: "5%", backgroundColor: "grey", color: "white" }}
-                onClick={printhtmlToImage}>Print</button>
+            {isLoading ? <Loader />
+                :
+                <>
+
+                    <button
+                        style={{ width: "200px", margin: "5%", backgroundColor: "grey", color: "white" }}
+                        onClick={printhtmlToImage}>Print</button>
 
 
-            <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
-                {wayBillList}
-            </div>
+                    <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
+                        {wayBillList}
+                    </div>
+                </>
+
+
+            }
+
+
 
         </div>
 

@@ -1,7 +1,6 @@
 import Barcode from "react-barcode";
 import logo from "../../assets/logo.png";
 import "./style/waybill2.css";
-import "bootstrap/dist/css/bootstrap.css"
 import React from "react";
 
 
@@ -23,6 +22,7 @@ const styles = {
     height: "1cm", maxHeight: "1cm", padding: "1%"
   }
 }
+
 export function WayBill3(
   {
     clientImgSrc = "",
@@ -30,6 +30,7 @@ export function WayBill3(
     clientName = "",
     clientPhone = "",
     foreignBarcode = "",
+    receiverName ="",
     receiverCity = "",
     receiverAddress = "",
     receiverPhone,
@@ -40,7 +41,6 @@ export function WayBill3(
   }
 ) {
 
- 
 
 
   return (
@@ -68,7 +68,7 @@ export function WayBill3(
             <div className="d-flex" dir="rtl">
               <div className="col-6">
                 <div className="h5">تفاصيل المستلم</div>
-                <div className="h6">Abdullah </div>
+                <div className="h6">{receiverName} </div>
                 <div className="h6">{receiverCity}</div>
                 <div className="textLimit">{receiverAddress}</div>
                 <div className="text-end" dir="ltr">{receiverPhone} </div>
@@ -109,73 +109,7 @@ export function WayBill3(
 
   );
 
-   {/*  <div className="d-flex justify-content-center" id="container">
-      
-      </div> */}
-
-{/* 
-      <button
-        style={{ width: "200px", margin: "5%", backgroundColor: "grey", color: "white" }}
-        onClick={printhtmlToImage}>Print</button> */}
-
-
-  //temp : 
-  {/* <div className="d-flex justify-content-center" id="container">
-<div ref={componentRef} id="way_bill" className="d-flex flex-column">
-  <div className="d-flex">
-    <div className="col-6  d-flex justify-content-center borderCustom">
-      <img src={transporterImgSrc} height={50} width={50} alt="Transporter Logo" />
-    </div>
-    <div className="col-6 d-flex justify-content-center align-items-center borderCustom">
-      <img src={clientImgSrc} height={50} width={50} alt="Client Logo" />
-    </div>
-  </div>
-  <div className="d-flex flex-column  borderCustom" >
-    <div className="h5" dir="rtl">تفاصيل المرسل</div>
-    <div className="d-flex justify-content-center" dir="rtl">
-      <div className="col-6 text-center" >
-        <div className="h6">{clientName}</div>
-      </div>
-      <div className="col-6 text-center">
-        <div className="h6" dir="ltr">{clientPhone}</div>
-      </div>
-    </div>
-
-  </div>
-  <div className="d-flex borderCustom" dir="rtl">
-    <div className="col-6">
-      <div className="h5">تفاصيل المستلم</div>
-      <div className="h6">Abdullah </div>
-      <div className="h6">{receiverCity}</div>
-      <div className="textLimit">{receiverAddress}</div>
-      <div className="text-end" dir="ltr">{receiverPhone} </div>
-    </div>
-    <div className="col-6 sideBorder">
-      <div className="d-flex flex-column ">
-        <div className="h6">قيمة التحصيل : {<span style={{ fontWeight: "bold" }}>{cod + " " + "شيكل"}</span>}</div>
-        <div className="h6" >تاريخ الانشاء: {<span style={{ fontWeight: "bold" }}>{date}</span>}</div>
-        <div className="h6" >رقم الطرد: {<span style={{ fontWeight: "bold" }}>{orderId}</span>}</div>
-        {note != "" && <div className="fw-medium" >ملاحظات: {note}</div>}
-      </div>
-    </div>
-
-
-
-  </div>
-
-  <div className="d-flex">
-    <div className="col-12 d-flex justify-content-center borderCustom">
-      <Barcode value={foreignBarcode} textAlign="center" height={100} width={1.5} fontSize={12}/>
-    </div>
-  </div>
-  <div className="d-flex">
-    <div className="col-12 d-flex justify-content-end borderCustom">
-      <img src={logo} height={40} width={40} alt="Togo Logo" />
-    </div>
-  </div>
-</div>
-</div> */}
-
+  
 }
 
 

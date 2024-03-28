@@ -90,7 +90,7 @@ const App = () => {
                                 </div>
                             )
                         }} />
-                        <Route path="/testPrintAll" component={() => {
+                        <Route path="/printAll" component={() => {
                             return (
                                 <PrintAll/>
 
