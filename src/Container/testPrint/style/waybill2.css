@@ -30,9 +30,3 @@
     border-right: 1px solid black;
     padding: 1%;
 }
-.textLimit{
-    overflow: hidden;
-    text-overflow: clip;
-    white-space:nowrap;
-    max-lines: 2;
-}

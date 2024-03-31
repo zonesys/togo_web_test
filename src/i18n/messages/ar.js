@@ -2,6 +2,11 @@ import { LOCALES_TYPES } from '../locales';
 
 export default {
     [LOCALES_TYPES.ARABIC]: {
+
+        PRINT_ALL :{
+            "NO_ORDERS":"لا يوجد طرود",
+            "ERROR_OCCURED":"حدث خطأ، يرجى اعادة تحميل الصفحة"
+        },
         WITHDRAW_REQUEST: {
             "CANCEL_REQUEST": "إلغاء طلب السحب",
             "REQUEST_DATE": "تاريخ الطلب",

@@ -5,6 +5,9 @@ import { WayBill3 } from "./wayBill";
 import Loader from "../../components/Loader/Loader"
 import { getBidAcceptedPrintInfo } from "../../APIs/OrdersAPIs";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
+import { Button } from "react-bootstrap";
+import translate from "../../i18n/translate";
+
 let device, zebraPrinter;
 let refIndex = 0;
 let readyStatus;
@@ -19,6 +22,7 @@ async function getDefaultDevice(callbackFun) {
                 callbackFun();
         } catch (error) {
             console.log("getDefaultDevice error: " + error);
+            
         }
 
     });
@@ -74,6 +78,7 @@ export default function PrintAll() {
     });
 
     let [isLoading, setLoading] = useState(true);
+    let [isError,setError] = useState(false);
     let [wayBillList, setWaybillList] = useState([]);
 
     useEffect(() => {
@@ -93,13 +98,13 @@ export default function PrintAll() {
                                 clientPhone={order.clientPhone}
                                 receiverName={order.receiverName}
                                 foreignBarcode={order.foreignBarcode}
-                                receiverAddress={order.receiverAddress}
-                                receiverCity={order.receiverCity}
+                                receiverAddress={(order.receiverAddress).substring(0,50)}
+                                receiverCity={(order.receiverCity).substring(0,25)}
                                 receiverPhone={order.receiverPhone}
                                 cod={order.cod}
                                 date={order.date.toString().split(" ")[0]}
                                 orderId={order.orderId}
-                                note={order.note}
+                                note={(order.note).substring(0,65)}
                             />
                         </div>
                     )
@@ -107,6 +112,7 @@ export default function PrintAll() {
 
                 setWaybillList(updatedWayBill)
             } catch (error) {
+                setError(true);
                 console.log("loading orders error: " + error);
             }
         })
@@ -146,12 +152,18 @@ export default function PrintAll() {
     return (
         <div className="d-flex flex-column align-items-center justify-content-start">
             {isLoading ? <Loader />
+
+                : isError ? 
+                   <div style={{margin:"20%"}} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
+
+                : wayBillList.length == 0 ?
+                    <div style={{margin:"20%"}} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
                 :
                 <>
 
-                    <button
-                        style={{ width: "200px", margin: "5%", backgroundColor: "grey", color: "white" }}
-                        onClick={printhtmlToImage}>Print</button>
+                    <Button
+                        style={{ width: "20%", margin: "5%"}}
+                        onClick={printhtmlToImage}>Print</Button>
 
 
                     <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>

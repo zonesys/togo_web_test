@@ -13,7 +13,7 @@ const styles = {
     maxHeight: "3.5cm"
   },
   receiverInfo: {
-    height: "4cm", maxHeight: "4cm"
+    height: "4.5cm", maxHeight: "4.5cm"
   },
   barcodeStyle: {
     height: "3.5cm", maxHeight: "3.5cm"
@@ -70,7 +70,7 @@ export function WayBill3(
                 <div className="h5">تفاصيل المستلم</div>
                 <div className="h6">{receiverName} </div>
                 <div className="h6">{receiverCity}</div>
-                <div className="textLimit">{receiverAddress}</div>
+                <div>{receiverAddress}</div>
                 <div className="text-end" dir="ltr">{receiverPhone} </div>
               </div>
               <div className="col-6 sideBorder">
