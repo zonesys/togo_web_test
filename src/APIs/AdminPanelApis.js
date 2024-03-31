@@ -986,3 +986,13 @@ export function getLoans() {
     params.append("adminToken", localStorage.getItem("AdminToken"));
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
+
+export function getOliveryStatus(oliveryOrderId) {
+    console.log({oliveryOrderId})
+    var formData = new FormData();
+    formData.append("CheckTypeFunction", "getOliveryStatus");
+    formData.append("username", "0568866124");
+    formData.append("password", "123123123");
+    formData.append("orderId", oliveryOrderId);
+    return axios.post(apiUrl, formData, { headers: requestHeaders });
+}
