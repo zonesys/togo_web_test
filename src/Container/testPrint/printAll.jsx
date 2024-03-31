@@ -83,7 +83,7 @@ export default function PrintAll() {
             console.log(res.data)
             setLoading(false);
             try {
-              let updatedWayBill = res.data.slice(0,5).map((order, index) => {
+              let updatedWayBill = res.data.map((order, index) => {
                     return(
                         <div ref={ele => componentRef.current[index] = ele} key={index}>
                             <WayBill3
