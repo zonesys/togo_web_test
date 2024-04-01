@@ -2,6 +2,10 @@ import {LOCALES_TYPES} from "../locales";
 
 const EN_LOCALE = {
     [LOCALES_TYPES.ENGLISH]: {
+        PRINT_ALL :{
+            "NO_ORDERS":"No Orders",
+            "ERROR_OCCURED":"Error Occured , please try refreshing the Page"
+        },
         WITHDRAW_REQUEST: {
             "CANCEL_REQUEST": "Cancel Request",
             "REQUEST_DATE": "Request Date",
