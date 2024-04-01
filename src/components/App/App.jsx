@@ -15,7 +15,6 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { onMessageListener } from "../../firebase";
 // import * as Sticker from '../../Sticker.jsx'
-import { WayBill3 } from "../../Container/testPrint/wayBill"
 import PrintAll from "../../Container/testPrint/printAll";
 const App = () => {
 
@@ -68,7 +67,7 @@ const App = () => {
                         <Route path="/" component={Home} exact />
                         <Route path="/privacy-policy" component={PrivacyPolicy} exact />
                         <Route path="/contact-us" component={ContactUs} exact />
-                        <Route path="/testPrint" component={() => {
+                 {/*        <Route path="/testPrint" component={() => {
                             return (
                                 <div>
                                     <WayBill3
@@ -89,7 +88,7 @@ const App = () => {
                                     />
                                 </div>
                             )
-                        }} />
+                        }} /> */}
                         <Route path="/printAll" component={() => {
                             return (
                                 <PrintAll/>

@@ -84,6 +84,8 @@ const Main = ({ socket, token }) => {
 
     const [currentPage, setCurrentPage] = useState(getCurrentPage(history) ?? ("all-orders"));
     const [totalNumOfRecs, setTotalNumberOfRecs] = useState(0);
+    const [orders, setOrders] = useState([]);
+
         const [activePage, setActivePage] = useState(0);
     // const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -97,7 +99,6 @@ const Main = ({ socket, token }) => {
 
     const [assignedIds, setAssignedIds] = useState([]);
     const [ordersSelected, setOrdersSelected] = useState(false);
-
     const [totalCODNew, setTotalCODNew] = useState(0);
     const [totalCOD, setTotalCOD] = useState(0);
     const [totalComission, setTotalComission] = useState(0);
