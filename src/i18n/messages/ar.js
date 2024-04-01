@@ -5,7 +5,8 @@ export default {
 
         PRINT_ALL :{
             "NO_ORDERS":"لا يوجد طرود",
-            "ERROR_OCCURED":"حدث خطأ، يرجى اعادة تحميل الصفحة"
+            "ERROR_OCCURED":"حدث خطأ، يرجى اعادة تحميل الصفحة",
+            "PRINT_ALL":"طباعة الكل"
         },
         WITHDRAW_REQUEST: {
             "CANCEL_REQUEST": "إلغاء طلب السحب",

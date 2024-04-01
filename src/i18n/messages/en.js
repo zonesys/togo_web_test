@@ -3,6 +3,7 @@ import {LOCALES_TYPES} from "../locales";
 const EN_LOCALE = {
     [LOCALES_TYPES.ENGLISH]: {
         PRINT_ALL :{
+            "PRINT_ALL":"Print All",
             "NO_ORDERS":"No Orders",
             "ERROR_OCCURED":"Error Occured , please try refreshing the Page"
         },

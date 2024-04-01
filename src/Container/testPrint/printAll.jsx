@@ -7,6 +7,7 @@ import { getBidAcceptedPrintInfo } from "../../APIs/OrdersAPIs";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { Button } from "react-bootstrap";
 import translate from "../../i18n/translate";
+import CustomIcon from "../../assets/icons";
 
 let device, zebraPrinter;
 let refIndex = 0;
@@ -162,8 +163,12 @@ export default function PrintAll() {
                 <>
 
                     <Button
+                        variant="outline-primary"
                         style={{ width: "20%", margin: "5%"}}
-                        onClick={printhtmlToImage}>Print</Button>
+                        onClick={printhtmlToImage}>
+                            {translate("ORDER_DETAILS.PRINT")}
+                            <CustomIcon iconName={"print"}></CustomIcon>
+                            </Button>
 
 
                     <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>

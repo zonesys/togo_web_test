@@ -55,6 +55,7 @@ import new_order_grad from "../../assets/orders/new-order_grad.png";
 
 import * as FileSaver from 'file-saver';
 import XLSX from 'sheetjs-style';
+import CustomIcon from "../../assets/icons";
 
 const styles = {
     navImg: {
@@ -82,9 +83,8 @@ const Main = ({ socket, token }) => {
     let history = useHistory();
 
     const [currentPage, setCurrentPage] = useState(getCurrentPage(history) ?? ("all-orders"));
-    const [orders, setOrders] = useState([]);
     const [totalNumOfRecs, setTotalNumberOfRecs] = useState(0);
-    const [activePage, setActivePage] = useState(0);
+        const [activePage, setActivePage] = useState(0);
     // const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -362,10 +362,22 @@ const Main = ({ socket, token }) => {
         // history.push(`/account/main/${linkEvent}`);
     }
 
+
+
     return (
         <div style={{ position: "relative" }}>
 
+
             <div className="d-flex justify-content-between py-2 px-3">
+                <Button
+                    variant="outline-primary"
+                    style={{ marginBlock: "2%", width: "20%" }}
+                    onClick={() => {
+                        history.push("/printAll")
+                    }}>
+                    {translate("PRINT_ALL.PRINT_ALL")}
+                    <CustomIcon iconName={"print"}></CustomIcon>
+                </Button>
                 {localStorage.getItem("userId") != 97 && <>
                     {!isTransporter() ? (currentPage == "previous-orders" ? <div className="d-flex jsutify-content-between">
                         <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
@@ -381,9 +393,7 @@ const Main = ({ socket, token }) => {
                         </div>
                     </div> : currentPage == "current-orders" ?
                         <div>
-                            <Button style={{marginBlock:"2%", width:"40%"}} onClick={()=>{
-                                history.push("/printAll")
-                            }}>Print All</Button>
+
                             <div className="d-flex jsutify-content-between">
                                 <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                     Active Orders Total COD: <span style={{ color: "red" }}>{totalCODActive}</span> NIS
@@ -491,7 +501,8 @@ const Main = ({ socket, token }) => {
                     </Nav>
                 }
             </div>
-
+            
+            {/* search box/*/}
             {true && <div style={{ width: "50%", margin: "20px auto", display: (currentPage == "transactions" || currentPage == "create-order") && "none" }}>
                 <FloatingLabel label="Search...">
                     <Form.Control id="searchText" type="text" placeholder="..." className="rounded-22 mb-4 mt-1" ref={searchRef} onKeyPress={(e) => { if (e.charCode === 13) { searchOrdersHandler() } }} />
