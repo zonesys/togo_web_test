@@ -186,7 +186,6 @@ const Main = ({ socket, token }) => {
             transporterFunctionfilter = "none";
         } */
 
-
         if (functionType === "TransporterGetOrder" || functionType === "TransporterOrderCurrent" || functionType === "TransporterHistoryOrder" || functionType === "TransporterReviewedOrder") {
 
             switch (functionType) {
@@ -411,16 +410,6 @@ const Main = ({ socket, token }) => {
                                 New Orders Total COD: <span style={{ color: "red" }}>{totalCODNew}</span> NIS
                             </div>
                         </div> : <div style={{ height: "41px" }}></div>) :
-                                <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
-                                    Active Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostActive}</span> NIS
-                                </div>
-                            </div>
-                        </div>
-                        : currentPage == "all-orders" ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
-                                New Orders Total COD: <span style={{ color: "red" }}>{totalCODNew}</span> NIS
-                            </div>
-                        </div> : <div style={{ height: "41px" }}></div>) :
                         (currentPage == "previous-orders" || currentPage == "reviewed-orders" ? <div className="d-flex jsutify-content-between">
                             <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                 Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCODTrans}</span> NIS
@@ -428,7 +417,6 @@ const Main = ({ socket, token }) => {
 
                             {/* <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                 Delivered Orders Total Comission (including VAT): <span style={{ color: "red" }}>{totalComissionTrans}</span> NIS
-                            </div>*/}
                             </div>*/}
 
                             <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
