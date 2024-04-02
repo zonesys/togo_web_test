@@ -260,6 +260,7 @@ const EN_LOCALE = {
             "DELIVERY_TYPE" : "Delivery Type",
             "PACKAGE_TYPE" : "Package Type",
             "ORDER_DATE" : "Order Date",
+            "FINISH_DATE" : "Finish Date",
             "ORDER_TIME" : "Order Time",
             "FROM_CITY" : "From",
             "TO_CITY" : "To",

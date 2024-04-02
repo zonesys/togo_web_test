@@ -235,6 +235,11 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                     key: "DateLoad",
                     format: dateFormatter
                 },
+                {
+                    label: translate("ORDERS.FINISH_DATE"),
+                    key: "DateFinished",
+                    // format: dateFormatter
+                },
                 /* {
                     label: translate("ORDERS.ORDER_TIME"),
                     key: "DateLoad",
@@ -324,6 +329,11 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                 {
                     label: translate("ORDERS.ORDER_DATE"),
                     key: "DateOrder"
+                },
+                {
+                    label: translate("ORDERS.FINISH_DATE"),
+                    key: "DateFinished",
+                    // format: dateFormatter
                 },
                 /* {
                     label: translate("ORDERS.DELIVERY_COST"),

@@ -258,6 +258,7 @@ export default {
             "DELIVERY_TYPE": "طريقة التوصيل",
             "PACKAGE_TYPE": "نوع الطرد",
             "ORDER_DATE": "تاريخ الطلب",
+            "FINISH_DATE": "تاريخ الانهاء",
             "ORDER_TIME": "وقت الطلب",
             "FROM_CITY": "من",
             "TO_CITY": "الى",
