@@ -366,6 +366,7 @@ const EN_LOCALE = {
             "ADD_TRANSPORTER": "You need to add transporters to be able to assign",
             "ASSIGNED": "Assigned To",
             "PRINT": "Print",
+            "STICKER":"Sticker",
             "BID": "Bid",
             "ORDER_DETAILS": "Order Details",
             "MY_PRICE": "My Price",

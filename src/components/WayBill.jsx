@@ -12,6 +12,7 @@ import jsPDF from "jspdf";
 import { Button } from "react-bootstrap";
 import albarq_logo from "../assets/barq_logo.png";
 import { imgBaseUrl } from '../Constants/GeneralCont';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 var Barcode = require('react-barcode');
 
@@ -58,7 +59,7 @@ function Convert_HTML_To_PDF() {
 
 export default function WayBill() {
     const { id } = useParams();
-
+    const history = useHistory();
     const [orderDetails, setOrderDetails] = useState();
     const location = useLocation();
     const dispatch = useDispatch();
@@ -120,19 +121,41 @@ export default function WayBill() {
 
                     <Button style={{ width: "100px", borderRadius: localStorage.getItem("Language") === "en" ? "20px 0 0 20px" : "0 20px 20px 0" }} variant={isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(true); setContainerWidth("1000px"); setIsSelected(true) }} className="">Large</Button>
                     <Button style={{ width: "100px", borderRadius: localStorage.getItem("Language") === "en" ? "0 20px 20px 0" : "20px 0 0 20px" }} variant={!isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(false); setContainerWidth("700px"); setIsSelected(false) }} className="">Medium</Button>
+
                 </div>
-                <Button variant="outline-primary" onClick={() => window.print()} style={{
-                    /* marginRight: "5px",
-                    marginLeft: "5px", */
-                    width: "150px"
-                }}>
-                    <svg style={{ display: "inline-block", marginLeft: "5px", marginRight: "5px" }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-printer-fill" viewBox="0 0 16 16">
-                        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                        <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                    </svg>
-                    Print
-                </Button>
+                <div>
+                    <Button variant="outline-primary" onClick={() => window.print()} style={{
+                        /* marginRight: "5px",
+                        marginLeft: "5px", */
+                        marginInline: "2%",
+                        width: "150px"
+                    }}>
+                        <svg style={{ display: "inline-block", marginLeft: "5px", marginRight: "5px" }} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-printer-fill" viewBox="0 0 16 16">
+                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                        </svg>
+                        Print Paper
+                    </Button>
+                    <Button style={{
+                        marginInline: "2%",
+                        marginTop: "2%",
+                        width: "150px"
+                    }} variant={"outline-primary"}
+                        onClick={() => {
+                            history.push("/printAll/" + id);
+                        }}>
+                     <svg style={{ display: "inline-block", marginLeft: "5px", marginRight: "5px" }} xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M18.5 2h-13C3.6 2 2 3.6 2 5.5v13C2 20.4 3.6 22 5.5 22H16l6-6V5.5C22 3.6 20.4 2 18.5 2M6 7h12v2H6zm0 4h12v2H6zm7 6H6v-2h7zm2 3v-1.5c0-1.9 1.6-3.5 3.5-3.5H20z"/></svg>                       
+                    Print Sticker
+                
+                    </Button>
+                </div>
+
             </div>
+            <div className="d-flex justify-content-start">
+
+
+            </div>
+
 
             <div className="d-flex justify-content-center print-container">
 
@@ -307,7 +330,7 @@ export default function WayBill() {
                                             all: "revert",
                                             fontSize: "30px"
                                         }}>
-                                             {translate("WAYBILL.LOAD_DETAILS")}
+                                            {translate("WAYBILL.LOAD_DETAILS")}
                                         </legend>
                                         <div>
                                             {orderDetails?.DetailsLoad}

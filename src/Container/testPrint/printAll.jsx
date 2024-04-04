@@ -8,6 +8,7 @@ import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { Button } from "react-bootstrap";
 import translate from "../../i18n/translate";
 import CustomIcon from "../../assets/icons";
+import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 let device, zebraPrinter;
 let refIndex = 0;
@@ -71,7 +72,8 @@ function convertImg(component) {
 
 export default function PrintAll() {
    
-
+    const {orderId} = useParams();
+    console.log("specific order: "+orderId );
     const componentRef = useRef([]);
     const containerRef = useRef();
     const printService = useReactToPrint({
@@ -84,8 +86,8 @@ export default function PrintAll() {
 
     useEffect(() => {
         getDefaultDevice();
-
-        getBidAcceptedPrintInfo().then((res) => {
+        
+        getBidAcceptedPrintInfo(orderId!== undefined?orderId:"").then((res) => {
             console.log(res.data)
             setLoading(false);
             try {

@@ -89,7 +89,7 @@ const App = () => {
                                 </div>
                             )
                         }} /> */}
-                        <Route path="/printAll" component={() => {
+                        <Route path="/printAll/:orderId?" component={() => {
                             return (
                                 <PrintAll/>
 

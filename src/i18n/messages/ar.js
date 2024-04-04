@@ -360,6 +360,7 @@ export default {
             "OTHER_DETAILS": "تفاصيل أخرى",
             "PHONE_NUMBER": "رقم الهاتف",
             "PRINT": "اطبع",
+            "STICKER":"ملصق",
             "BID": "Bid",
             "ORDER_DETAILS": "تفاصيل الطلب",
             "MY_PRICE": "سعري",

@@ -63,10 +63,14 @@ export function getClientActiveTotalAmounts() {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function getBidAcceptedPrintInfo(){
+export function getBidAcceptedPrintInfo(specificOrder=""){
+    console.log("order param : "+specificOrder);
 var params = new URLSearchParams();
 params.append("CheckTypeFunction","getBidAcceptedPrintInfo")
 params.append("customerId",localStorage.getItem("userId"));
+if(specificOrder!=="")
+params.append("orderId",specificOrder);
+
 return axios.post(apiUrl,params,{headers: requestHeaders});
 
 }
