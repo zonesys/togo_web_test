@@ -21,9 +21,12 @@ export default function RecordsCard(props) {
             setWindowHeight(window.innerHeight)
             setWindowWidth(window.innerWidth / 4.5)
         }
-
+    
         window.addEventListener('resize', handleResize)
-    })
+    
+        // Return a cleanup function to remove the event listener
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     // filter records (search by order id)
     const filterHandler = (val) => {

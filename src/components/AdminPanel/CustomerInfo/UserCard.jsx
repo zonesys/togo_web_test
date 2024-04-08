@@ -26,9 +26,12 @@ export default function UsersCard(props) {
             setWindowHeight(window.innerHeight)
             setWindowWidth(window.innerWidth / 5.5)
         }
-
+    
         window.addEventListener('resize', handleResize)
-    })
+    
+        // Return a cleanup function to remove the event listener
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     useEffect(() => {
         setUsers(props.list)
