@@ -57,6 +57,7 @@
         "react-icons": "^4.11.0",
         "react-images-uploading": "^3.1.7",
         "react-intl": "^5.20.12",
+        "react-json-to-table": "^0.1.7",
         "react-leaflet": "^3.2.1",
         "react-loader-spinner": "^3.1.14",
         "react-paginate": "^7.1.3",
