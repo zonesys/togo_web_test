@@ -339,7 +339,7 @@ const AdminOrderDetails = () => {
 
             AdminCheckTripCost(orderDetailsRes.CustomerId, orderId, orderDetailsRes.CostLoad, orderDetailsRes.cityFromId, orderDetailsRes.cityToId).then((tripCostRes) => {
 
-                // console.log(tripCostRes); // temp test
+                console.log({tripCostRes}); // temp test
 
                 if (tripCostRes.data && tripCostRes.data !== "CostNotSend") {
                     setTripCost(tripCostRes.data.CostDetail);

@@ -1,11 +1,16 @@
 import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
 import axios from "axios";
 export function reconcileOrders(foriegnOrders) {
-    const params = new FormData();
-    params.append("CheckTypeFunction", "reconcileOrders");
-    params.append("foreignOrders",JSON.stringify(foriegnOrders) );
- 
-    return axios.post(apiUrl, params, { headers: requestHeaders });
+    try{
+        const params = new FormData();
+        params.append("CheckTypeFunction", "reconcileOrders");
+        params.append("foreignOrders",JSON.stringify(foriegnOrders));
+     
+        return axios.post(apiUrl, params, { headers: requestHeaders });
+    }catch(e){
+      console.log("reconcileOrders http error: "+e);
+    }
+
 }
 export function getAllOrders(searchStr) {
     var params = new URLSearchParams();

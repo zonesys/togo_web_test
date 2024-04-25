@@ -6,7 +6,7 @@ import { reconcileOrders } from "../../APIs/AdminPanelApis";
 import Loader from "../Loader/Loader"
 import { JsonToTable } from "react-json-to-table";
 import { useDispatch } from "react-redux";
-import { toastMessage } from "../../Actions/GeneralActions";
+import { toastMessage, toastNotification } from "../../Actions/GeneralActions";
 import BootstrapTable from "react-bootstrap-table-next";
 export default function Reconcile() {
     const dispatch = useDispatch();
@@ -17,9 +17,18 @@ export default function Reconcile() {
     const clickHiddenInput = () => {
         inputRef.current.click();
     }
+    const isExcelFile = (file) => {
+        return file.type === 'application/vnd.ms-excel' || // .xls
+               file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'; // .xlsx
+      };
+    
     const handleInput = (e) => {
         try {
             const file = e.target.files[0];
+            if(!isExcelFile(file)){
+                dispatch(toastMessage("The selected file is not Excel","File Error"));
+                return;
+            }
             const reader = new FileReader();
             setLoading(true);
             reader.onload = (event) => {
@@ -35,17 +44,25 @@ export default function Reconcile() {
                         })
                     })
 
-                    let filtered = jsonArray.filter((val) => val.التسلسل);
+                    let filtered = jsonArray.filter((val) => val.التسلسل)
+                                            .map(order => {
+                                                order['التسلسل'] = parseInt(order['التسلسل'])
+                                                return order
+                                            });
+                    //filtered.splice(1,1);
+                  // filtered =  filtered.map(obj => (({["الحالة"]:_, ...rest}) => rest)(obj));
                     console.log(filtered);
                     reconcileOrders(filtered).then((response) => {
                         try {
-                            console.log(response.data);
                             setLoading(false);
+                            
+                            if(!response){
+                                dispatch(toastMessage("Something Wrong"));
+                                return;
+                            }
+                            console.log(response.data);
 
 
-                            /*   response.data.forEach((val)=>{
-                                  JSON.parse(val)
-                              }) */
                             if(response.data.length == 0){
                                 setResult([]);
                                 return;
@@ -83,7 +100,7 @@ export default function Reconcile() {
                     });
                 } catch (e) {
                     setLoading(false);
-                    dispatch(toastMessage("Error Reading Excel File"))
+                    dispatch(toastMessage("Error Reading Excel File","File Error"))
                     console.log("reader.onload error: " + e)
                 }
 
@@ -94,9 +111,99 @@ export default function Reconcile() {
         }
 
     }
+    const handleInput2 = (e) => {
+        try {
+            const file = e.target.files[0];
+            if(!isExcelFile(file)){
+                dispatch(toastMessage("The selected file is not Excel","File Error"));
+                return;
+            }
+            const reader = new FileReader();
+            setLoading(true);
+            reader.onload = (event) => {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const excelRead = XLSX.read(data, { type: "array" });
+                    let jsonArray = [];
+                    excelRead.SheetNames.forEach((val, index) => {
+                        const sheet = excelRead.Sheets[val];
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 0 })
+                        jsonData.forEach((val) => {
+                            jsonArray.push(val);
+                        })
+                    })
+
+                    let filtered = jsonArray.filter((val) => val.التسلسل)
+                                            .map(order => {
+                                                order['التسلسل'] = parseInt(order['التسلسل'])
+                                                return order
+                                            });
+                    //filtered.splice(1,1);
+                  // filtered =  filtered.map(obj => (({["الحالة"]:_, ...rest}) => rest)(obj));
+                    console.log(filtered);
+                    reconcileOrders(filtered).then((response) => {
+                        try {
+                            setLoading(false);
+                            
+                            if(!response){
+                                dispatch(toastMessage("Something Wrong"));
+                                return;
+                            }
+                            console.log(response.data);
+
+
+                            if(response.data.length == 0){
+                                setResult([]);
+                                return;
+                            }
+                            const cols = Object.keys(response.data[0]).map((val) => {
+                                return {
+                                    dataField: val,
+                                    text: val,
+                                    headerStyle: {
+                                        fontSize: "1em"
+
+                                    },
+                                    formatter:
+                                        val != "togoId" ? null :
+                                            (cell, row) => {
+                                                return (
+                                                    <a style={{
+                                                        fontWeight: "bold",
+                                                        color: "blue"
+                                                    }} href={"/adminapp/orderDetails/" + row.togoId} target="_blank">
+                                                        {cell}
+                                                    </a>)
+                                            },
+
+                                }
+                            });
+                            setColumns(cols);
+                            setResult(response.data);
+
+                        } catch (e) {
+                            console.log("reconcileOrders api error: " + e)
+                            dispatch(toastMessage("Invalid response"))
+
+                        }
+                    });
+                } catch (e) {
+                    setLoading(false);
+                    dispatch(toastMessage("Error Reading Excel File","File Error"))
+                    console.log("reader.onload error: " + e)
+                }
+
+            }
+            reader.readAsArrayBuffer(file);
+        } catch (e) {
+            console.log("handleInput error : " + e);
+        }
+
+    }
+    
     return (
 
-        <div style={{ height: resultData && resultData.length > 0 ? null : "60%" }} className="d-flex flex-column justify-content-center align-items-center" >
+        <div style={{ height:  ( resultData && resultData.length > 0 )? null : "80%" }} className="d-flex flex-column justify-content-center align-items-center" >
             {loading ? <Loader width={"200px"} height={"200px"} />
 
                 :

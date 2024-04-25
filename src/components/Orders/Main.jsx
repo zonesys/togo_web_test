@@ -214,6 +214,7 @@ const Main = ({ socket, token }) => {
 
         getFunctions(functionType, activePage, transporterFunctionfilter, searchStr)
             .then(resp => {
+                console.log("RESP")
                 console.log(resp.data) // temp test
                 if (resp === 'NotActiveNow') {
                     dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));

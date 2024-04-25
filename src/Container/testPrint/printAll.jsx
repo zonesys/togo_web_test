@@ -15,19 +15,26 @@ let refIndex = 0;
 let readyStatus;
 
 async function getDefaultDevice(callbackFun) {
-    window.BrowserPrint.getDefaultDevice("printer", async (dev) => {
-        try {
-            device = dev;
-            zebraPrinter = new window.Zebra.Printer(device);
-            console.log("default printer: " + device.name)
-            if (callbackFun !== undefined)
-                callbackFun();
-        } catch (error) {
-            console.log("getDefaultDevice error: " + error);
-            
-        }
+    try {
+        console.log("fetching default device...")
+        window.BrowserPrint.getDefaultDevice("printer", async (dev) => {
+            try {
+                device = dev;
+                zebraPrinter = new window.Zebra.Printer(device);
+                console.log("default printer: " + device.name)
+                if (callbackFun !== undefined)
+                    callbackFun();
+            } catch (e) {
+                console.log("getDefaultDevice error: " + e);
 
-    });
+            }
+
+        });
+    } catch (error) {
+        console.log("getDefaultDevice error: " + error);
+
+    }
+
 }
 
 
@@ -63,17 +70,22 @@ async function printImg(img, arr = []) {
 }
 
 function convertImg(component) {
-    return htmlToImage.toPng(component, {
-        quality: 1.0,
-        backgroundColor: "white",
-        pixelRatio: 10,
-    });
+    try {
+        return htmlToImage.toPng(component, {
+            quality: 1.0,
+            backgroundColor: "white",
+            pixelRatio: 5
+        });
+    }catch(e){
+        console.log("convertImg error : "+e);
+    }
+
 }
 
 export default function PrintAll() {
-   
-    const {orderId} = useParams();
-    console.log("specific order: "+orderId );
+
+    const { orderId } = useParams();
+    console.log("specific order: " + orderId);
     const componentRef = useRef([]);
     const containerRef = useRef();
     const printService = useReactToPrint({
@@ -81,33 +93,33 @@ export default function PrintAll() {
     });
 
     let [isLoading, setLoading] = useState(true);
-    let [isError,setError] = useState(false);
+    let [isError, setError] = useState(false);
     let [wayBillList, setWaybillList] = useState([]);
 
     useEffect(() => {
         getDefaultDevice();
-        
-        getBidAcceptedPrintInfo(orderId!== undefined?orderId:"").then((res) => {
+
+        getBidAcceptedPrintInfo(orderId !== undefined ? orderId : "").then((res) => {
             console.log(res.data)
             setLoading(false);
             try {
-              let updatedWayBill = res.data.map((order, index) => {
-                    return(
+                let updatedWayBill = res.data.map((order, index) => {
+                    return (
                         <div ref={ele => componentRef.current[index] = ele} key={index}>
                             <WayBill3
-                                transporterImgSrc={imgBaseUrl+order.transporterImgSrc}
-                                clientImgSrc={imgBaseUrl+order.clientImgSrc}
+                                transporterImgSrc={imgBaseUrl + order.transporterImgSrc}
+                                clientImgSrc={imgBaseUrl + order.clientImgSrc}
                                 clientName={order.clientName}
                                 clientPhone={order.clientPhone}
                                 receiverName={order.receiverName}
                                 foreignBarcode={order.foreignBarcode}
-                                receiverAddress={(order.receiverAddress).substring(0,50)}
-                                receiverCity={(order.receiverCity).substring(0,25)}
+                                receiverAddress={(order.receiverAddress).substring(0, 50)}
+                                receiverCity={(order.receiverCity).substring(0, 25)}
                                 receiverPhone={order.receiverPhone}
                                 cod={order.cod}
                                 date={order.date.toString().split(" ")[0]}
                                 orderId={order.orderId}
-                                note={(order.note).substring(0,65)}
+                                note={(order.note).substring(0, 65)}
                             />
                         </div>
                     )
@@ -136,18 +148,6 @@ export default function PrintAll() {
         } catch (error) {
             console.log("printhtmlToImage error: " + error)
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
 
@@ -156,27 +156,27 @@ export default function PrintAll() {
         <div className="d-flex flex-column align-items-center justify-content-start">
             {isLoading ? <Loader />
 
-                : isError ? 
-                   <div style={{margin:"20%"}} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
+                : isError ?
+                    <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
 
-                : wayBillList.length == 0 ?
-                    <div style={{margin:"20%"}} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
-                :
-                <>
+                    : wayBillList.length == 0 ?
+                        <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
+                        :
+                        <>
 
-                    <Button
-                        variant="outline-primary"
-                        style={{ width: "20%", margin: "5%"}}
-                        onClick={printhtmlToImage}>
-                            {translate("ORDER_DETAILS.PRINT")}
-                            <CustomIcon iconName={"print"}></CustomIcon>
+                            <Button
+                                variant="outline-primary"
+                                style={{ width: "20%", margin: "5%" }}
+                                onClick={printhtmlToImage}>
+                                {translate("ORDER_DETAILS.PRINT")}
+                                <CustomIcon iconName={"print"}></CustomIcon>
                             </Button>
 
 
-                    <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
-                        {wayBillList}
-                    </div>
-                </>
+                            <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
+                                {wayBillList}
+                            </div>
+                        </>
 
 
             }

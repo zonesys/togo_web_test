@@ -245,7 +245,7 @@ const OrderDetails = () => {
 
             checkTripCost(orderId, isTransporter(), orderDetailsRes.CostLoad, orderDetailsRes.cityFromId, orderDetailsRes.cityToId).then((tripCostRes) => {
 
-                // console.log(tripCostRes); // temp test
+                // console.log({tripCostRes}); // temp test
 
                 if (tripCostRes && tripCostRes !== "CostNotSend") {
                     setTripCost(isTransporter() ? tripCostRes.server_response[0] : tripCostRes.CostDetail);
