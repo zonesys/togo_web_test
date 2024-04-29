@@ -382,15 +382,15 @@ const Main = ({ socket, token }) => {
                 </Button>
                 {localStorage.getItem("userId") != 97 && <>
                     {!isTransporter() ? (currentPage == "previous-orders" ? <div className="d-flex jsutify-content-between">
-                        <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                        <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
                             Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCOD}</span> NIS
                         </div>
 
-                        {localStorage.getItem("userId") == 302 && <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                        {localStorage.getItem("userId") == 302 && <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
                             Delivered Orders Total Comission: <span style={{ color: "red" }}>{totalComission}</span> NIS
                         </div>}
 
-                        <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                        <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height:"50px" }}>
                             Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCost}</span> NIS
                         </div>
                     </div> : currentPage == "current-orders" ?
@@ -407,12 +407,13 @@ const Main = ({ socket, token }) => {
                             </div>
                         </div>
                         : currentPage == "all-orders" ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height:"50px" }}>
                                 New Orders Total COD: <span style={{ color: "red" }}>{totalCODNew}</span> NIS
                             </div>
                         </div> : <div style={{ height: "41px" }}></div>) :
-                        (currentPage == "previous-orders" || currentPage == "reviewed-orders" ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                        (currentPage == "previous-orders" || currentPage == "reviewed-orders" ? 
+                        <div className="d-flex justify-content-between">
+                            <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" ,height:"50px"}}>
                                 Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCODTrans}</span> NIS
                             </div>
 
@@ -420,7 +421,7 @@ const Main = ({ socket, token }) => {
                                 Delivered Orders Total Comission (including VAT): <span style={{ color: "red" }}>{totalComissionTrans}</span> NIS
                             </div>*/}
 
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
                                 Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostTrans}</span> NIS
                             </div>
                         </div> : currentPage == "current-orders" ? <div className="d-flex jsutify-content-between">
