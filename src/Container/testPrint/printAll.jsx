@@ -151,40 +151,40 @@ export default function PrintAll() {
     }
 
 
+        return (
+            <div className="d-flex flex-column align-items-center justify-content-start">
+                {isLoading ? <Loader />
+    
+                    : isError ?
+                        <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
+    
+                        : wayBillList.length == 0 ?
+                            <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
+                            :
+                            <>
+    
+                                <Button
+                                    variant="outline-primary"
+                                    style={{ width: "20%", margin: "5%" }}
+                                    onClick={printhtmlToImage}>
+                                    {translate("ORDER_DETAILS.PRINT")}
+                                    <CustomIcon iconName={"print"}></CustomIcon>
+                                </Button>
+    
+    
+                                <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
+                                    {wayBillList}
+                                </div>
+                            </>
+    
+    
+                }
+    
+    
+    
+            </div>
+    
+    
+        )
 
-    return (
-        <div className="d-flex flex-column align-items-center justify-content-start">
-            {isLoading ? <Loader />
-
-                : isError ?
-                    <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
-
-                    : wayBillList.length == 0 ?
-                        <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
-                        :
-                        <>
-
-                            <Button
-                                variant="outline-primary"
-                                style={{ width: "20%", margin: "5%" }}
-                                onClick={printhtmlToImage}>
-                                {translate("ORDER_DETAILS.PRINT")}
-                                <CustomIcon iconName={"print"}></CustomIcon>
-                            </Button>
-
-
-                            <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
-                                {wayBillList}
-                            </div>
-                        </>
-
-
-            }
-
-
-
-        </div>
-
-
-    )
 }

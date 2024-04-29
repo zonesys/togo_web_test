@@ -1,14 +1,16 @@
 import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
 import axios from "axios";
 export function reconcileOrders(foriegnOrders) {
-    try{
+
+    try {
         const params = new FormData();
         params.append("CheckTypeFunction", "reconcileOrders");
         params.append("foreignOrders",JSON.stringify(foriegnOrders));
-     
-        return axios.post(apiUrl, params, { headers: requestHeaders });
-    }catch(e){
-      console.log("reconcileOrders http error: "+e);
+       // params.append("foriegnIds",foriegnIds);
+
+        return axios.post(apiUrl, params,requestHeaders);
+    } catch (e) {
+        console.log("reconcileOrders http error: " + e);
     }
 
 }
@@ -999,7 +1001,7 @@ export function getLoans() {
 }
 
 export function getOliveryStatus(oliveryOrderId) {
-    console.log({oliveryOrderId})
+    console.log({ oliveryOrderId })
     var formData = new FormData();
     formData.append("CheckTypeFunction", "getOliveryStatus");
     formData.append("username", "0568866124");
