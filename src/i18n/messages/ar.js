@@ -16,6 +16,7 @@ export default {
             "STATUS": "الحالة",
             "REQUEST_WITHDRAWAL": "إرسال طلب سحب",
             "REQUEST_WITHDRAW": "إرسال طلب سحب",
+            "CONFIRMATION":"هل تريد عمل طلب سحب بهذا المبلغ ؟",
             "AMOUNT": "المبلغ",
             "CANCEL": "إلغاء",
             "SEND_REQUEST": "إرسال الطلب",
@@ -88,6 +89,7 @@ export default {
             "LOAD_COST": "Load Cost",
             "TRANSPORTER_DETAILS": "transporter Details",
             "TRANSPORTATION_PROCESS": "Transportation Process",
+            "NET_AMOUNT":"المبلغ الاجمالي",
             "DELIVERY_COST": "ثمن التوصيل",
             "CLIENT_MOBILE_NUMBER": "رقم هاتف الزبون",
             "INFO": "التفاصيل",
@@ -134,6 +136,7 @@ export default {
             "CANCEL_ASSIGNED_ORDER": "إلغاء التعيين",
             "SURE_TO_CANCEL_ORDER": "هل أنت متأكد من إلغاء التعيين؟",
             "YES": "نعم",
+            "OK":"حسنا",
             "NO": "لا",
             "SELECT_GOV": "إختر المحافظة",
             "FROM": "من",
@@ -184,6 +187,7 @@ export default {
             "OUT": "مُدخَل",
         },
         GENERAL: {
+            "ORDERS":"الطلبات",
             "ERROR": "خطأ",
             "COULD_NOT_FETCH": "جلب البيانات لم يكتمل",
             "ERROR_FETCHING": "حدث خطأ في جلب البيانات",
@@ -244,9 +248,12 @@ export default {
             "MANAGE_SUBUSERS": "إدارة الحسابات الفرعية",
         },
         WALLET: {
-            "BALANCE": "الرصيد"
+            "BALANCE": "الرصيد",
+            "CURRENT_BALANCE":"الرصيد الحالي",
+            "ERROR_WITHDRAW":"انت تحاول سحب مبلغ اكبر من الموجود في حسابك ٫ قد يكون هنالك طرود يجب عليك اختيارها من القائمة ٬ يرجي اعادة الاختيار بعناية"
         },
         ORDERS: {
+            
             "NEW_ORDERS": "الطلبات الجديدة",
             "IN_PROCESS_ORDER": "الطلبات قيد التنفيذ",
             "COMPLETED_OR_CANCELED_ORDER": "الطلبات الملغيلة و المنجزة",

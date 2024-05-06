@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../Actions/GeneralActions";
 import { useIntl } from "react-intl";
 import { GiReceiveMoney } from 'react-icons/gi';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Link } from "react-router-dom";
 
 /* display cancel button if the request is wating */
 function cancelFormatter(value) {
@@ -23,16 +25,16 @@ function cancelFormatter(value) {
 
 /* format each request status */
 function statusFormatter(value) {
-    return <>
+    return <div className='d-flex justify-content-center'>
         <Badge bg={value == "WAITING" ? "warning" : value == "FINISHED" ? "success" : "danger"}>
             {translate("WITHDRAW_REQUEST." + value)}
         </Badge>
-    </>
+    </div>
 }
 
 /* format each request amount */
 function amountFormatter(value) {
-    return <><span style={{ color: "#26a69a" }}>{value}</span> {" NIS"}</>;
+    return <div style={{ textAlign: "center" }}><span style={{ color: "#26a69a" }}>{value}</span> {" NIS"}</div>;
 }
 
 /* time formatter, to convert from 24 hrs system to 12 hrs system */
@@ -50,7 +52,11 @@ function timeFormatter(value) {
         time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
         time[0] = +time[0] % 12 || 12; // Adjust hours
     }
-    return time.join(''); // return adjusted time or original string
+    return (
+        <div style={{ textAlign: "center" }}>
+            {time.join('')}
+        </div>
+    ); // return adjusted time or original string
 }
 
 export default function FinancialManagement() {
@@ -65,6 +71,7 @@ export default function FinancialManagement() {
     const handleCloseRequestModal = () => setShowRequestModal(false);
     const handleShowRequestModal = () => setShowRequestModal(true);
     const [validated, setValidated] = useState(false);
+    const history = useHistory();
 
     /* get all related withdrawal requests to be displayed in the table */
     useEffect(() => {
@@ -77,15 +84,16 @@ export default function FinancialManagement() {
             } else {
                 const tempArr = [];
                 const resArr = res.data.server_response;
-
+                console.log(resArr);
                 for (let i = 0; i < resArr.length; i++) {
                     tempArr.push({
                         "id": resArr[i].id,
                         "date": resArr[i].requestTime.split(" ")[0],
                         "time": resArr[i].requestTime.split(" ")[1],
-                        "amount": resArr[i].amount,
+                        "amount": parseFloat(resArr[i].amount).toFixed(2),
                         "status": resArr[i].isCanceled == 1 ? "CANCELED" : resArr[i].isRejected == 1 ? "REJECTED" : resArr[i].isApproved == 1 ? "FINISHED" : "WAITING",
-                        "isActive": (resArr[i].isCanceled == 1 || resArr[i].isRejected == 1 || resArr[i].isApproved == 1) ? 0 : 1
+                        "isActive": (resArr[i].isCanceled == 1 || resArr[i].isRejected == 1 || resArr[i].isApproved == 1) ? 0 : 1,
+                        "orderIds": resArr[i].orderIds
                     });
                 }
 
@@ -107,9 +115,16 @@ export default function FinancialManagement() {
 
     /* table columns */
     const columns = [
+
         {
             dataField: 'date',
-            text: intl.formatMessage({ id: "WITHDRAW_REQUEST.REQUEST_DATE" })
+            text: intl.formatMessage({ id: "WITHDRAW_REQUEST.REQUEST_DATE" }),
+            formatter: (cell, row) => {
+                return (
+                    <div style={{textAlign:"center"}}>
+                        {row.date}
+                    </div>);
+            }
         },
         {
             dataField: 'time',
@@ -125,7 +140,54 @@ export default function FinancialManagement() {
             dataField: 'status',
             text: intl.formatMessage({ id: "WITHDRAW_REQUEST.STATUS" }),
             formatter: statusFormatter
-        }/* ,
+        },
+        {
+            dataField: 'orderIds',
+            text: "Orders",
+            formatter: (cell, row) => {
+                
+             
+                return (
+                    row.orderIds?
+                
+                    <Link
+                        to={{
+                            pathname: `/account/requestDetails/${row.orderIds}/${row.date}`,
+                        }}
+
+                        target={"_blank"}
+                        style={{
+                            paddingRight: "20%",
+                            paddingLeft: "20%",
+                            border: "none",
+                            width: "100%",
+                            textAlign: "center",
+                        }}
+                        className="btn btn-primary btn-rounded btn-grad"
+                    >
+
+                        {translate("ORDERS.SHOW")}
+                    </Link>
+                    :"No Orders"
+                );
+                /*       return (
+                      row.orderIds &&
+                      <>
+                         <Button onClick={()=>{
+                         
+                          history.push("/account/requestDetails",{
+                              requestDate : row.date,
+                              orderIds: row.orderIds});
+                         }}>
+                          {translate("ORDERS.SHOW")}
+                         </Button>
+                      </>
+                      ) */
+            }
+        },
+
+
+        /* ,
         {
             dataField: 'isActive',
             text: "",
@@ -209,8 +271,14 @@ export default function FinancialManagement() {
                         data={requests}
                         columns={columns}
                         pagination={paginationFactory()}
-                        rowClasses={"custom-row-class"}
-                        columnClasses={"custom-column-class"}
+                        hover
+                        /* rowClasses={"custom-row-class"}
+                        columnClasses={"custom-column-class"} */
+                        rowStyle={() => {
+                            return { textAlign: "center" }
+                        }}
+                        column
+                        bordered={false}
                         filter={filterFactory()}
                     /> : !isEmpty ? <Box height="400px"><Loader /></Box> :
                         <div className="w-100 d-flex justify-content-center mt-5">{translate("WITHDRAW_REQUEST.NO_REQUESTS")}</div>

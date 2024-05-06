@@ -5,8 +5,14 @@ import { Link } from "react-router-dom";
 import { CancelOrder } from "../OrdersManager/CancelOrder";
 import DynamicTable from "../DynamicTable/DynamicTable";
 import { isTransporter, isTransporterMaster } from "../../Util";
-import { Badge, ToggleButton, Button } from "react-bootstrap";
+import { Badge, ToggleButton, Button, Modal, ModalBody, Spinner } from "react-bootstrap";
 import { updateOrderReviewedStatus, updateReviewedOrders } from "../../APIs/OrdersAPIs";
+import { ModalHeader, toast } from "@chakra-ui/react";
+import { calculateTransactions, requestWithdraw } from "../../APIs/financialsAPIs";
+import { getWallet } from "../../APIs/ProfileAPIs";
+import { useDispatch } from "react-redux";
+import { toastMessage } from "../../Actions/GeneralActions";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const PackageTypes = {
     "1": "FOOD",
@@ -124,8 +130,12 @@ export const clientOrderStatusFotmatter = (data) => {
     return statusFormat(data)
 }
 
-export const OrdersTabularView = ({ socket, orders, currentPage, update, assignOrders }) => {
-
+export const OrdersTabularView = ({ socket, orders, currentPage, update, assignOrders, netAmount }) => {
+    orders = orders.map((val) => {
+        val.netAmount = netAmount[val.idOrder];
+        return val;
+    })
+    const history = useHistory();
     const [bidPrice, setBidPrice] = useState("-");
 
     const [columns, setColumns] = useState([]);
@@ -133,6 +143,11 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
 
     const [reviewList, setRreviewList] = useState([]);
     const [totalCOD, setTotalCOD] = useState(0);
+    const [reviewModalShow, setreviewModalShow] = useState(false);
+    const [balanceErrorModal,setBalanceErrorModal] = useState(false);
+    const [reviewLoading,setReviewLoading] = useState(false);
+    const [currentBalance,setCurrentBalance]= useState(null);
+    const dispatch = useDispatch();
 
     const showDetailsButton = useCallback((orderId) =>
         <Link
@@ -176,20 +191,24 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
         })
     }
 
-    const addRemToReview = (status, orderId, COD) => {
-        // console.log(status + " - " + orderId);
+    const addRemToReview = (status, orderId, COD, netAmount) => {
+        console.log(status + " - " + orderId + " - " + netAmount);
         // console.log(COD);
         if (!status) {
             setRreviewList(reviewList => reviewList.filter(id => id !== orderId));
-            setTotalCOD(prevState => prevState - parseInt(COD));
+            if(netAmount === undefined) return;
+            setTotalCOD(prevState => prevState - parseFloat(netAmount));
         } else {
             setRreviewList(reviewList => [...reviewList, orderId]);
-            setTotalCOD(prevState => prevState + parseInt(COD));
+            if(netAmount === undefined) return;
+            setTotalCOD(prevState => prevState + parseFloat(netAmount));
         }
     }
 
     const saveReviewed = () => {
+
         console.log(reviewList);
+        setreviewModalShow(true);
         return;
 
         const isToReview = currentPage === "previous-orders";
@@ -202,7 +221,6 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
     }
 
     useEffect(() => {
-
         let newColumns = [];
 
         /* differ between transporter and client columns */
@@ -264,6 +282,7 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                     key: "order_status",
                     format: statusFormat
                 },
+
                 {
                     label: translate("ORDERS.FULL_DETAILS"),
                     key: "id",
@@ -282,7 +301,7 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                 });
             }
 
-            if (currentPage === "previous-orders"  || currentPage === "reviewed-orders") {
+            if (currentPage === "previous-orders" || currentPage === "reviewed-orders") {
                 newColumns.splice(0, 0, {
                     label: translate("ORDERS.REVIEWED"),
                     key: "assign",
@@ -312,6 +331,7 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                     label: translate("ORDERS.ORDER_NUM"),
                     key: "idOrder"
                 },
+
                 /* {
                     label: translate("ORDERS.DELIVERY_TYPE"),
                     key: "DeliveryWays",
@@ -326,6 +346,7 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                     label: translate("ORDERS.TO_CITY_NAME"),
                     key: "toCityName"
                 },
+
                 {
                     label: translate("ORDERS.ORDER_DATE"),
                     key: "DateOrder"
@@ -383,9 +404,9 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                 newColumns.splice(0, 0, {
                     label: translate("ORDERS.REVIEWED"),
                     key: "assign",
-                    format: ({ idOrder, isReviewed, CostLoad }, reviewed, handleCheck) => {
+                    format: ({ idOrder, isReviewed, CostLoad, netAmount }, reviewed, handleCheck) => {
                         let cod = !!CostLoad ? CostLoad : 0;
-                        return <input className="form-check-input" defaultChecked={currentPage === "previous-orders" ? (reviewed == 1 ? true : false) : (reviewed == 1 ? false : true)} style={{ cursor: "pointer" }} type="checkbox" value={idOrder} id="flexCheckDefault" onClick={(event) => { /* checkOrderReviewedHandler(event.target.checked, event.target.value); */ addRemToReview(event.target.checked, event.target.value, cod); handleCheck() }} />
+                        return <input className="form-check-input" defaultChecked={currentPage === "previous-orders" ? (reviewed == 1 ? true : false) : (reviewed == 1 ? false : true)} style={{ cursor: "pointer" }} type="checkbox" value={idOrder} id="flexCheckDefault" onClick={(event) => { /* checkOrderReviewedHandler(event.target.checked, event.target.value); */ addRemToReview(event.target.checked, event.target.value, cod, netAmount); handleCheck() }} />
                     }
                 });
             }
@@ -403,6 +424,14 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                         return <>{!!loges_barcode ? loges_barcode : !!foreignOrderId ? foreignOrderId : "-"}</>
                     }
                 });
+
+
+            }
+            if (currentPage === "previous-orders") {
+                newColumns.splice(1, 0, {
+                    label: "Net Amount",
+                    key: "netAmount",
+                },)
             }
         }
 
@@ -449,11 +478,116 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
         setColumns(newColumns);
     }, [currentPage, showDetailsButton]);
 
+    const checkBalance = ()=>{
+        getWallet().then(response=>{
+            try{
+                console.log(response.data);
+                const data = response.data;
+                if (data === undefined){
+                    dispatch(toastMessage("Couldn't check balance"));
+                    return;
+                }
+                const balance = data['server_response'][0]['TransporterBalance'];
+                setCurrentBalance(balance);
+                if(totalCOD > balance){
+                    dispatch(toastMessage("Balance not enough"))
+                    setBalanceErrorModal(true);
+                    setreviewModalShow(false);
+                }else{
+                    
+                    requestWithdraw(totalCOD,reviewList.join(",")).then(response=>{
+                        console.log(response);
+                        setreviewModalShow(false);
+                        setReviewLoading(false);
+                        if(response.data.includes("insufficient error")){
+                            dispatch(toastMessage("insufficient balance"))
+                        }else if(response.data.includes("Blocked")){
+                            dispatch(toastMessage("User Blocked"));
+                        }else if(response.data.includes("user not found error")){
+                            dispatch(toastMessage("user not found"));
+                        }else if(response.data.includes("error")){
+                            dispatch(toastMessage("Something Wrong"));
+                        }else {
+                         
+                            history.push("/account/financial-management");
+                        }
+
+
+
+                    });
+
+                }
+
+                
+            }catch(e){
+                console.log("getWallet api response: "+e)
+            }
+        })
+    }
     return <div style={{ position: "relative" }}>
         <DynamicTable columns={columns} data={orders} currentPage={currentPage} />
-        {reviewList.length > 0 && <div style={{ position: "absolute", bottom: "-30px", left: "20px" }}>
-            <Button className="btn-grad" style={{ width: "200px" }} onClick={saveReviewed}>{currentPage === "previous-orders" ? "Reviewed" : "Remove"}</Button>
-            <span className="ms-3" style={{ width: "200px" }}>Total COD: {totalCOD}</span>
+        {reviewList.length > 0 && <div className = "border border-primary rounded-3" style={{ padding: "10px", height: "10%", position: "fixed", bottom: "0%", backgroundColor: "white",
+    }}>
+
+            <div style={{position:"relative",top:"20%"}}>
+                <Button disabled={totalCOD < 0}className="btn-grad" style={{ width: "200px" }} onClick={saveReviewed}>{currentPage === "previous-orders" ? "Reviewed" : "Remove"}</Button>
+                <span className="ms-3" style={{ width: "200px" }}>Total : {totalCOD.toFixed(2)}</span>
+            </div>
+
         </div>}
+        <Modal show={reviewModalShow} onHide={() => {
+            setreviewModalShow(false);
+        }}>
+            <Modal.Header>Confirmation</Modal.Header>
+            <Modal.Body>
+                {translate("WITHDRAW_REQUEST.CONFIRMATION")}
+                <div className="d-flex" style={{fontSize:"15px"}}>
+                {translate("WITHDRAW_REQUEST.AMOUNT")}
+                {" : "+totalCOD}
+                </div>
+
+                </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        setReviewLoading(true);
+                        checkBalance();
+                    }}>
+                    {reviewLoading && <Spinner animation="border" size="sm"/>}
+                    {translate("TEMP.YES")}
+                </Button>
+                <Button
+                    variant="danger"
+                    onClick={() => {
+                        setreviewModalShow(false);
+                    }}
+                >
+                    {translate("TEMP.NO")}
+                </Button>
+            </Modal.Footer>
+        </Modal>
+        <Modal show={balanceErrorModal} onHide={() => {
+            setBalanceErrorModal(false);
+        }}>
+            <Modal.Header>Error</Modal.Header>
+            <Modal.Body style={{fontWeight:"bold"}}>
+                {translate("WALLET.ERROR_WITHDRAW")}
+                <div className="d-flex" style={{fontSize:"20px"}} >
+                 {translate("WALLET.CURRENT_BALANCE")}
+                 {" : "+currentBalance}
+                </div>
+                </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    variant="danger"
+                    onClick={() => {
+                        setBalanceErrorModal(false);
+                    }}>
+                    {translate("TEMP.OK")}
+                </Button>
+            
+            </Modal.Footer>
+        </Modal>
     </div>;
 };

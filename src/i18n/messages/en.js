@@ -15,6 +15,7 @@ const EN_LOCALE = {
             "STATUS": "Status",
             "REQUEST_WITHDRAWAL": "Request Withdrawal",
             "REQUEST_WITHDRAW": "Request Withdraw",
+            "CONFIRMATION":"Do you want to make a withdraw request with this amount?",
             "AMOUNT": "Amount",
             "CANCEL": "Cancel",
             "SEND_REQUEST": "Send Request",
@@ -88,6 +89,7 @@ const EN_LOCALE = {
             "LOAD_COST": "Load Cost",
             "TRANSPORTER_DETAILS": "transporter Details",
             "TRANSPORTATION_PROCESS": "Transportation Process",
+            "NET_AMOUNT":"Net Amount",
             "DELIVERY_COST": "Delivery Cost",
             "CLIENT_MOBILE_NUMBER": "Client Mobile Number",
             "INFO": "Info",
@@ -134,6 +136,7 @@ const EN_LOCALE = {
             "CANCEL_ASSIGNED_ORDER": "Cancel Assigned Order",
             "SURE_TO_CANCEL_ORDER": "Are you shure you want to cancel the assign?",
             "YES": "Yes",
+            "OK":"OK",
             "NO": "No",
             "SELECT_GOV": "Select a Governorate",
             "FROM": "From",
@@ -184,6 +187,7 @@ const EN_LOCALE = {
             "OUT": "Out",
         },
         GENERAL: {
+            "ORDERS":"Orders",
             "ERROR": "Error",
             "COULD_NOT_FETCH": "Couldn't Fetch Data",
             "ERROR_FETCHING": "Error Fetching Data",
@@ -246,7 +250,10 @@ const EN_LOCALE = {
             "MANAGE_SUBUSERS": "Manage Subaccounts",
         },
         WALLET: {
-            "BALANCE": "Balance"
+            "BALANCE": "Balance",
+            "CURRENT_BALANCE":"Current Balance",
+            "ERROR_WITHDRAW":"You are trying to withdraw an amount larger than your current balance, maybe there are orders you need to select , please repeat the selection carefully "
+
         },
         ORDERS:{
             "NEW_ORDERS" : "New Orders",

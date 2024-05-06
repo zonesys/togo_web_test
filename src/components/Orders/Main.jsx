@@ -85,6 +85,7 @@ const Main = ({ socket, token }) => {
     const [currentPage, setCurrentPage] = useState(getCurrentPage(history) ?? ("all-orders"));
     const [totalNumOfRecs, setTotalNumberOfRecs] = useState(0);
     const [orders, setOrders] = useState([]);
+    const [netAmount,setNetAmount] = useState([]);
 
         const [activePage, setActivePage] = useState(0);
     // const [transactions, setTransactions] = useState([]);
@@ -134,7 +135,6 @@ const Main = ({ socket, token }) => {
     ]);
 
     useEffect(() => {
-        // console.log("batata")
         let currentPage = getCurrentPage(history);
         if (!currentPage || currentPage === '/main') {
             currentPage = "all-orders";
@@ -216,6 +216,9 @@ const Main = ({ socket, token }) => {
             .then(resp => {
                 console.log("RESP")
                 console.log(resp.data) // temp test
+                if(resp.data.netAmount){
+                    setNetAmount(resp.data.netAmount);
+                }
                 if (resp === 'NotActiveNow') {
                     dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
                 } else {
@@ -356,6 +359,7 @@ const Main = ({ socket, token }) => {
     }
 
     const updateNavsArrHandler = (index, linkEvent) => {
+       
         const tempArr = ordersNavs;
         tempArr.forEach((item) => { item.isActive = false });
         tempArr[index].isActive = true;
@@ -370,7 +374,7 @@ const Main = ({ socket, token }) => {
         <div style={{ position: "relative" }}>
 
 
-            <div className="d-flex justify-content-between py-2 px-3">
+            <div className="d-flex justify-content-between align-items-center py-2 px-3">
                 <Button
                     variant="outline-primary"
                     style={{ marginBlock: "2%", width: "20%" }}
@@ -465,7 +469,10 @@ const Main = ({ socket, token }) => {
                             variant="tabs"
                             defaultActiveKey={currentPage}
                             activeKey={currentPage}
-                            onSelect={(eventKey) => { history.push(`/account/main/${eventKey}`); setActivePage(0); setSearchStr(""); (currentPage != "transactions" || currentPage != "create-order") && (document.getElementById("searchText").value = "") }}
+                            onSelect={(eventKey) => { 
+                                
+                                history.push(`/account/main/${eventKey}`); 
+                                setActivePage(0); setSearchStr(""); (currentPage != "transactions" || currentPage != "create-order") && (document.getElementById("searchText").value = "") }}
                         >
                             {ordersNavs.map((item, index) => {
                                 return ((item.linkEventKey == "create-order" && isTransporter()) ? <></> :
@@ -522,6 +529,7 @@ const Main = ({ socket, token }) => {
                                 <OrdersTabularView
                                     socket={socket}
                                     orders={orders}
+                                    netAmount ={netAmount}
                                     currentPage={currentPage}
                                     assignOrders={(ordersIds) => { setAssignedIds(ordersIds); ordersIds.length > 0 ? setOrdersSelected(true) : setOrdersSelected(false) }}
                                     update={() => {

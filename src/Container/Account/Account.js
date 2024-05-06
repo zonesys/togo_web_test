@@ -25,6 +25,7 @@ import AdminBoard from "../../components/AdminBoard";
 import AssignToNetworkMemberCo from '../../components/OrdersManager/AssignToNetworkMemberCo';
 import FinancialManagement from '../../components/FinancialManagement';
 import ManageCustomers from '../../components/ManageCustomers/ManageCustomers';
+import RequestDetails from '../../components/WithdrawRequestDetails';
 
 export default function Account({ path  }) {
 
@@ -75,6 +76,7 @@ export default function Account({ path  }) {
                 <PrivateRoute path={`${path}/team-admin`} component={AdminBoard} />
                 <PrivateRoute path={`${path}/assign-to-network`} component={AssignToNetworkMemberCo} />
                 <PrivateRoute path={`${path}/financial-management`} component={FinancialManagement} />
+                <PrivateRoute path={`${path}/requestDetails/:orderIds/:reqDate`} component={RequestDetails} />
                 <PrivateRoute path={`${path}/manage-clients`} component={ManageCustomers} />
                 <PrivateRoute path={`${path}/test-create-order`} component={CreateOrder_v2} />
             </Box>
