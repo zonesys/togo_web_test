@@ -20,7 +20,6 @@ export default function RequestDetails() {
     const orderIds = params.orderIds;
     const requestDate = params.reqDate;
 
-   
     const dispatch = useDispatch();
 
     useEffect(() => {

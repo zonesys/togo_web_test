@@ -163,6 +163,7 @@ const Main = ({ socket, token }) => {
 
     const fetchData = useCallback((functionType, stateKey) => {
         setLoading(true);
+        console.log("state key : "+stateKey);
 
         // transporter orders filter variable initialized
         let transporterFunctionfilter = "none";
@@ -214,29 +215,36 @@ const Main = ({ socket, token }) => {
 
         getFunctions(functionType, activePage, transporterFunctionfilter, searchStr)
             .then(resp => {
-                console.log("RESP")
-                console.log(resp.data) // temp test
-                if(resp.data.netAmount){
-                    setNetAmount(resp.data.netAmount);
-                }
-                if (resp === 'NotActiveNow') {
-                    dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
-                } else {
-                    const { data: { server_response, total_orders } } = resp;
-                    switch (stateKey) {
-                        case 'orders':
-                            setTotalNumberOfRecs(total_orders);
-                            setOrders(server_response);
-                            break;
-                        /*case 'transactions':  edited (add transactions case) 
-                            console.log("Transactions: ");
-                            console.log(server_response);
-                            setTransactions(server_response);*/
-                        default:
-                            setTotalNumberOfRecs(0);
-                            break;
+                try{
+                    console.log("RESP")
+                    console.log(resp.data) // temp test
+
+                    if(resp.data.netAmount){
+                        setNetAmount(resp.data.netAmount);
                     }
+                    if (resp === 'NotActiveNow') {
+                        dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
+                    } else {
+                        const { data: { server_response, total_orders } } = resp;
+                        
+                        switch (stateKey) {
+                            case 'orders':
+                                setTotalNumberOfRecs(total_orders);
+                                setOrders(server_response);
+                                break;
+                            /*case 'transactions':  edited (add transactions case) 
+                                console.log("Transactions: ");
+                                console.log(server_response);
+                                setTransactions(server_response);*/
+                            default:
+                                setTotalNumberOfRecs(0);
+                                break;
+                        }
+                    }
+                }catch(e){
+                    console.log("fetching data exception: "+e)
                 }
+               
             })
             .catch((err) => {
                 dispatch(toastMessage(err));
@@ -477,9 +485,9 @@ const Main = ({ socket, token }) => {
                             {ordersNavs.map((item, index) => {
                                 return ((item.linkEventKey == "create-order" && isTransporter()) ? <></> :
                                     <Nav.Item key={index} className="upperNavItemContainer flex-grow-1">
-                                        <Nav.Link eventKey={item.linkEventKey} className="upperNavItem" onClick={() => { updateNavsArrHandler(index, item.linkEventKey) }}>
+                                        <Nav.Link disabled={loading} eventKey={item.linkEventKey} className="upperNavItem" onClick={() => { updateNavsArrHandler(index, item.linkEventKey) }}>
                                             <div className="mainImage">
-                                                <img src={item.isActive ? item.hoverImageSrc : item.mainImageSrc} alt="" />
+                                                <img style={{color: loading?"grey":null}} src={item.isActive ? item.hoverImageSrc : item.mainImageSrc} alt="" />
                                             </div>
                                             <div className="title">
                                                 {translate("ORDERS." + item.title)}

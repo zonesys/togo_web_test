@@ -23,6 +23,7 @@ function TransportersStat() {
             if (res.data.status === "error") {
                 console.log(res.data.error)
             } else {
+                console.log(res.data.transporters)
                 setTransportes(res.data.transporters)
             }
 
@@ -100,6 +101,9 @@ function TransportersStat() {
                                         </td>
                                         <td>
                                             {formatAmount(tranporter.total_cod)}
+                                        </td>
+                                        <td>
+                                            {formatAmount(tranporter.active_order_bill_total)}
                                         </td>
                                         <td>
                                             {caluculateToPay(tranporter)}

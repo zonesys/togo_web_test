@@ -63,11 +63,13 @@ export default function Reconcile() {
                             if (!response) {
                                 console.log("response undefined or null")
                                 dispatch(toastMessage("Something Wrong"));
+                                setResult(null)
                                 return;
                             }
                             if (typeof response.data === 'string') {
                                 console.log("Response data is not a json array");
                                 dispatch(toastMessage("Invalid response"));
+                                setResult(null);
                                 return;
                             }
                             JSON.parse(JSON.stringify(response.data));
@@ -86,7 +88,10 @@ export default function Reconcile() {
                                     formatter:
                                         val != "togoId" ? null :
                                             (cell, row) => {
-                                                return (
+
+                                                return row.togoId == "N/A"? 
+                                                "N/A":
+                                                (
                                                     <a style={{
                                                         fontWeight: "bold",
                                                         color: "blue"
@@ -101,12 +106,14 @@ export default function Reconcile() {
                             setResult(response.data);
 
                         } catch (e) {
+                            setResult(null);
                             console.log("reconcileOrders api error: " + e)
                             dispatch(toastMessage("Invalid response"))
 
                         }
                     });
                 } catch (e) {
+                    setResult(null);
                     setLoading(false);
                     dispatch(toastMessage("Error Reading Excel File", "File Error"))
                     console.log("reader.onload error: " + e)
