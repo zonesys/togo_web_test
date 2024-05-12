@@ -343,7 +343,7 @@ function Header({/* socket */ }) {
                                 <Text>{translate("HEADER.TOTAL_ORDERS")}: {totalOrdersNum}</Text>
                             </Flex>
                             <Box {...styles.horizontalBreakLine} />
-                            {localStorage.getItem("userId") != 97 && <Link to='/account/main/financial-transaction' style={styles.link}>
+                            {localStorage.getItem("userId") != 97 && <Link to='/account/financial-management' style={styles.link}>
                                 <Flex {...styles.headerItemsContainer}>
                                     <Icon as={IoIosWallet} fontSize="2xl" />
                                     {isNaN(wallet) ? <Loader color="white" width="40px" height="40px" /> : <Text fontSize="14px">{wallet} NIS</Text>}

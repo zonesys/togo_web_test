@@ -243,7 +243,7 @@ export default function CreateOrder_v2(props) {
             <div className="upperBackground">
             </div>
 
-            <div className="mainContainer" style={{ height: "80%", top: "150px" }}>
+            <div className="mainContainer" style={{ height: null, marginTop:"10%" }}>
                 <Container fluid className="pb-5">
                     <Row className="h2 d-flex justify-content-center" style={{ marginTop: "50px", marginBottom: "0px", fontWeight: "bold", color: "white" }}>
                         {translate("CREATE_NEW_ORDER.CREATE_ORDER")}
