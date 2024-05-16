@@ -429,7 +429,7 @@ export default function WayBill() {
                                         >
                                             {translate("WAYBILL.SENDER")}
                                         </legend>
-                                        <p>{translate("WORKING_TIME.FROM")}: {BusinessName ? BusinessName : FullName},<br />
+                                        <p>{translate("WORKING_TIME.FROM")}: {orderDetails?.SenderName ? orderDetails?.SenderName : BusinessName},<br />
                                             {orderDetails?.IdCitySource},<br />
                                             {orderDetails?.OtherDetails}
                                         </p>
