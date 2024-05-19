@@ -50,7 +50,7 @@ export default function Reconcile() {
                     filtered[0].hasOwnProperty("Barcode")?"Barcode":"";
 
                     filtered = filtered.map(order => {
-                            order[Idkey] = parseInt(order[Idkey])
+                            order[Idkey] = order[Idkey];
                             return order
                         });
                     //let ids = filtered.map(val => val[Idkey]).join(",");    
