@@ -199,6 +199,8 @@ function Header({/* socket */ }) {
         setOpenProfileDialog(!openProfileDialog);
     }
 
+    const clearNavs = () => {}
+
     const actionHandler = (action, link) => {
         if (action === "logout") {
             alert("Log Out");

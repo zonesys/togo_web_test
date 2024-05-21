@@ -830,7 +830,7 @@ export function acceptAssignedOrder(orderId, transporterId) {
 } */
 
 /* edited (recordAction added to record actions) */
-export function recordAction(party_one_id, party_two_id, order_id, description, action_id) {
+export function recordAction(party_one_id, party_two_id, order_id, description, action_id, party_one_name, party_two_name) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "recordAction");
     params.append("party_one_id", party_one_id);

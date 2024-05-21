@@ -5,6 +5,8 @@ import translate from '../../i18n/translate';
 export default function DynamicTable({ columns, data, onRowSelect, selected, currentPage }) {
 
     // console.log(data); // temp test
+    
+    const [reviewed, setReviewed] = useState(0);
 
     return (
         <Table hover size="sm" responsive className="ms-4 me-4 mt-2">
@@ -15,8 +17,7 @@ export default function DynamicTable({ columns, data, onRowSelect, selected, cur
             </thead>
             <tbody>
                 {data.map((item, index) => {
-                    const [reviewed, setReviewed] = useState(item.isReviewed);
-
+                    
                     const handleCheck = () => {
                         reviewed == 1 ? setReviewed(0) : setReviewed(1)
                     }

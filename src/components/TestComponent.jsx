@@ -12,6 +12,8 @@ const TestComponent = () => {
         };
     }, []);
 
+    const pay = () => {}
+
     const handleSubmit = (event) => {
         event.preventDefault();
         pay();
