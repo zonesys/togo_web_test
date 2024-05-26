@@ -857,11 +857,11 @@ export function undoCancledActiveOrder(orderId) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function alterActiveOrderCOD(orderId, newCOD) {
+export function changeCod(orderId, newCOD) {
     var params = new URLSearchParams();
-    params.append("CheckTypeFunction", "alterActiveOrderCOD");
-    params.append("id", localStorage.getItem("Adminid"));
-    params.append("token", localStorage.getItem("AdminToken"));
+    params.append("CheckTypeFunction", "changeCod");
+    params.append("id", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
     params.append("newCOD", newCOD);
     params.append("orderId", orderId);
     return axios.post(apiUrl, params, { headers: requestHeaders });
