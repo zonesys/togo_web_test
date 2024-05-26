@@ -23,7 +23,6 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    alterActiveOrderCOD,
     getOliveryStatus
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";

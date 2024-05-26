@@ -857,7 +857,7 @@ export function undoCancledActiveOrder(orderId) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function alterActiveOrderCOD(orderId, newCOD) {
+export function changeCod(orderId, newCOD) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "changeCod");
     params.append("id", localStorage.getItem("userId"));

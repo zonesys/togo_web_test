@@ -53,7 +53,7 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { FiEdit3 } from 'react-icons/fi';
-import { alterActiveOrderCOD } from "../../APIs/AdminPanelApis";
+import { changeCod } from "../../APIs/AdminPanelApis";
 import { useImmer } from "use-immer";
 
 /* format time from 24hr system to 12hr (am/pm) system */
@@ -138,7 +138,7 @@ const OrderDetails = () => {
             // const newCOD = newCODAmountRef.current.value;
             const newCOD = 0;
 
-            alterActiveOrderCOD(orderId, newCOD).then((res) => {
+            changeCod(orderId, newCOD).then((res) => {
                 if (res.data === "TokenError" || res.data.includes("error")) {
                     dispatch(toastNotification("Error", res.data, "error"));
                 } else if (res.data.includes("success")) {
