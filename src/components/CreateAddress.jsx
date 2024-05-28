@@ -122,221 +122,262 @@ export default function CreateAddress({ onSuccess, children }) {
     }
 
     return (
-        <div>
-            <span onClick={() => {
-                setShow(true);
-            }}>
-
+        <div data-test="modal-container">
+            <span
+                data-test="open-modal-button"
+                onClick={() => {
+                    setShow(true);
+                }}
+            >
                 {children}
             </span>
 
-            {/*  edited (fullscreen removed and style added) */}
             <Modal
+                data-test="modal"
                 show={show}
-                onHide={() => { setShow(false) }}
+                onHide={() => { setShow(false); }}
                 centered
                 animation={true}
                 backdrop="static"
                 size="lg"
-
-                style={{ backgroundColor: "rgba(0,0,0,0.5)", }}
+                style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
             >
                 <Modal.Header closeButton style={styles.cardHeaderLg}>
-                    <Modal.Title>{translate("ORDERS.ADD_ADDRESS")}</Modal.Title>
+                    <Modal.Title data-test="modal-title">{translate("ORDERS.ADD_ADDRESS")}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="mt-5">
-                    <Form id="addressForm" validated={validated} noValidate /* ref={formRef} */ onSubmit={(event) => {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+                    <Form
+                        id="addressForm"
+                        validated={validated}
+                        noValidate
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            const formData = new FormData(event.target);
+                            const formDataObj = Object.fromEntries(formData.entries());
 
-                        // console.log(formDataObj);
-
-                        const form = event.currentTarget;
-                        if (form.checkValidity() === true) {
-                            setLoading(true);
-                            CreateAddressReq(formDataObj).then((res) => {
-                                console.log(res.data)
-                                /* if (
-                                    res.data == "Something went wrong" ||
-                                    res.data == "Blocked" ||
-                                    res.data == "TokenError"
-                                ) {
-                                    dispatch(toastNotification("Error!", res.data, "error"));
-                                } else {
-                                    setLoading(false);
-                                    setShow(false);
-                                    dispatch(toastNotification("Created!", "Address Created", "success"));
+                            const form = event.currentTarget;
+                            if (form.checkValidity() === true) {
+                                setLoading(true);
+                                CreateAddressReq(formDataObj).then((res) => {
+                                    handleClose();
                                     onSuccess();
-                                } */
-                                handleClose();
-                                onSuccess();
-                            });
-                        }
-                        setValidated(true);
-                        // console.log(formDataObj);
-
-                    }}>
-
+                                });
+                            }
+                            setValidated(true);
+                        }}
+                    >
                         <FloatingLabel className="mb-3" controlId="formBasicEmail" label={translate("ORDERS.ADDRESS_NAME")}>
-                            <Form.Control className="rounded-22 input-inner-shadow" type="text" placeholder="..." name="placename" required />
+                            <Form.Control
+                                data-test="placename-input"
+                                className="rounded-22 input-inner-shadow"
+                                type="text"
+                                placeholder="..."
+                                name="placename"
+                                required
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Please add place namew-100
                             </Form.Control.Feedback>
                         </FloatingLabel>
 
                         <FloatingLabel className="mb-3" controlId="userTel" label={translate("ORDERS.ADDRESS_PHONE")}>
-                            <Form.Control className="rounded-22 input-inner-shadow" type="tel" placeholder="..." name="phone" pattern="^05[0-9]{8}?$" required />
+                            <Form.Control
+                                data-test="phone-input"
+                                className="rounded-22 input-inner-shadow"
+                                type="tel"
+                                placeholder="..."
+                                name="phone"
+                                pattern="^05[0-9]{8}?$"
+                                required
+                            />
                             <Form.Control.Feedback type="invalid">
                                 Please enter a valid phone number example 0568000000
                             </Form.Control.Feedback>
                         </FloatingLabel>
 
-                        {localStorage.getItem("userId") == 41 && <div style={{ position: "relative" }}>
-                            <Form.Control
-                                onChange={(e) => { handleSearchArea(e.target.value) }}
-                                style={{
-                                    backgroundColor: "gray",
-                                    color: "white",
-                                    marginTop: "10px",
-                                    marginBottom: "10px",
-                                    cursor: "pointer"
-                                }}
-                                autoComplete="off"
-                            />
-
-                            {(logestechsAreas.length > 0 || loadingAreas) && <div style={{
-                                position: "absolute",
-                                top: "38px",
-                                left: "2px",
-                                right: "2px",
-                                maxHeight: "500px",
-                                overflowY: "scroll",
-                                zIndex: "3",
-                                backgroundColor: "white",
-                                border: "1px solid lightgray",
-                                borderRadius: "0 0 10px 10px"
-                            }}>
-                                {
-                                    loadingAreas ? <Spinner size="lg" className="" animation="border" variant="dark" /> :
-                                        <>
-                                            {
-                                                logestechsAreas?.map((area, index) => {
-                                                    return <div key={index}>
-                                                        {area.name + ", " + area.regionName}
-                                                    </div>
-                                                })
-                                            }
-                                        </>
-                                }
-                            </div>}
-                        </div>}
-
-                        {/* <Form.Select name="city" required>
-                                {cities?.map?.((city) => {
-                                    return <option key={city.IdCity} value={city.IdCity === '0' ? "" : city.IdCity}>{city.Name}</option>
-                                })}
-                            </Form.Select> */}
-
-                        {localStorage.getItem("userId") != 41 && <Container fluid>
-                            <Row>
-                                <Col lg={3} className="mb-4">
-                                    <Form.Label>{translate("TEMP.PROVINCE")}:</Form.Label>
-                                    <Form.Select style={{ cursor: "pointer" }} className="shadow" name="province" required aria-label="Default select example"
-                                        onClick={() => {
-                                            getProvences();
+                        {localStorage.getItem("userId") == 41 && (
+                            <div style={{ position: "relative" }}>
+                                <Form.Control
+                                    data-test="area-search-input"
+                                    onChange={(e) => { handleSearchArea(e.target.value); }}
+                                    style={{
+                                        backgroundColor: "gray",
+                                        color: "white",
+                                        marginTop: "10px",
+                                        marginBottom: "10px",
+                                        cursor: "pointer"
+                                    }}
+                                    autoComplete="off"
+                                />
+                                {(logestechsAreas.length > 0 || loadingAreas) && (
+                                    <div
+                                        data-test="area-search-results"
+                                        style={{
+                                            position: "absolute",
+                                            top: "38px",
+                                            left: "2px",
+                                            right: "2px",
+                                            maxHeight: "500px",
+                                            overflowY: "scroll",
+                                            zIndex: "3",
+                                            backgroundColor: "white",
+                                            border: "1px solid lightgray",
+                                            borderRadius: "0 0 10px 10px"
                                         }}
-                                        onChange={(e) => {
-                                            updateSubLevel("governorates", e.target.value)
-                                        }}>
-                                        <option value={""} style={{ color: "lightgray" }}>Select Provice</option>
-                                        {
-                                            provinces.map((item, index) => {
-                                                return <option key={index} value={item.id}>{/* item.id + " - " +  */item.name}</option>
-                                            })
-                                        }
-                                    </Form.Select>
-                                </Col>
-                                <Col lg={3} className="mb-4">
-                                    <Form.Label>{translate("TEMP.GOVERNORATE")}:</Form.Label>
-                                    <Form.Select style={{ cursor: "pointer" }} className="shadow" name="governorate" required aria-label="Default select example" onChange={(e) => {
-                                        updateSubLevel("cities", e.target.value)
-                                    }}>
-                                        <option value={""} style={{ color: "lightgray" }}>Select Governorate</option>
-                                        {
-                                            governorates.map((item, index) => {
-                                                return <option key={index} value={item.id}>{/* item.id + " - " +  */item.name}</option>
-                                            })
-                                        }
-                                    </Form.Select>
-                                </Col>
-                                <Col lg={3} className="mb-4">
-                                    <Form.Label>{translate("TEMP.CITY")}:</Form.Label>
-                                    <Form.Select style={{ cursor: "pointer" }} className="shadow" name="city" required aria-label="Default select example" onChange={(e) => {
-                                        updateSubLevel("areas", e.target.value)
-                                    }}>
-                                        <option value={""} style={{ color: "lightgray" }}>Select City</option>
-                                        {
-                                            cities.map((item, index) => {
-                                                return <option key={index} value={item.id}>{/* item.id + " - " +  */item.name}</option>
-                                            })
-                                        }
-                                    </Form.Select>
-                                </Col>
-                                <Col lg={3} className="mb-4">
-                                    <Form.Label>{translate("TEMP.AREA")}:</Form.Label>
-                                    <Form.Select style={{ cursor: "pointer" }} className="shadow" name="area" required aria-label="Default select example">
-                                        <option value={""} style={{ color: "lightgray" }}>Select Area</option>
-                                        {
-                                            areas.map((item, index) => {
-                                                return <option key={index} value={item.id}>{/* item.id + " - " +  */item.name}</option>
-                                            })
-                                        }
-                                    </Form.Select>
-                                </Col>
-                            </Row>
-                        </Container>}
+                                    >
+                                        {loadingAreas ? (
+                                            <Spinner size="lg" className="" animation="border" variant="dark" />
+                                        ) : (
+                                            logestechsAreas?.map((area, index) => (
+                                                <div key={index} data-test={`area-result-${index}`}>
+                                                    {area.name + ", " + area.regionName}
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {localStorage.getItem("userId") != 41 && (
+                            <Container fluid>
+                                <Row>
+                                    <Col lg={3} className="mb-4">
+                                        <Form.Label>{translate("TEMP.PROVINCE")}:</Form.Label>
+                                        <Form.Select
+                                            data-test="province-select"
+                                            style={{ cursor: "pointer" }}
+                                            className="shadow"
+                                            name="province"
+                                            required
+                                            aria-label="Default select example"
+                                            onClick={() => {
+                                                getProvences();
+                                            }}
+                                            onChange={(e) => {
+                                                updateSubLevel("governorates", e.target.value);
+                                            }}
+                                        >
+                                            <option value={""} style={{ color: "lightgray" }}>
+                                                Select Provice
+                                            </option>
+                                            {provinces.map((item, index) => (
+                                                <option key={index} value={item.id}>
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Col>
+                                    <Col lg={3} className="mb-4">
+                                        <Form.Label>{translate("TEMP.GOVERNORATE")}:</Form.Label>
+                                        <Form.Select
+                                            data-test="governorate-select"
+                                            style={{ cursor: "pointer" }}
+                                            className="shadow"
+                                            name="governorate"
+                                            required
+                                            aria-label="Default select example"
+                                            onChange={(e) => {
+                                                updateSubLevel("cities", e.target.value);
+                                            }}
+                                        >
+                                            <option value={""} style={{ color: "lightgray" }}>
+                                                Select Governorate
+                                            </option>
+                                            {governorates.map((item, index) => (
+                                                <option key={index} value={item.id}>
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Col>
+                                    <Col lg={3} className="mb-4">
+                                        <Form.Label>{translate("TEMP.CITY")}:</Form.Label>
+                                        <Form.Select
+                                            data-test="city-select"
+                                            style={{ cursor: "pointer" }}
+                                            className="shadow"
+                                            name="city"
+                                            required
+                                            aria-label="Default select example"
+                                            onChange={(e) => {
+                                                updateSubLevel("areas", e.target.value);
+                                            }}
+                                        >
+                                            <option value={""} style={{ color: "lightgray" }}>
+                                                Select City
+                                            </option>
+                                            {cities.map((item, index) => (
+                                                <option key={index} value={item.id}>
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Col>
+                                    <Col lg={3} className="mb-4">
+                                        <Form.Label>{translate("TEMP.AREA")}:</Form.Label>
+                                        <Form.Select
+                                            data-test="area-select"
+                                            style={{ cursor: "pointer" }}
+                                            className="shadow"
+                                            name="area"
+                                            required
+                                            aria-label="Default select example"
+                                        >
+                                            <option value={""} style={{ color: "lightgray" }}>
+                                                Select Area
+                                            </option>
+                                            {areas.map((item, index) => (
+                                                <option key={index} value={item.id}>
+                                                    {item.name}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </Col>
+                                </Row>
+                            </Container>
+                        )}
 
                         <FloatingLabel className="mb-3" controlId="userAddress" label={translate("ORDERS.ADDRESS")}>
-                            <Form.Control className="rounded-22 input-inner-shadow" type="text" placeholder="..." name="address" required />
+                            <Form.Control
+                                data-test="address-input"
+                                className="rounded-22 input-inner-shadow"
+                                type="text"
+                                placeholder="..."
+                                name="address"
+                                required
+                            />
                         </FloatingLabel>
 
                         <FloatingLabel className="mb-3" controlId="addressInfo" label={translate("ORDERS.ADDRESS_INFO")}>
-                            <Form.Control className="rounded-22 input-inner-shadow" type="text" placeholder="..." name="addressinfo" />
+                            <Form.Control
+                                data-test="address-info-input"
+                                className="rounded-22 input-inner-shadow"
+                                type="text"
+                                placeholder="..."
+                                name="addressinfo"
+                            />
                         </FloatingLabel>
-                        {/* <Row>
-                            <Col md>
-                                <FloatingLabel className="mb-3" controlId="addCountry" label={translate("ORDERS.ADDRESS_COUNTRY")}>
-                                    <Form.Control type="text" placeholder="..." name="country" />
-                                </FloatingLabel>
-                            </Col>
-                            <Col>
-                                <FloatingLabel className="mb-3" controlId="addressCode" label={translate("ORDERS.ADDRESS_CODE")}>
-                                    <Form.Control type="text" placeholder="..." name="zipcode" />
-                                </FloatingLabel>
-                            </Col>
-                        </Row> */}
 
                         <Form.Check
                             type="switch"
                             id="custom-switch"
                             label={translate("ORDERS.ADDRESS_SHARED")}
                             name="isShared"
+                            data-test="address-shared-switch"
                         />
 
                         <hr className="mt-3 mb-4" />
 
                         <div style={{ float: "right" }}>
-                            <Button variant="outline-primary" type="submit">
+                            <Button variant="outline-primary" type="submit" data-test="submit-button">
                                 {loading && <Spinner size="sm" className="me-1" animation="border" variant="light" />}
-
                                 {translate("GENERAL.PROCEED")}
                             </Button>
 
-                            {/* edited (cancel button added) */}
-
                             {"  "}
-                            <Button variant="danger" onClick={handleClose}>
+                            <Button variant="danger" onClick={handleClose} data-test="cancel-button">
                                 {translate("GENERAL.CANCEL")}
                             </Button>
                         </div>
@@ -344,5 +385,6 @@ export default function CreateAddress({ onSuccess, children }) {
                 </Modal.Body>
             </Modal>
         </div>
-    )
+    );
+
 }
