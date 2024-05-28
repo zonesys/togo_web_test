@@ -53,7 +53,7 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { FiEdit3 } from 'react-icons/fi';
-
+import { changeCod } from "../../APIs/AdminPanelApis";
 import { useImmer } from "use-immer";
 
 /* format time from 24hr system to 12hr (am/pm) system */
@@ -83,6 +83,8 @@ const OrderDetails = () => {
     const [loadingCreateReturned, setLoadingCreateReturned] = useState(false);
     const [loadingEditCod, setLoadingEditCod] = useState(false);
     const [loadingEditNotes, setLoadingEditNotes] = useState(false);
+    const [showChangeCODModal, setShowChangeCODModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -99,6 +101,8 @@ const OrderDetails = () => {
     const [showEditNotesModal, setShowEditNotesModal] = useState(false);
     const handleCloseEditNotesModal = () => setShowEditNotesModal(false);
     const handleShowEditNotesModal = () => setShowEditNotesModal(true);
+    const handleShowChangeCODdModal = () => setShowChangeCODModal(true);
+    const handleCloseChangeCODdModal = () => setShowChangeCODModal(false);
 
     const { id: orderId } = useParams();
     const location = useLocation();
@@ -126,6 +130,46 @@ const OrderDetails = () => {
     const newNotesRef = useRef();
     const newCodRef = useRef();
     const newCurrencyRef = useRef();
+    const handleChangeCOD = (orderId) => {
+
+        if (/* newCODAmountRef.current.value */ true) {
+            // console.log("yes");
+            setLoading(true);
+            // const newCOD = newCODAmountRef.current.value;
+            const newCOD = 0;
+
+            changeCod(orderId, newCOD).then((res) => {
+                if (res.data === "TokenError" || res.data.includes("error")) {
+                    dispatch(toastNotification("Error", res.data, "error"));
+                } else if (res.data.includes("success")) {
+                    setLoading(false);
+                    // console.log(res.data)
+                    dispatch(toastNotification("Changed", "COD Changed", "success"));
+                    setRefresh(!refresh);
+                    handleCloseChangeCODdModal(true);
+                } else {
+                    dispatch(toastNotification("Error", "unknown error", "error"));
+                }
+            })
+        } else {
+            // console.log("no");
+        }
+
+        /* deleteNewOrderForAdmin(orderId).then((res) => {
+            if (res.data === "TokenError" || res.data === "OrderNotFound2" || res.data === "OrderNotFound1" || res.data === "OrderStatusNotUpdated" || res.data === "deliveryWayNotFound" || res.data === "orderAlreadyAccepted!") {
+                dispatch(toastNotification("Error", res.data, "error"));
+            } else {
+                setLoading(false);
+                dispatch(toastNotification("Canceled", "Order Canceled", "success"));
+                setRefresh(!refresh);
+                handleCloseCancelNewModal();
+            }
+        }) */
+
+        /* setRefresh(!refresh);
+        handleCloseCancelNewModal(); */
+    }
+
 
     const styles = {
         cardHeaderLg: {
@@ -230,7 +274,7 @@ const OrderDetails = () => {
     useEffect(() => {
         getOrderDetails(orderId).then((orderDetailsRes) => {
 
-            // console.log(orderDetailsRes); // temp test
+            // console.log({ orderDetailsRes }); // temp test
 
             setOrderDetails(orderDetailsRes);
 
@@ -314,6 +358,7 @@ const OrderDetails = () => {
             DetailsLoad,
             LengthLoad,
             WeightLoad,
+            newCod,
             WidthLoad,
             OtherDetails,
             TypeLoad,
@@ -391,6 +436,7 @@ const OrderDetails = () => {
                 }
             ]
         }
+        // console.log({ orderDetails })
 
         return (
 
@@ -594,6 +640,32 @@ const OrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
+
+                                        <Modal show={showChangeCODModal} onHide={handleCloseChangeCODdModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Change order COD</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body /* className="mt-5" */>
+                                                {/* Enter new COD amount */}
+                                                {/* <Form.Group>
+                                                    <FloatingLabel className="mb-3" controlId="placeName" label={"Enter new COD amount"}>
+                                                        <Form.Control  type="number" placeholder="..." name="placeName" required ref={newCODAmountRef} />
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
+                                                        </Form.Control.Feedback>
+                                                    </FloatingLabel>
+                                                </Form.Group> */}
+                                                Change order {orderId} COD from ({CostLoad} NIS) to ({newCod} NIS)?
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseChangeCODdModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="success" disabled={loading ? true : false} onClick={() => { handleChangeCOD(orderId) }}>
+                                                    {loading && <Spinner animation="border" size="sm" />} Confirm
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -781,6 +853,8 @@ const OrderDetails = () => {
                                         {
                                             /* Client actions */
                                             !isTransporter() && <>
+
+
                                                 {/* display cancel order button when the order is waiting for bids OR the order is assigned and not accepted */}
                                                 {(order_status === 'Waiting for Bids' || (order_status === 'Order Assigned' && ClientAssignAccepted == 0 && clientAssigneeId != null)) &&
 
@@ -789,7 +863,11 @@ const OrderDetails = () => {
                                                         setRefresh(!refresh);
                                                     }} />
                                                 }
-
+                                                {/* change COD amount for active order */}
+                                                {!!newCod && (order_status === "Bid Accepted" || order_status === "Out for Delivery") && DeliveryId != null && (CostLoad != newCod) && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangeCODdModal}>
+                                                    COD change <br />
+                                                    {/* ({CostLoad + " -> " + newCod}) */}
+                                                </Button>}
                                                 {/* display assign order button when the order is waiting for bids and it is not assigned */}
                                                 {/* {(order_status === 'Waiting for Bids' && order_status !== 'Order Assigned') &&
 

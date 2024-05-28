@@ -23,8 +23,8 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    alterActiveOrderCOD,
-    getOliveryStatus
+    getOliveryStatus,
+    changeCodAdmin
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";
 import { Alert, AlertDescription, AlertIcon, AlertTitle } from "@chakra-ui/alert";
@@ -228,7 +228,6 @@ const AdminOrderDetails = () => {
         /* setRefresh(!refresh);
         handleCloseCancelNewModal(); */
     }
-
     const handleChangeCOD = (orderId) => {
 
         if (/* newCODAmountRef.current.value */ true) {
@@ -237,7 +236,7 @@ const AdminOrderDetails = () => {
             // const newCOD = newCODAmountRef.current.value;
             const newCOD = 0;
 
-            alterActiveOrderCOD(orderId, newCOD).then((res) => {
+            changeCodAdmin(orderId, newCOD).then((res) => {
                 if (res.data === "TokenError" || res.data.includes("error")) {
                     dispatch(toastNotification("Error", res.data, "error"));
                 } else if (res.data.includes("success")) {
@@ -268,6 +267,9 @@ const AdminOrderDetails = () => {
         /* setRefresh(!refresh);
         handleCloseCancelNewModal(); */
     }
+
+
+
 
     const styles = {
         cardHeaderLg: {
@@ -339,7 +341,7 @@ const AdminOrderDetails = () => {
 
             AdminCheckTripCost(orderDetailsRes.CustomerId, orderId, orderDetailsRes.CostLoad, orderDetailsRes.cityFromId, orderDetailsRes.cityToId).then((tripCostRes) => {
 
-                console.log({tripCostRes}); // temp test
+                console.log({ tripCostRes }); // temp test
 
                 if (tripCostRes.data && tripCostRes.data !== "CostNotSend") {
                     setTripCost(tripCostRes.data.CostDetail);
@@ -364,7 +366,7 @@ const AdminOrderDetails = () => {
         /* get all actions related to this order */
         getOliveryStatus(orderId).then((res) => {
             if (res && res.data) {
-                console.log({res})
+                console.log({ res })
                 console.log(res.data.status)
                 setOliveryStatus(res.data.status);
             }
@@ -508,7 +510,7 @@ const AdminOrderDetails = () => {
         return (
 
             <React.Fragment>
-                
+
                 <div className="container-fluid">
 
                 </div>
@@ -602,9 +604,11 @@ const AdminOrderDetails = () => {
                         {/* Actions Buttons */}
                         <Col className="mt-5" xl="8">
                             <Row style={{
-                                marginTop: "40px"
+                                marginTop: '5px'
                             }}>
-                                <Col>
+                                <Col style={{
+                                    marginBlock: newCod ? "10px":null
+                                }}>
                                     {
                                         <Button disabled={loadingMark ? true : false} variant={foreign_order_error == 1 ? "danger" : "outline-danger"} className="rounded-pill"><i className="bi bi-exclamation-circle-fill" onClick={() => {
                                             let status = (foreign_order_error == 1 ? 0 : 1);
@@ -656,10 +660,9 @@ const AdminOrderDetails = () => {
                                         {order_status === "Deleted" && DeliveryId != null && <Button style={styles.actionButton} variant="danger" onClick={handleShowUndoCanceledModal}>
                                             Uncancel Order
                                         </Button>}
-
-                                        {/* change COD amount for active order */}
+                                        
                                         {!!newCod && (order_status === "Bid Accepted" || order_status === "Out for Delivery") && DeliveryId != null && (CostLoad != newCod) && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangeCODdModal}>
-                                            Apply COD change <br /> ({CostLoad + " -> " + newCod})
+                                             COD change
                                         </Button>}
 
                                         {/* alter cod action */}
@@ -756,7 +759,6 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
-
                                         <Modal show={showChangeCODModal} onHide={handleCloseChangeCODdModal}>
                                             <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
                                                 <Modal.Title>Change order COD</Modal.Title>

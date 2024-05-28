@@ -426,7 +426,7 @@ export default function AdminWayBill() {
                                             >
                                                 {translate("WAYBILL.SENDER")}
                                             </legend>
-                                            <p>{translate("WORKING_TIME.FROM")}: {businessName},<br />
+                                            <p>{translate("WORKING_TIME.FROM")}: {orderDetails?.SenderName ? orderDetails?.SenderName : businessName},<br />
                                                 {orderDetails?.IdCitySource},<br />
                                                 {orderDetails?.OtherDetails}
                                             </p>

@@ -25,7 +25,10 @@ export default function DynamicTable({ columns, data, onRowSelect, selected, cur
                     return <tr
                         id={"tr-" + item.idOrder}
                         style={{
-                            backgroundColor: reviewed == 1 && currentPage !== "reviewed-orders" ? "rgb(103,211,165, 0.3)" : ""
+                            backgroundColor:
+                            item.newCod? 
+                            "#f5d4ba":
+                            reviewed == 1 && currentPage !== "reviewed-orders" ? "rgb(103,211,165, 0.3)" : ""
                         }}
                         key={index + "-tr"}
                         // onClick={/* onRowSelect ? ()=>{onRowSelect(item, index)} : undefined */ () => { /* reviewed == 1 ? setReviewed(0) : setReviewed(1) */ }}
