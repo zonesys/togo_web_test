@@ -23,7 +23,8 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    getOliveryStatus
+    getOliveryStatus,
+    changeCodAdmin
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";
 import { Alert, AlertDescription, AlertIcon, AlertTitle } from "@chakra-ui/alert";
@@ -227,6 +228,46 @@ const AdminOrderDetails = () => {
         /* setRefresh(!refresh);
         handleCloseCancelNewModal(); */
     }
+    const handleChangeCOD = (orderId) => {
+
+        if (/* newCODAmountRef.current.value */ true) {
+            // console.log("yes");
+            setLoading(true);
+            // const newCOD = newCODAmountRef.current.value;
+            const newCOD = 0;
+
+            changeCodAdmin(orderId, newCOD).then((res) => {
+                if (res.data === "TokenError" || res.data.includes("error")) {
+                    dispatch(toastNotification("Error", res.data, "error"));
+                } else if (res.data.includes("success")) {
+                    setLoading(false);
+                    // console.log(res.data)
+                    dispatch(toastNotification("Changed", "COD Changed", "success"));
+                    setRefresh(!refresh);
+                    handleCloseChangeCODdModal(true);
+                } else {
+                    dispatch(toastNotification("Error", "unknown error", "error"));
+                }
+            })
+        } else {
+            // console.log("no");
+        }
+
+        /* deleteNewOrderForAdmin(orderId).then((res) => {
+            if (res.data === "TokenError" || res.data === "OrderNotFound2" || res.data === "OrderNotFound1" || res.data === "OrderStatusNotUpdated" || res.data === "deliveryWayNotFound" || res.data === "orderAlreadyAccepted!") {
+                dispatch(toastNotification("Error", res.data, "error"));
+            } else {
+                setLoading(false);
+                dispatch(toastNotification("Canceled", "Order Canceled", "success"));
+                setRefresh(!refresh);
+                handleCloseCancelNewModal();
+            }
+        }) */
+
+        /* setRefresh(!refresh);
+        handleCloseCancelNewModal(); */
+    }
+
 
 
 
@@ -565,7 +606,9 @@ const AdminOrderDetails = () => {
                             <Row style={{
                                 marginTop: '5px'
                             }}>
-                                <Col>
+                                <Col style={{
+                                    marginBlock: newCod ? "10px":null
+                                }}>
                                     {
                                         <Button disabled={loadingMark ? true : false} variant={foreign_order_error == 1 ? "danger" : "outline-danger"} className="rounded-pill"><i className="bi bi-exclamation-circle-fill" onClick={() => {
                                             let status = (foreign_order_error == 1 ? 0 : 1);
@@ -616,6 +659,10 @@ const AdminOrderDetails = () => {
                                         {/* undo canceled order action */}
                                         {order_status === "Deleted" && DeliveryId != null && <Button style={styles.actionButton} variant="danger" onClick={handleShowUndoCanceledModal}>
                                             Uncancel Order
+                                        </Button>}
+                                        
+                                        {!!newCod && (order_status === "Bid Accepted" || order_status === "Out for Delivery") && DeliveryId != null && (CostLoad != newCod) && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangeCODdModal}>
+                                             COD change
                                         </Button>}
 
                                         {/* alter cod action */}
@@ -709,6 +756,31 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                                 <Button variant="danger" disabled={loading ? true : false} onClick={() => { handleCancleNewOrder(orderId) }}>
                                                     {loading && <Spinner animation="border" size="sm" />} Yes, Cancel Order {orderId}
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
+                                        <Modal show={showChangeCODModal} onHide={handleCloseChangeCODdModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Change order COD</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body /* className="mt-5" */>
+                                                {/* Enter new COD amount */}
+                                                {/* <Form.Group>
+                                                    <FloatingLabel className="mb-3" controlId="placeName" label={"Enter new COD amount"}>
+                                                        <Form.Control  type="number" placeholder="..." name="placeName" required ref={newCODAmountRef} />
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
+                                                        </Form.Control.Feedback>
+                                                    </FloatingLabel>
+                                                </Form.Group> */}
+                                                Change order {orderId} COD from ({CostLoad} NIS) to ({newCod} NIS)?
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseChangeCODdModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="success" disabled={loading ? true : false} onClick={() => { handleChangeCOD(orderId) }}>
+                                                    {loading && <Spinner animation="border" size="sm" />} Confirm
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>

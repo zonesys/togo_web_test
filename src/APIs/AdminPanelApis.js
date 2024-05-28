@@ -866,6 +866,16 @@ export function changeCod(orderId, newCOD) {
     params.append("orderId", orderId);
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
+export function changeCodAdmin(orderId, newCOD) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "changeCod");
+    params.append("id", localStorage.getItem("Adminid"));
+    params.append("token", localStorage.getItem("AdminToken"));
+    params.append("newCOD", newCOD);
+    params.append("orderId", orderId);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
 
 export function getTotalTempBalance() {
     var params = new URLSearchParams();
