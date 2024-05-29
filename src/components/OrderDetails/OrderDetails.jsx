@@ -55,6 +55,7 @@ import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { FiEdit3 } from 'react-icons/fi';
 import { changeCod } from "../../APIs/AdminPanelApis";
 import { useImmer } from "use-immer";
+import orderStatusNames from "../../constants/order_status_names";
 
 /* format time from 24hr system to 12hr (am/pm) system */
 function timeFormat(time) {
@@ -856,7 +857,7 @@ const OrderDetails = () => {
 
 
                                                 {/* display cancel order button when the order is waiting for bids OR the order is assigned and not accepted */}
-                                                {(order_status === 'Waiting for Bids' || (order_status === 'Order Assigned' && ClientAssignAccepted == 0 && clientAssigneeId != null)) &&
+                                                {(order_status === 'Waiting for Bids' || order_status === orderStatusNames.bid_accepted || (order_status === 'Order Assigned' && ClientAssignAccepted == 0 && clientAssigneeId != null)) &&
 
                                                     <CancelOrder orderId={orderId} className="mx-1" onSuccess={() => {
                                                         // history.goBack();
