@@ -458,7 +458,7 @@ export default function CreateOrder_v2(props) {
 
                                     {/* ------------------( delivery type )------------------ */}
                                     <ListGroup.Item className="py-4" style={{ backgroundColor: "#ededed" }}>
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="delivery-type-container">
                                             <div className="div-title">
                                                 <DeliveryTruckIcon className="title-icon-stroke" />
                                                 {translate("CREATE_NEW_ORDER.SELECT_DELIVERY_TYPE")}
@@ -469,8 +469,8 @@ export default function CreateOrder_v2(props) {
                                                     <div className="toggleButtonsContainer">
                                                         {
                                                             deliverTypeArr.map((item, index) => {
-                                                                return <div key={index} data-test="radio-delivery-type" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
-                                                                    <div className="radio"><div className="innerRadio" data-test="test"></div></div> {item.name}
+                                                                return <div key={index} data-test={"radio-"+ item.name} className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
+                                                                    <div className="radio"><div className="innerRadio"></div></div> {item.name}
                                                                 </div>
                                                             })
                                                         }
@@ -590,7 +590,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="placeName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="place-name-input" required />
+                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input" required />
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
                                                                 </Form.Control.Feedback>
@@ -612,7 +612,7 @@ export default function CreateOrder_v2(props) {
                                                 <div className="row">
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.PROVINCE")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="province" data-test="province-dropdown" required aria-label="Default select example"
+                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="province" data-test="receiver-province-dropdown" required aria-label="Default select example"
                                                             onClick={() => {
                                                                 getProvences();
                                                             }}
@@ -629,7 +629,7 @@ export default function CreateOrder_v2(props) {
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.GOVERNORATE")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="governorate" data-test="governorate-dropdown" required aria-label="Default select example" onChange={(e) => {
+                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="governorate" data-test="receiver-governorate-dropdown" required aria-label="Default select example" onChange={(e) => {
                                                             updateSubLevel("cities", e.target.value)
                                                         }}>
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_GOVERNORATE" })}</option>
@@ -642,7 +642,7 @@ export default function CreateOrder_v2(props) {
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.CITY")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" data-test="city-dropdown" name="city" required aria-label="Default select example" onChange={(e) => {
+                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" data-test="receiver-city-dropdown" name="city" required aria-label="Default select example" onChange={(e) => {
                                                             updateSubLevel("areas", e.target.value)
                                                         }}>
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_CITY" })}</option>
@@ -655,7 +655,7 @@ export default function CreateOrder_v2(props) {
                                                     </Col>
                                                     <Col lg={3} className="">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.AREA")} {/* <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span> */}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="area" required aria-label="Default select example" data-test="area-dropdown">
+                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="area" required aria-label="Default select example" data-test="receiver-area-dropdown">
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_AREA" })}</option>
                                                             {
                                                                 areas.map((item, index) => {
@@ -670,7 +670,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="" controlId="userAddress" label={translate("CREATE_NEW_ORDER.ADDRESS")}>
-                                                                <Form.Control required className="input-inner-shadow" type="text" placeholder="..." name="address" data-test="address-input" />
+                                                                <Form.Control required className="input-inner-shadow" type="text" placeholder="..." name="address" data-test="receiver-address-input" />
                                                             </FloatingLabel>
                                                             {/*  <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span> */}
                                                         </Form.Group>
@@ -678,7 +678,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="" controlId="addressInfo" label={translate("CREATE_NEW_ORDER.ADDRESS_INFO")}>
-                                                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." name="addressinfo" data-test="addressinfo-input" />
+                                                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." name="addressinfo" data-test="receiver-address-info-input" />
                                                             </FloatingLabel>
                                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
                                                         </Form.Group>
