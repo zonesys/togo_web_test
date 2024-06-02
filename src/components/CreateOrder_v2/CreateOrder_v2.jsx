@@ -243,7 +243,7 @@ export default function CreateOrder_v2(props) {
             <div className="upperBackground">
             </div>
 
-            <div className="mainContainer" style={{ height: null, marginTop:"10%" }}>
+            <div className="mainContainer" style={{ height: null, marginTop: "10%" }}>
                 <Container fluid className="pb-5">
                     <Row className="h2 d-flex justify-content-center" style={{ marginTop: "50px", marginBottom: "0px", fontWeight: "bold", color: "white" }}>
                         {translate("CREATE_NEW_ORDER.CREATE_ORDER")}
@@ -386,7 +386,8 @@ export default function CreateOrder_v2(props) {
                                                             </div>
                                                         </Dropdown.Toggle>
 
-                                                        <Dropdown.Menu className="w-100">
+                                                        <Dropdown.Menu className="w-100" data-test="package-types-dropdown-menu"
+                                                        >
                                                             <Dropdown.Item eventKey="2" className="d-flex">
                                                                 <FoodIcon style={{ width: "20px", height: "20px" }} className="me-1" />
                                                                 {translate("ORDERS." + PackageTypes[2])}
@@ -469,7 +470,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="toggleButtonsContainer">
                                                         {
                                                             deliverTypeArr.map((item, index) => {
-                                                                return <div key={index} data-test={"radio-"+ item.name} className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
+                                                                return <div key={index} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
                                                                     <div className="radio"><div className="innerRadio"></div></div> {item.name}
                                                                 </div>
                                                             })
@@ -746,7 +747,7 @@ export default function CreateOrder_v2(props) {
                                                 {translate("CREATE_NEW_ORDER.ATTACHMENTS_LABEL")}
                                             </div>
 
-                                            <Form.Control name="notes" type="text" className="mt-2 input-inner-shadow" placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.NOTES" })} data-test="new-order-notes-input"/>
+                                            <Form.Control name="notes" type="text" className="mt-2 input-inner-shadow" placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.NOTES" })} data-test="new-order-notes-input" />
                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
                                         </div>
                                     </ListGroup.Item>

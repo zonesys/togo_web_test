@@ -206,13 +206,13 @@ export default function LoginByPhoneNumber() {
                                 }}>
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label>Please enter your phone number (start with 0)</Form.Label>
-                                        <Form.Control type="number" placeholder="Phone number..." ref={numberRef} />
+                                        <Form.Control type="number" placeholder="Phone number..." ref={numberRef} data-test="mobile-number-input" />
                                         {shadowErrorForMobile && startValidationForMobile && <Form.Text className="text-danger">
                                             Please enter a valid phone number!
                                         </Form.Text>}
                                     </Form.Group>
 
-                                    <Button type="submit" className="btn-grad">
+                                    <Button type="submit" className="btn-grad" data-test="send-number-btn">
                                         {loadingSend && <Spinner animation="border" size="sm" />}
                                         Send
                                     </Button>
@@ -238,13 +238,13 @@ export default function LoginByPhoneNumber() {
                     }}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Enter the code</Form.Label>
-                            <Form.Control type="number" placeholder="####" ref={codeRef} />
+                            <Form.Control type="number" placeholder="####" ref={codeRef} data-test="OTP-code-input" />
                             {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger">
                                 Enter four-digit Code!
                             </Form.Text>}
                         </Form.Group>
 
-                        <Button type="submit" className="btn-grad">
+                        <Button type="submit" className="btn-grad" data-test="submit-login">
                             {loadingLogin && <Spinner animation="border" size="sm" />}
                             Login
                         </Button>
