@@ -260,7 +260,7 @@ export default function CreateAddress({ onSuccess, children }) {
                                             }}
                                         >
                                             <option value={""} style={{ color: "lightgray" }}>
-                                                Select Provice
+                                                Select Province
                                             </option>
                                             {provinces.map((item, index) => (
                                                 <option key={index} value={item.id}>

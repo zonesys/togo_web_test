@@ -946,7 +946,7 @@ export default function CreateNewOrder(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="placeName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                                <Form.Control className="rounded-22 input-inner-shadow" type="text" placeholder="..." name="placeName" required />
+                                                                <Form.Control className="rounded-22 input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input" required />
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
                                                                 </Form.Control.Feedback>
@@ -1045,7 +1045,7 @@ export default function CreateNewOrder(props) {
                                                 <div className="row mt-1 mb-3">
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.NAME")}</label>
-                                                        <Form.Control disabled className="rounded-22 input-inner-shadow" type="text" placeholder={dileveryAddress?.name} />
+                                                        <Form.Control disabled className="rounded-22 input-inner-shadow" type="text" data-test="receiver-name-input" placeholder={dileveryAddress?.name} />
                                                     </div>
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}</label>
