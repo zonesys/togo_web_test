@@ -207,7 +207,7 @@ export default function LoginByPhoneNumber() {
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label>Please enter your phone number (start with 0)</Form.Label>
                                         <Form.Control type="number" placeholder="Phone number..." ref={numberRef} data-test="mobile-number-input" />
-                                        {shadowErrorForMobile && startValidationForMobile && <Form.Text className="text-danger">
+                                        {shadowErrorForMobile && startValidationForMobile && <Form.Text className="text-danger" data-test="invalid-number-error-message">
                                             Please enter a valid phone number!
                                         </Form.Text>}
                                     </Form.Group>
@@ -239,7 +239,7 @@ export default function LoginByPhoneNumber() {
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Enter the code</Form.Label>
                             <Form.Control type="number" placeholder="####" ref={codeRef} data-test="OTP-code-input" />
-                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger">
+                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger" data-test="invalid-code-message">
                                 Enter four-digit Code!
                             </Form.Text>}
                         </Form.Group>

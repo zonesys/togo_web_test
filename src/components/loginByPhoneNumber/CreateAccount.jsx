@@ -197,115 +197,112 @@ export default function CreateAccount() {
             <div className="container-fluid mt-5 pb-5">
                 <div className="row d-flex justify-content-center">
                     <div className="col-6">
-                        <Card className='shadow h-100 rounded-22'>
-                            <Card.Header style={styles.cardHeaderLg} className="">
+                        <Card className='shadow h-100 rounded-22' data-test="signup-card">
+                            <Card.Header style={styles.cardHeaderLg} className="" data-test="card-header">
                                 Create Account
-                                <span style={{ float: "right", cursor: "pointer" }} onClick={() => { history.push("/account/signin") }}>
+                                <span style={{ float: "right", cursor: "pointer" }} onClick={() => { history.push("/account/signin") }} data-test="signin-link">
                                     <i className="bi bi-qr-code-scan"></i>
                                 </span>
                             </Card.Header>
-
-                            <Card.Body className="mt-5">
-
-                                <ToggleButtonGroup className="w-100 mb-5" type="radio" name="userType" defaultValue={1} onChange={(e) => { setTypeUser(e) }}>
-                                    <ToggleButton variant="outline-primary" id="tbg-radio-1" value={1}>
+    
+                            <Card.Body className="mt-5" data-test="card-body">
+                                <ToggleButtonGroup className="w-100 mb-5" type="radio" name="userType" defaultValue={1} onChange={(e) => { setTypeUser(e) }} data-test="user-type-group">
+                                    <ToggleButton variant="outline-primary" id="tbg-radio-1" value={1} data-test="user-type-client">
                                         Client
                                     </ToggleButton>
-                                    <ToggleButton variant="outline-primary" id="tbg-radio-2" value={2}>
+                                    <ToggleButton variant="outline-primary" id="tbg-radio-2" value={2} data-test="user-type-transporter">
                                         Transporter
                                     </ToggleButton>
                                 </ToggleButtonGroup>
-
+    
                                 <Form onSubmit={(event) => {
                                     event.preventDefault();
                                     sendCode();
-                                }}>
-                                    <div className="w-100 d-flex justify-content-center mb-5">
-                                        <div
-                                            className="rounded-circle d-flex light-turquoise-bg wh-45px logo-container"
-                                            style={{ width: "200px", height: "200px" }}
-                                        >
-
+                                }} data-test="signup-form">
+                                    <div className="w-100 d-flex justify-content-center mb-5" data-test="profile-picture-container">
+                                        <div className="rounded-circle d-flex light-turquoise-bg wh-45px logo-container" style={{ width: "200px", height: "200px" }} data-test="profile-picture-wrapper">
                                             <img
                                                 className="logo"
                                                 src={!profileImage.includes("null") ? (profileImage.split("/")[profileImage.split("/").length - 1].includes(".") ? profileImage + "?t=" + Math.random() : profileImage) : "https://monstar-lab.com/global/wp-content/uploads/sites/11/2019/04/male-placeholder-image.jpeg"}
-
                                                 alt="user-profile-pic"
+                                                data-test="profile-picture"
                                             />
-                                            <UploadAndEditImage currentImage={profileImage.split("/")[profileImage.split("/").length - 1].includes(".") ? profileImage + "?t=" + Math.random() : profileImage} setImageToUpload={setImageToUpload} setImage={setProfileImage} imageBorderRadius={250} imageHeight={250} imageWidth={250} />
+                                            <UploadAndEditImage 
+                                                currentImage={profileImage.split("/")[profileImage.split("/").length - 1].includes(".") ? profileImage + "?t=" + Math.random() : profileImage} 
+                                                setImageToUpload={setImageToUpload} 
+                                                setImage={setProfileImage} 
+                                                imageBorderRadius={250} 
+                                                imageHeight={250} 
+                                                imageWidth={250} 
+                                                data-test="upload-edit-image"
+                                            />
                                         </div>
                                     </div>
-
-                                    <span className="h4" style={{ color: "#34af9c" }}>Personal Information</span><hr className="mb-3" />
-
-                                    <div className="mb-3 d-flex justify-content-between">
-                                        <Form.Group style={{ width: "48%" }} controlId="formBasicFirstName">
+    
+                                    <span className="h4" style={{ color: "#34af9c" }} data-test="personal-info-title">Personal Information</span>
+                                    <hr className="mb-3" />
+    
+                                    <div className="mb-3 d-flex justify-content-between" data-test="name-fields">
+                                        <Form.Group style={{ width: "48%" }} controlId="formBasicFirstName" data-test="first-name-group">
                                             <Form.Label>First Name</Form.Label>
-                                            <Form.Control required type="text" placeholder="First Name..." ref={firstNameRef} />
+                                            <Form.Control required type="text" placeholder="First Name..." ref={firstNameRef} data-test="first-name-input" />
                                         </Form.Group>
-
-                                        <Form.Group style={{ width: "48%" }} controlId="formBasicLastName">
+    
+                                        <Form.Group style={{ width: "48%" }} controlId="formBasicLastName" data-test="last-name-group">
                                             <Form.Label>Last Name</Form.Label>
-                                            <Form.Control required type="text" placeholder="Last Name..." ref={lastNameRef} />
+                                            <Form.Control required type="text" placeholder="Last Name..." ref={lastNameRef} data-test="last-name-input" />
                                         </Form.Group>
                                     </div>
-
-                                    <div className="d-flex justify-content-between">
-                                        <Form.Group style={{ width: "48%" }} className="mb-3" controlId="formBasicEmail">
+    
+                                    <div className="d-flex justify-content-between" data-test="contact-fields">
+                                        <Form.Group style={{ width: "48%" }} className="mb-3" controlId="formBasicEmail" data-test="email-group">
                                             <Form.Label>Email</Form.Label>
-                                            <Form.Control required type="email" placeholder="Email..." ref={emailRef} />
+                                            <Form.Control required type="email" placeholder="Email..." ref={emailRef} data-test="email-input" />
                                         </Form.Group>
-
-                                        <Form.Group style={{ width: "48%" }} controlId="formBasicPhone">
+    
+                                        <Form.Group style={{ width: "48%" }} controlId="formBasicPhone" data-test="phone-number-group">
                                             <Form.Label>Phone Number</Form.Label>
-                                            <Form.Control required type="tel" placeholder="05..." ref={numberRef} />
+                                            <Form.Control required type="tel" placeholder="05..." ref={numberRef} data-test="phone-number-input" />
                                         </Form.Group>
                                     </div>
-
-                                    <Form.Group className="mb-3" style={{ width: "48%" }} controlId="formBasicId">
+    
+                                    <Form.Group className="mb-3" style={{ width: "48%" }} controlId="formBasicId" data-test="id-number-group">
                                         <Form.Label>ID Number</Form.Label>
-                                        <Form.Control required type="number" placeholder="ID Number..." ref={idNumberRef} />
+                                        <Form.Control required type="number" placeholder="ID Number..." ref={idNumberRef} data-test="id-number-input" />
                                     </Form.Group>
-
-                                    <span className="h4" style={{ color: "#34af9c" }}>Business Information</span><hr className="mb-3" />
-
-                                    <div className="mb-3 d-flex justify-content-between">
-                                        <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessName">
+    
+                                    <span className="h4" style={{ color: "#34af9c" }} data-test="business-info-title">Business Information</span>
+                                    <hr className="mb-3" />
+    
+                                    <div className="mb-3 d-flex justify-content-between" data-test="business-info-fields">
+                                        <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessName" data-test="business-name-group">
                                             <Form.Label>Business Name</Form.Label>
-                                            <Form.Control required type="text" placeholder="Business Name..." ref={businessNameRef} />
+                                            <Form.Control required type="text" placeholder="Business Name..." ref={businessNameRef} data-test="business-name-input" />
                                         </Form.Group>
-
-                                        {typeUser == 1 && <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessLocation">
+    
+                                        {typeUser === 1 && <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessLocation" data-test="business-location-group">
                                             <Form.Label>Business Location</Form.Label>
-                                            <Form.Control required type="text" placeholder="Business Location..." ref={businessLocationRef} />
+                                            <Form.Control required type="text" placeholder="Business Location..." ref={businessLocationRef} data-test="business-location-input" />
                                         </Form.Group>}
                                     </div>
-
-                                    {typeUser == 1 && <div className="mb-3 d-flex justify-content-between">
-                                        <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessName">
+    
+                                    {typeUser === 1 && <div className="mb-3 d-flex justify-content-between" data-test="business-type-field">
+                                        <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessType" data-test="business-type-group">
                                             <Form.Label>Business Type</Form.Label>
-                                            <Form.Select required aria-label="businessType" ref={businessTypeRef}>
+                                            <Form.Select required aria-label="businessType" ref={businessTypeRef} data-test="business-type-select">
                                                 <option value="1">شركة</option>
                                                 <option value="2">مؤسسة</option>
                                             </Form.Select>
                                         </Form.Group>
-
-                                        {/* <Form.Group style={{ width: "48%" }} controlId="formBasicBusinessName">
-                                            <Form.Label>City</Form.Label>
-                                            <Form.Select required aria-label="city">
-                                                <option value="1">شركة</option>
-                                                <option value="2">مؤسسة</option>
-                                            </Form.Select>
-                                        </Form.Group> */}
                                     </div>}
-
+    
                                     <hr className="mb-3" />
-
-                                    <Button /* disabled */ type="submit" className="btn-grad">
+    
+                                    <Button type="submit" className="btn-grad" data-test="submit-button">
                                         {loadingSend && <Spinner animation="border" size="sm" />}
                                         Send
                                     </Button>
-                                    <span className="register" onClick={() => { history.push("/account/loginByPhoneNumber") }}>
+                                    <span className="register" onClick={() => { history.push("/account/loginByPhoneNumber") }} data-test="already-have-account">
                                         Already have an account?
                                     </span>
                                 </Form>
@@ -314,25 +311,25 @@ export default function CreateAccount() {
                     </div>
                 </div>
             </div>
-            <Modal show={show} onHide={handleClose}>
-                <Modal.Header>
+            <Modal show={show} onHide={handleClose} data-test="confirmation-modal">
+                <Modal.Header data-test="modal-header">
                     Confirm Registration
                 </Modal.Header>
-
-                <Modal.Body>
+    
+                <Modal.Body data-test="modal-body">
                     <Form onSubmit={(event) => {
                         event.preventDefault();
                         register();
-                    }}>
-                        <Form.Group className="mb-3" controlId="formBasicEmail">
+                    }} data-test="confirmation-form">
+                        <Form.Group className="mb-3" controlId="formBasicEmail" data-test="confirmation-code-group">
                             <Form.Label>Enter the code</Form.Label>
-                            <Form.Control type="number" placeholder="####" ref={codeRef} />
-                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger">
+                            <Form.Control type="number" placeholder="####" ref={codeRef} data-test="confirmation-code-input" />
+                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger" data-test="confirmation-code-error">
                                 Enter four-digit Code!
                             </Form.Text>}
                         </Form.Group>
-
-                        <Button type="submit" className="btn-grad">
+    
+                        <Button type="submit" className="btn-grad" data-test="confirm-registration-button">
                             {loadingRegister && <Spinner animation="border" size="sm" />}
                             Register
                         </Button>
@@ -341,4 +338,4 @@ export default function CreateAccount() {
             </Modal>
         </>
     )
-}
+}    

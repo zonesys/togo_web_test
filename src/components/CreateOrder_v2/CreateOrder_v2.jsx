@@ -732,7 +732,7 @@ export default function CreateOrder_v2(props) {
                                                     </div>
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.ADDRESS_INFO")}</label>
-                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.additional_info} data-test="receiver-address-info-input"/>
+                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.additional_info} data-test="receiver-address-info-input" />
                                                     </div>
                                                 </div>
                                             </>}
@@ -844,13 +844,13 @@ export default function CreateOrder_v2(props) {
                                                             <td style={{ width: "25%" }}>{address.details + ", " + address.cityName}</td>
                                                             <td style={{ width: "20%" }}>{address.phone_number}</td>
                                                             {address.is_default == "0" ? <td style={{ width: "30%" }}>
-                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad fs-4" onClick={() => {
+                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad fs-4" data-test="set-default-button" onClick={() => {
                                                                     setDefaultAddressHandler(address.id);
                                                                 }}>
                                                                     {loadingSetDefault && <Spinner animation="border" size="sm" />}
                                                                     {translate("CREATE_NEW_ORDER.SET_DEFAULT")}
                                                                 </Button>
-                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad mx-2 fs-4" onClick={() => {
+                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad mx-2 fs-4" data-test="set-default-button" onClick={() => {
                                                                     setTempAddressHandler(address.id);
                                                                 }}>
                                                                     {loadingSetDefault && <Spinner animation="border" size="sm" />}
@@ -881,80 +881,80 @@ export default function CreateOrder_v2(props) {
 
                         style={{ backgroundColor: "rgba(0,0,0,0.5)", }}
                     >
-                       <Modal.Header closeButton className="card-header-lg" data-test="modal-header">
-    <Modal.Title data-test="modal-title">{translate("CREATE_NEW_ORDER.CHOOSE_DELIVERY_ADDRESS")}</Modal.Title>
-</Modal.Header>
-<Modal.Body className="mt-5" data-test="modal-body">
-    <Container fluid data-test="container">
-        <Row className="mb-2" data-test="row-header">
-            <Col lg={11} data-test="col-header">
-                <span className="h4" data-test="span-header">{translate("CREATE_NEW_ORDER.SELECT_DELIVERY_ADDRESS_FROM_LIST")}:</span>
-            </Col>
-            {/* <Col lg={1}>
+                        <Modal.Header closeButton className="card-header-lg" data-test="modal-header">
+                            <Modal.Title data-test="modal-title">{translate("CREATE_NEW_ORDER.CHOOSE_DELIVERY_ADDRESS")}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body className="mt-5" data-test="modal-body">
+                            <Container fluid data-test="container">
+                                <Row className="mb-2" data-test="row-header">
+                                    <Col lg={11} data-test="col-header">
+                                        <span className="h4" data-test="span-header">{translate("CREATE_NEW_ORDER.SELECT_DELIVERY_ADDRESS_FROM_LIST")}:</span>
+                                    </Col>
+                                    {/* <Col lg={1}>
                 <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>
                     <Button style={{ cursor: "pointer" }} className="btn-grad p-2">
                         <AddIcon w={6} h={6} color="gray.50" />
                     </Button>
                 </CreateAddress>
             </Col> */}
-        </Row>
-        <Row data-test="row-table">
-            <Table data-test="table-header">
-                <thead data-test="thead-header">
-                    <tr data-test="tr-header">
-                        <th style={{ width: "30%" }} scope="col" data-test="th-name">
-                            <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.NAME")} data-test="floating-label-name">
-                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-name" onChange={(e) => {
-                                    setInputValue(e.target.value);
-                                }} />
-                                <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon">
-                                    <FaSearch />
-                                </div>
-                            </FloatingLabel>
-                        </th>
-                        <th style={{ width: "35%", paddingBottom: "30px" }} className="fs-6" scope="col" data-test="th-address">{translate("CREATE_NEW_ORDER.ADDRESS")}</th>
-                        <th style={{ width: "20%" }} scope="col" data-test="th-mobile">
-                            <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")} data-test="floating-label-mobile">
-                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-mobile" onChange={(e) => {
-                                    setInputValue(e.target.value);
-                                }} />
-                                <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon-mobile">
-                                    <FaSearch />
-                                </div>
-                            </FloatingLabel>
-                        </th>
-                        <th style={{ width: "15%" }} scope="col" data-test="th-empty"></th>
-                    </tr>
-                </thead>
-            </Table>
-            <div style={{ height: "300px", overflowY: "scroll" }} data-test="div-scroll">
-                <Table data-test="table-body">
-                    <tbody data-test="tbody">
-                        {
-                            deliverAddresses.map((address, index) => {
-                                return (
-                                    <tr key={index} data-test={`tr-${index}`}>
-                                        <td style={{ width: "30%" }} data-test={`td-name-${index}`}>{address.name}</td>
-                                        <td style={{ width: "35%" }} data-test={`td-details-${index}`}>{address.details + ", " + address.cityName}</td>
-                                        <td style={{ width: "20%" }} data-test={`td-phone-${index}`}>{address.phone_number}</td>
-                                        <td style={{ width: "15%" }} data-test={`td-button-${index}`}>
-                                            <Button disabled={loadingSetDefault ? true : false} data-test="select-receiver-address-button" className="btn-grad" onClick={() => {
-                                                setDeliverAddressHandler(address);
-                                            }}>
-                                                {loadingSetDefault && <Spinner animation="border" size="sm" data-test="spinner" />}
-                                                {translate("CREATE_NEW_ORDER.SELECT")}
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </Table>
-            </div>
-        </Row>
-    </Container>
-</Modal.Body>
+                                </Row>
+                                <Row data-test="row-table">
+                                    <Table data-test="table-header">
+                                        <thead data-test="thead-header">
+                                            <tr data-test="tr-header">
+                                                <th style={{ width: "30%" }} scope="col" data-test="th-name">
+                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.NAME")} data-test="floating-label-name">
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-name" onChange={(e) => {
+                                                            setInputValue(e.target.value);
+                                                        }} />
+                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon">
+                                                            <FaSearch />
+                                                        </div>
+                                                    </FloatingLabel>
+                                                </th>
+                                                <th style={{ width: "35%", paddingBottom: "30px" }} className="fs-6" scope="col" data-test="th-address">{translate("CREATE_NEW_ORDER.ADDRESS")}</th>
+                                                <th style={{ width: "20%" }} scope="col" data-test="th-mobile">
+                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")} data-test="floating-label-mobile">
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-mobile" onChange={(e) => {
+                                                            setInputValue(e.target.value);
+                                                        }} />
+                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon-mobile">
+                                                            <FaSearch />
+                                                        </div>
+                                                    </FloatingLabel>
+                                                </th>
+                                                <th style={{ width: "15%" }} scope="col" data-test="th-empty"></th>
+                                            </tr>
+                                        </thead>
+                                    </Table>
+                                    <div style={{ height: "300px", overflowY: "scroll" }} data-test="div-scroll">
+                                        <Table data-test="table-body">
+                                            <tbody data-test="tbody">
+                                                {
+                                                    deliverAddresses.map((address, index) => {
+                                                        return (
+                                                            <tr key={index} data-test={`tr-${index}`}>
+                                                                <td style={{ width: "30%" }} data-test={`td-name-${index}`}>{address.name}</td>
+                                                                <td style={{ width: "35%" }} data-test={`td-details-${index}`}>{address.details + ", " + address.cityName}</td>
+                                                                <td style={{ width: "20%" }} data-test={`td-phone-${index}`}>{address.phone_number}</td>
+                                                                <td style={{ width: "15%" }} data-test={`td-button-${index}`}>
+                                                                    <Button disabled={loadingSetDefault ? true : false} data-test="select-receiver-address-button" className="btn-grad" onClick={() => {
+                                                                        setDeliverAddressHandler(address);
+                                                                    }}>
+                                                                        {loadingSetDefault && <Spinner animation="border" size="sm" data-test="spinner" />}
+                                                                        {translate("CREATE_NEW_ORDER.SELECT")}
+                                                                    </Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                </Row>
+                            </Container>
+                        </Modal.Body>
 
                     </Modal>
 
