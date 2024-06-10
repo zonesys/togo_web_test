@@ -2,12 +2,12 @@ import Axios from "axios";
 import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
 
 
-export function LoginUser(phoneNumber) {
+export function LoginUser(phoneNumber, typeCustomer) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "Login");
     params.append("PhoneNumber", phoneNumber);
 
-    params.append("TypeCustomer", localStorage.getItem("UserType"));
+    params.append("TypeCustomer", localStorage.getItem("UserType") || typeCustomer);
 
     return Axios.post(apiUrl, params, { headers: requestHeaders });
 }

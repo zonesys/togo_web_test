@@ -9,7 +9,8 @@ import { useHistory } from "react-router";
 import UploadAndEditImage from '../UploadImage/UploadAndEditImage';
 import { toastNotification } from "../../Actions/GeneralActions";
 import { useDispatch } from "react-redux";
-import { sendVerificationCode, registerClientByPhoneNumber, registerTransporterByPhoneNumber, sendVerificationCodeForNewUser } from "../../APIs/LoginAPIs";
+import { sendVerificationCode, registerClientByPhoneNumber, registerTransporterByPhoneNumber, sendVerificationCodeForNewUser, LoginUser, loginWithNumber } from "../../APIs/LoginAPIs";
+import { refreshPage } from "../../Functions/CommonFunctions";
 
 export default function CreateAccount() {
     const styles = {
@@ -149,10 +150,18 @@ export default function CreateAccount() {
                         dispatch(toastNotification("Error", response, "error"));
                         setLloadingRegister(false);
                     } else {
-                        dispatch(toastNotification("Account Created", "Account created successfully", "success"));
-
-                        setLloadingRegister(false);
-                        history.push("/account/loginByPhoneNumber");
+                        loginWithNumber(res.data.customerId, code).then((res) => {
+                            localStorage.setItem("fullName", res.data.fullName);
+                            localStorage.setItem("userId", res.data.userId);
+                            localStorage.setItem("TokenDevice", res.data.tokenDevice);
+                            localStorage.setItem("UserType", res.data.userType);
+                            setTimeout(() => {
+                                dispatch(toastNotification("Account Created", "Account created successfully", "success"));
+                
+                                setLloadingRegister(false);
+                                history.push("/account/loginByPhoneNumber");
+                            }, 1000)
+                        })
                     }
                 })
             } else {
