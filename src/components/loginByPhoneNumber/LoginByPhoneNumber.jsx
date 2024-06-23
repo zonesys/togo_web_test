@@ -13,6 +13,8 @@ import { getUserToken } from "../../firebase";
 import { refreshPage } from "../../Functions/CommonFunctions";
 import "./styles.css";
 
+import { isSupported } from "firebase/messaging";
+
 export default function LoginByPhoneNumber() {
     const styles = {
         cardHeaderLg: {
@@ -98,17 +100,20 @@ export default function LoginByPhoneNumber() {
         }
     }
 
-    function requestPermission() {
+    async function requestPermission() {
         console.log('Requesting permission...');
-        Notification.requestPermission().then((permission) => {
-            if (permission === 'granted') {
-                // console.log('Notification permission granted.');
-
-                tokenFunc();
-            } else {
-                // console.log('Notification permission denied.');
-            }
-        })
+        const hasFirebaseMessagingSupport = await isSupported();
+        if (hasFirebaseMessagingSupport) {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    // console.log('Notification permission granted.');
+                    
+                    tokenFunc();
+                } else {
+                    // console.log('Notification permission denied.');
+                }
+            })
+        }
     }
 
     let data;
@@ -125,7 +130,7 @@ export default function LoginByPhoneNumber() {
         return data;
     }
 
-    function handleLogin() {
+    async function handleLogin() {
         setStartValidationForCode(true);
         if (codeRef.current.value.length !== 4) {
             setShowErrorForCode(true);
@@ -136,7 +141,7 @@ export default function LoginByPhoneNumber() {
 
             // console.log("----> " + customerId);
 
-            loginWithNumber(customerId, codeRef.current.value).then((res) => {
+            loginWithNumber(customerId, codeRef.current.value).then(async (res) => {
                 // console.log(res.data);
                 if (res.data === "Wrong Code!") {
                     dispatch(toastNotification("Error", res.data, "error"));
@@ -175,7 +180,7 @@ export default function LoginByPhoneNumber() {
 
                     // console.log("before permissions check");
                     // request notification permission and get FCM token
-                    requestPermission();
+                    await requestPermission();
 
                     setLloadingLogin(false);
 
