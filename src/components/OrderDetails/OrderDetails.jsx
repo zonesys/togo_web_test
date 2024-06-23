@@ -55,7 +55,21 @@ import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { FiEdit3 } from 'react-icons/fi';
 import { changeCod } from "../../APIs/AdminPanelApis";
 import { useImmer } from "use-immer";
-import orderStatusNames from "../../constants/order_status_names";
+// import orderStatusNames from "src/constants/order_status_names.js";
+
+const orderStatusNames = {
+    bid_accepted: "Bid Accepted",
+    out_for_delivery: "Out for Delivery",
+    bids_available: "Bids Available",
+    returned_order: "Returned Order",
+    stuck_order: "Stuck Order",
+    waiting_for_bids: "Waiting for Bids",
+    delivered: "Delivered",
+    deleted: "Deleted",
+    picked_up: "Picked Up",
+
+
+}
 
 /* format time from 24hr system to 12hr (am/pm) system */
 function timeFormat(time) {
