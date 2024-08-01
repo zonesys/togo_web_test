@@ -23,7 +23,7 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    getOliveryStatus,
+    getForeignStatus,
     changeCodAdmin
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";
@@ -96,7 +96,7 @@ const AdminOrderDetails = () => {
 
     const [loadingAcceptOffer, setLoadingAcceptOffer] = useState(false);
 
-    const [oliveryStatus, setOliveryStatus] = useState("");
+    const [foreignStatus, setForeignStatus] = useState("");
 
     const handleCloseCancelActiveModal = () => setShowCancelActiveModal(false);
     const handleShowCancelActiveModal = () => setShowCancelActiveModal(true);
@@ -364,11 +364,11 @@ const AdminOrderDetails = () => {
 
     useEffect(() => {
         /* get all actions related to this order */
-        getOliveryStatus(orderId).then((res) => {
+        getForeignStatus(orderId).then((res) => {
             if (res && res.data) {
                 console.log({ res })
-                console.log(res.data.status)
-                setOliveryStatus(res.data.status);
+                console.log(res.data)
+                setForeignStatus(res.data);
             }
         })
     }, [refresh])
@@ -433,7 +433,8 @@ const AdminOrderDetails = () => {
             ReceiverName,
             foreign_order_error,
             senderForeignViilageName,
-            senderForeignRegionName
+            senderForeignRegionName,
+            foreignBarcode
         } = orderDetails;
 
         let senderAddress = {
@@ -578,10 +579,19 @@ const AdminOrderDetails = () => {
 
                                                 {<tr>
                                                     <th scope="row">
-                                                        <span>Olivery Status</span>
+                                                        <span>Foreign Status</span>
                                                     </th>
                                                     <td style={{ textAlign: "right" }}>
-                                                        <span style={{ color: "#35b09d" }}>{oliveryStatus}</span>
+                                                        <span style={{ color: "#35b09d" }}>{foreignStatus}</span>
+                                                    </td>
+                                                </tr>}
+
+                                                {<tr>
+                                                    <th scope="row">
+                                                        <span>Foreign Barcode</span>
+                                                    </th>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span style={{ color: "#35b09d" }}>{foreignBarcode}</span>
                                                     </td>
                                                 </tr>}
 
@@ -950,7 +960,8 @@ const AdminOrderDetails = () => {
                                                                                 resp.data == "OrderNotAccept" ||
                                                                                 resp.data == "BidChanged" ||
                                                                                 resp.data == "Blocked" ||
-                                                                                resp.data == "TokenError"
+                                                                                resp.data == "TokenError" ||
+                                                                                resp.data == "Failed"
                                                                             ) {
                                                                                 dispatch(toastNotification("Error!", resp.data, "error"));
                                                                             } else if (resp.data.indexOf("Success") !== -1) {

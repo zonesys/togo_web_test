@@ -1102,7 +1102,8 @@ const OrderDetails = () => {
                                                                                 resp.data == "OrderNotAccept" ||
                                                                                 resp.data == "BidChanged" ||
                                                                                 resp.data == "Blocked" ||
-                                                                                resp.data == "TokenError"
+                                                                                resp.data == "TokenError" || 
+                                                                                resp.data == "Failed"
                                                                             ) {
                                                                                 dispatch(toastNotification("Error!", resp.data, "error"));
                                                                             } else if (resp.data.indexOf("Success") !== -1) {

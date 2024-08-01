@@ -81,7 +81,7 @@ const getCurrentPage = (history) => {
 const Main = ({ socket, token }) => {
 
     let history = useHistory();
-
+    //console.log("id:",localStorage.getItem("userId"),localStorage.getItem("TokenDevice"))
     const [currentPage, setCurrentPage] = useState(getCurrentPage(history) ?? ("all-orders"));
     const [totalNumOfRecs, setTotalNumberOfRecs] = useState(0);
     const [orders, setOrders] = useState([]);
@@ -361,6 +361,7 @@ const Main = ({ socket, token }) => {
         } else {
             setSearchStr(searchRef.current.value);
         }
+        console.log(searchRef.current.value)
 
         setSearching(true);
 

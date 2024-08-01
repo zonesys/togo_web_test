@@ -343,7 +343,7 @@ function Header({/* socket */ }) {
                                 <Text>{translate("HEADER.TOTAL_ORDERS")}: {totalOrdersNum}</Text>
                             </Flex>
                             <Box {...styles.horizontalBreakLine} />
-                            {localStorage.getItem("userId") != 97 && <Link to='/account/financial-management' style={styles.link}>
+                            {localStorage.getItem("userId") != 97 && localStorage.getItem("userId") != 361 && <Link to='/account/financial-management' style={styles.link}>
                                 <Flex {...styles.headerItemsContainer}>
                                     <Icon as={IoIosWallet} fontSize="2xl" />
                                     {isNaN(wallet) ? <Loader color="white" width="40px" height="40px" /> : <Text fontSize="14px">{wallet} NIS</Text>}
@@ -361,12 +361,12 @@ function Header({/* socket */ }) {
                                         onClick={() => { history.push("/account/cities-prices") }}>{translate("HEADER.CITIES_PRICES")}</MenuItem>}
                                     <MenuItem icon={<IoMdGitNetwork />}
                                         onClick={() => { history.push("/account/my-network") }}>{translate("NETWORK.NETWORK_TITLE")}</MenuItem>
-                                    {!isTransporter() && <MenuItem icon={<IoMdGitNetwork />}
+                                    {!isTransporter() && localStorage.getItem("userId") != 361 && <MenuItem icon={<IoMdGitNetwork />}
                                         onClick={() => { history.push("/account/my-users") }}>{translate("HEADER.MANAGE_SUBUSERS")}</MenuItem>}
                                     {/* {localStorage.getItem("userId") == "40" && <MenuItem icon={<RiTeamFill />}
                                     onClick={() => { history.push("/account/team-admin") }}>{translate("TEMP.MANAGE_TEAMS")}</MenuItem>} */}
-                                    <MenuItem icon={<IoIosCard />}
-                                        onClick={() => history.push("/account/financial-management")}>{translate("HEADER.REQUEST_WITHDRAWAL")}</MenuItem>
+                                   {localStorage.getItem("userId") != 361 && <MenuItem icon={<IoIosCard />}
+                                        onClick={() => history.push("/account/financial-management")}>{translate("HEADER.REQUEST_WITHDRAWAL")}</MenuItem>}
                                     {isTransporter() && <MenuItem icon={<FaUsersGear />}
                                         onClick={() => history.push("/account/manage-clients")}>{translate("HEADER.MANAGE_CLIENTS")}</MenuItem>}
                                     <MenuItem icon={<IoIosExit />}

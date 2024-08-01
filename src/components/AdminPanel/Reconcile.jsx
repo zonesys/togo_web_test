@@ -45,12 +45,13 @@ export default function Reconcile() {
                         })
                     })
                     
-                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode);
+                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة"));
                     const Idkey =  filtered[0].hasOwnProperty("التسلسل")?"التسلسل":
-                    filtered[0].hasOwnProperty("Barcode")?"Barcode":"";
+                                    filtered[0].hasOwnProperty("Barcode")?"Barcode":
+                                    filtered[0].hasOwnProperty("باركود الشحنة")?"باركود الشحنة":"";
 
                     filtered = filtered.map(order => {
-                            order[Idkey] = order[Idkey];
+                            order["barcode"] = order[Idkey];
                             return order
                         });
                     //let ids = filtered.map(val => val[Idkey]).join(",");    
@@ -115,7 +116,7 @@ export default function Reconcile() {
                 } catch (e) {
                     setResult(null);
                     setLoading(false);
-                    dispatch(toastMessage("Error Reading Excel File", "File Error"))
+                    dispatch(toastMessage(JSON.stringify(e), "File Error"))
                     console.log("reader.onload error: " + e)
                 }
 

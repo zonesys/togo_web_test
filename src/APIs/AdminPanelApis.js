@@ -1019,3 +1019,11 @@ export function getOliveryStatus(oliveryOrderId) {
     formData.append("orderId", oliveryOrderId);
     return axios.post(apiUrl, formData, { headers: requestHeaders });
 }
+
+export function getForeignStatus(orderId) {
+    console.log({ orderId })
+    var formData = new FormData();
+    formData.append("CheckTypeFunction", "getForeignStatus");
+    formData.append("orderId", orderId);
+    return axios.post(apiUrl, formData, { headers: requestHeaders });
+}
