@@ -577,8 +577,8 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
     const [excelData, setExcelData] = useState([]);
     const [openExportDialog, setOpenExportDialog] = useState(false);
 
-    const [startDate, setStartDate] = useState(null);
-    const [endDate, setEndDate] = useState(null);
+    const [startDate, setStartDate] = useState(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000));
+    const [endDate, setEndDate] = useState(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000));
 
     const [loading, setLoading] = useState(false);
 
@@ -633,18 +633,14 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
 
                     setExcelData(res.data.response.data.result.response);
 
-                    setOpenExportDialog(true);
-
                     setLoading(false);
                 });
             } else {
                 // console.log(userTpye + " - " + filterStr);
-                getOrdersToExport(userTpye, filterStr).then((res) => {
+                getOrdersToExport(userTpye, filterStr, startDate, endDate).then((res) => {
                     // console.log(res.data);
 
                     setExcelData(res.data.response);
-
-                    setOpenExportDialog(true);
 
                     setLoading(false);
                 });
@@ -657,7 +653,7 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
         <>
             <Button disabled={loading ? true : false} style={{
                 position: "absolute", bottom: ordersNum == 1000 ? "-140px" : ordersNum >= 10 ? "10px" : "-30px", right: "30px"
-            }} variant="outline-success" onClick={exportToExcel}><i className=" me-1 bi bi-file-earmark-spreadsheet"></i> Export to Excel {loading && <Spinner size="sm" className="me-1" animation="border" variant="success" />}</Button>
+            }} variant="outline-success" onClick={() => setOpenExportDialog(true)}><i className=" me-1 bi bi-file-earmark-spreadsheet"></i> Export to Excel {loading && <Spinner size="sm" className="me-1" animation="border" variant="success" />}</Button>
 
             <Modal
                 show={openExportDialog}
@@ -673,36 +669,40 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                     <Modal.Title>Export to Excel</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {/*  <Form>
-                        <div className="d-flex justify-content-between">
-                            <Form.Group controlId="formStartDate">
-                                <Form.Label>Start Date</Form.Label>
+                    <Form>
+                        <div className="d-flex justify-content-between form-row">
+                            <Form.Group controlId="formStartDate" className="form-group">
+                                <Form.Label className="form-label">Start Date</Form.Label>
                                 <DatePicker
                                     selected={startDate}
                                     onChange={date => setStartDate(date)}
                                     dateFormat="dd/MM/yyyy"
+                                    className="form-input"
                                 />
                             </Form.Group>
 
-                            <Form.Group controlId="formEndDate">
-                                <Form.Label>End Date</Form.Label>
+                            <Form.Group controlId="formEndDate" className="form-group">
+                                <Form.Label className="form-label">End Date</Form.Label>
                                 <DatePicker
                                     selected={endDate}
                                     onChange={date => setEndDate(date)}
                                     dateFormat="dd/MM/yyyy"
+                                    className="form-input"
                                 />
                             </Form.Group>
                         </div>
-                    </Form> */}
+                    </Form>
                     <Button className="w-100" onClick={() => {
-                        const ws = XLSX.utils.json_to_sheet(excelData);
-                        // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
-                        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-                        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-                        const data = new Blob([excelBuffer], { type: fileType });
-                        FileSaver.saveAs(data, currentPage + fileExtension);
-
-                        setOpenExportDialog(false);
+                        exportToExcel().then(() => {
+                            const ws = XLSX.utils.json_to_sheet(excelData);
+                            // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
+                            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                            const data = new Blob([excelBuffer], { type: fileType });
+                            FileSaver.saveAs(data, currentPage + fileExtension);
+    
+                            setOpenExportDialog(false);
+                        })
                     }}>Export</Button>
                 </Modal.Body>
             </Modal>

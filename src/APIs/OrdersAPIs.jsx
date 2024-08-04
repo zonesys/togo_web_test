@@ -1271,7 +1271,7 @@ export function updateReviewedOrders(orderIds, isToReview) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function getOrdersToExport(userTpye, filterStr) {
+export function getOrdersToExport(userTpye, filterStr, startDate, endDate) {
 
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "getOrdersToExport");
@@ -1280,6 +1280,8 @@ export function getOrdersToExport(userTpye, filterStr) {
     params.append("id", localStorage.getItem("userId"));
     params.append("token", localStorage.getItem("TokenDevice"));
     params.append("langId", (localStorage.getItem("Language") || "en") === "en" ? "1" : "2");
+    params.append("startDate", startDate);
+    params.append("endDate", endDate);
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }

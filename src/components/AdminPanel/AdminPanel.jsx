@@ -12,11 +12,11 @@ import CustomIcon from '../../assets/icons';
 import { Spinner, Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import "./OrdersPage.css";
 
-const getCurrentDate = () => {
+export const getCurrentDate = () => {
     return new Date().toJSON().slice(0, 7);
 }
 
-const get2monthsbefore = () => {
+export const get2monthsbefore = () => {
     const currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() - 1);
     const previousMonth = currentDate.toJSON().slice(0, 7);
