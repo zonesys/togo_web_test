@@ -378,17 +378,18 @@ const OrderDetails = () => {
             OtherDetails,
             TypeLoad,
             PhoneCustomer,
+            senderPhone,
             LongSender, LatSender,
             AssignStatus, AssignedMemberName,
             isAcceptDelivery,
             SenderName,
             ReceiverName
         } = orderDetails;
-
+        console.log({senderPhone})
         let senderAddress = {
             name: SenderName,
             otherDetails: IdAreaSource == null ? OtherDetails + "  -  " + IdCitySource : IdCitySource + ", " + IdAreaSource + "  -  " + OtherDetails,
-            phoneCustomer: PhoneCustomer,
+            phoneCustomer: senderPhone,//PhoneCustomer,
             long: LongSender,
             lat: LatSender
         };

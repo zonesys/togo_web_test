@@ -434,7 +434,7 @@ export default function WayBill() {
                                             {orderDetails?.OtherDetails}
                                         </p>
                                         <hr className="my-2" />
-                                        <p>{translate("ADMIN.MOBILE_NUMBER")}: {orderDetails?.PhoneCustomer}</p>
+                                        <p>{translate("ADMIN.MOBILE_NUMBER")}: {orderDetails?.senderPhone/* orderDetails?.PhoneCustomer */}</p>
                                     </fieldset>
                                 </div>
 
