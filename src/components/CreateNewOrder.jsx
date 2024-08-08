@@ -230,7 +230,6 @@ export function CreateNewOrder(props) {
 
         setDeliverTypeArr(tempArr);
     }
-
     return (
         <>
             {/* edited (change button style if the user is transporter) */}

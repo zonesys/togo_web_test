@@ -3,9 +3,12 @@ import { GetAllFinishedOrders } from "../../APIs/AdminPanelApis";
 import { get2monthsbefore, getCurrentDate } from "./AdminPanel";
 import { Button, FloatingLabel, Form, Modal, Spinner } from "react-bootstrap";
 import CustomIcon from "../../assets/icons";
+import PaginateComp from "../Pagination/Pagination";
+import ReactPaginate from "react-paginate";
 
 export default function FinishedOrders() {
-    console.log("finished orders")
+    const PAGE_SIZE=100;
+
     const [finishedOrdersNum, setFinishedOrdersNum] = useState(0);
     const [finishedOrdersLoading, setFinishedOrdersLoading] = useState(false);
     const [finishedOrders, setFinishedOrders] = useState([]); // finished orders
@@ -17,7 +20,13 @@ export default function FinishedOrders() {
 
     const [fromMonthNotselected, setFromMonthNotselected] = useState(false);
     const [toMonthNotselected, setToMonthNotselected] = useState(false);
+
+
+    const [totalNum,setTotalNum] = useState(0);
+    const [activePage,setActivePage] = useState(0);
+
     const [validated, setValidated] = useState(false);
+    console.log("finished orders search str: ", finishedOrdersSearchStr)
 
     const filterHandler = (title) => {
         setFilterModalTitle(title);
@@ -35,29 +44,39 @@ export default function FinishedOrders() {
     useEffect(() => {
         setFinishedOrdersLoading(true);
         // get all finished orders
-        GetAllFinishedOrders(finishedOrdersSearchStr, finishedOrdersFromToDate).then((res) => {
+        GetAllFinishedOrders(finishedOrdersSearchStr, finishedOrdersFromToDate,PAGE_SIZE,activePage).then((res) => {
             // console.log(res.data.orders_list)
-            setFinishedOrders(res.data.orders_list)
+            if(res.data){
+                setFinishedOrders(res.data.orders_list)
 
-            setFinishedOrdersNum(res.data.orders_list.length);
-
-            setFinishedOrdersLoading(false);
-
-            const temp_orders = res.data.orders_list;
-            for (let i = 0; i < temp_orders.length; i++) {
-                if (temp_orders[i].foreign_order_error == 1) {
-                    setFinishedOrdersErr(true);
-                    break;
+                setFinishedOrdersNum(res.data.orders_list.length);
+    
+                setTotalNum(res.data.total_orders_number)
+    
+                setFinishedOrdersLoading(false);
+    
+                const temp_orders = res.data.orders_list;
+                for (let i = 0; i < temp_orders.length; i++) {
+                    if (temp_orders[i].foreign_order_error == 1) {
+                        setFinishedOrdersErr(true);
+                        break;
+                    }
                 }
             }
+       
         })
-    }, [finishedOrdersFromToDate])
+    }, [finishedOrdersFromToDate, finishedOrdersSearchStr,activePage])
     return (
         <div /* className="d-flex justify-content-center" */ >
             <div >
                 <div>
-                    <OrdersColumn title="Finished Orders" orders={finishedOrders} ordersCount={finishedOrdersNum} loading={finishedOrdersLoading} searchAndFilter={() => filterHandler("Finished Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={finishedOrdersErr} />
+
+                    <OrdersColumn title="Finished Orders" orders={finishedOrders} totalOrdersNum={totalNum} ordersCount={finishedOrdersNum} loading={finishedOrdersLoading} searchAndFilter={() => filterHandler("Finished Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={finishedOrdersErr} pageSize={PAGE_SIZE}  activePage={activePage} setActivePage={setActivePage} />
                 </div>
+                <div>
+
+                </div>
+
                 <Modal size={"lg"} className="filter-modal" show={showDateFilterModal} animation={false} onHide={() => setShowDateFilterModal(false)}>
                     <Modal.Header closeButton>
                         <Modal.Title>{"Filter/Search "}{filterModalTitle}</Modal.Title>
@@ -66,9 +85,8 @@ export default function FinishedOrders() {
                         <Form id="filterForm" validated={validated} noValidate onSubmit={(event) => {
                             event.preventDefault();
                             event.stopPropagation();
-
                             const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
-
+                            console.log(formDataObj);
                             const form = event.currentTarget;
                             if (form.checkValidity() === true) {
 
@@ -115,9 +133,11 @@ export default function FinishedOrders() {
                                 toDate = toYear + "-" + toMonth;
 
                                 const fromToDate = fromDate + " -- " + toDate;
+                                const searchStr = formDataObj.searchStr;
+                                console.log({ searchStr });
 
-                                // console.log(fromToDate);
                                 setFinishedOrdersFromToDate(fromToDate);
+                                setFinishedOrdersSearchStr(searchStr == "" ? "no_str" : searchStr)
                                 setShowDateFilterModal(false)
                             }
 
@@ -285,16 +305,17 @@ export default function FinishedOrders() {
                                     </div>
                                 </div>
 
-                                {/* <div className="search-field-row">
-                        <Form.Group>
-                            <FloatingLabel className="mb-3" controlId="placeName" label={"Seach - Order ID, Merchant name, ..."}>
-                                <Form.Control type="text" placeholder="..." name="searcStr" />
-                                <Form.Control.Feedback type="invalid">
-                                    feild error
-                                </Form.Control.Feedback>
-                            </FloatingLabel>
-                        </Form.Group>
-                    </div> */}
+                                {<div className="search-field-row">
+                                    <Form.Group>
+                                        <FloatingLabel className="mb-3" controlId="placeName" label={"Seach - Order ID, Merchant name, ..."}>
+                                            <Form.Control type="text" placeholder="..." name="searchStr" onKeyUp={() => {
+                                            }} />
+                                            <Form.Control.Feedback type="invalid">
+                                                feild error
+                                            </Form.Control.Feedback>
+                                        </FloatingLabel>
+                                    </Form.Group>
+                                </div>}
                             </div>
 
                             <div className="filter-footer">
@@ -319,7 +340,7 @@ export default function FinishedOrders() {
 
 
 
-const OrdersColumn = ({ index, title, orders, ordersCount, loading, searchAndFilter, handleSelect, isErrs }) => {
+const OrdersColumn = ({ index, title, orders, ordersCount, loading,totalOrdersNum=0,pageSize=100, searchAndFilter, handleSelect, isErrs ,activePage , setActivePage}) => {
 
     const [ordersState, setOrdersState] = useState([]);
     const [searchedOrders, setSearchedOrders] = useState([]);
@@ -354,18 +375,38 @@ const OrdersColumn = ({ index, title, orders, ordersCount, loading, searchAndFil
                 <div className="date-filter" onClick={searchAndFilter} style={{ marginInline: "20px" }}>
                     <i className="bi bi-funnel-fill"></i>
                 </div>
-                <Form.Control style={{ height: "25px", width: "30%" }} type="text" placeholder="Search..." onChange={(e) => filterHandler(e.target.value)} />
+                <Form.Control style={{ height: "25px", width: "30%" }} type="text" placeholder="Search..." onChange={(e) => filterHandler(e.target.value)} onKeyUp={(e) => {
+                    if (e.key == "Enter") {
+                        // console.log("search submitted")
+                    }
+                }} />
             </div>
             <div className="column">
-                <div>
+                <div style={{ marginBottom: "20px" }}>
                     {
                         loading ? <div className="d-flex justify-content-center"><Spinner animation="border" size="lg" /></div> :
                             searchedOrders?.length == 0 ? <div className="d-flex justify-content-center">No {title}</div> :
+
+
                                 searchedOrders?.map((order, index) => {
-                                    return <div key={index}>
-                                        <OrderCard order={order} handleSelect={(id, isActive) => handleSelect(id, title, isActive)} />
-                                    </div>
+                                    return (
+                                        <div key={index}>
+                                            <OrderCard order={order} handleSelect={(id, isActive) => handleSelect(id, title, isActive)} />
+                                        </div>
+                                    )
+
                                 })
+
+                    }
+                    {
+                        (!loading && totalOrdersNum > pageSize ) && 
+                        <PaginateComp
+                        totalNumOfRecs={totalOrdersNum}
+                        pageSize={pageSize}
+                        activePage={activePage}
+                        setActive={setActivePage}
+                    />
+
                     }
                 </div>
             </div>
@@ -402,7 +443,7 @@ const OrderCard = ({ order, handleSelect }) => {
 
     return (
         <div className="d-flex justify-content-center">
-            <div className='order-card' style={{width : "40%"}}>
+            <div className='order-card' style={{ width: "35%" }}>
 
                 <div className={'order-card-body' + (isActive ? '-active' : order.foreign_order_error == 1 && "-exception")}>
                     <div className="left-vertical-ine"></div>

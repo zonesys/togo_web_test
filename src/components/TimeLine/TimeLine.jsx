@@ -78,7 +78,9 @@ export default function Timeline(props) {
             <div className={!isEn ? "arrows" : "arrowsEn"}>
                 {/*{console.log(window.innerWidth)}*/}
                 {props.transportationParties.length !== 1 && props.transportationParties.map((user, index) =>
-                    <div key={index} className={!isEn ? "arrow " + (index % 2 == 0 ? "step1" : "step2") : "arrowEn " + (index % 2 == 0 ? "step1En" : "step2En")} onClick={() => { handleShow(); setUser(user); props.showTransactions ? getTransactions(user.id) : setTransactions([]); }}>
+                    <div key={index} className={!isEn ? "arrow " + (index % 2 == 0 ? "step1" : "step2") : "arrowEn " + (index % 2 == 0 ? "step1En" : "step2En")} onClick={() => { handleShow(); 
+                    
+                    setUser(user); props.showTransactions ? getTransactions(user.id) : setTransactions([]); }}>
 
                         {user.imageURL !== undefined ? <div // image
                             style={{

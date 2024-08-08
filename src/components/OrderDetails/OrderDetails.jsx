@@ -927,6 +927,7 @@ const OrderDetails = () => {
                                                                 setLoadingCreateReturned(true);
 
                                                                 // redirect to create-order page
+                                                                console.log("redirect to create-order page")
                                                                 history.push(`/account/main/create-order?id=${orderId}`)
                                                             }}
                                                         >

@@ -160,6 +160,7 @@ export default function CreateAddress({ onSuccess, children }) {
                             if (form.checkValidity() === true) {
                                 setLoading(true);
                                 CreateAddressReq(formDataObj).then((res) => {
+                                    console.log("create address response : ",res.data);
                                     handleClose();
                                     onSuccess();
                                 });
@@ -196,7 +197,7 @@ export default function CreateAddress({ onSuccess, children }) {
                             </Form.Control.Feedback>
                         </FloatingLabel>
 
-                        {localStorage.getItem("userId") == 41 && (
+                        {false && localStorage.getItem("userId") == 41 && (
                             <div style={{ position: "relative" }}>
                                 <Form.Control
                                     data-test="area-search-input"
@@ -240,7 +241,7 @@ export default function CreateAddress({ onSuccess, children }) {
                             </div>
                         )}
 
-                        {localStorage.getItem("userId") != 41 && (
+                        {/* localStorage.getItem("userId") != 41 && */ (
                             <Container fluid>
                                 <Row>
                                     <Col lg={3} className="mb-4">

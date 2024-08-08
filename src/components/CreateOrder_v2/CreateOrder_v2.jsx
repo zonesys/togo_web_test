@@ -39,7 +39,6 @@ export const PackageTypesIcons = {
 };
 
 export default function CreateOrder_v2(props) {
-
     const history = useHistory();
     let dispatch = useDispatch();
 

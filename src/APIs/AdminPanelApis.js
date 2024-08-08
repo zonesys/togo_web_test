@@ -77,13 +77,15 @@ export function GetAllMarkedOrders() {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function GetAllFinishedOrders(searchStr, filterDate) {
+export function GetAllFinishedOrders(searchStr, filterDate,pageSize,pageOffset) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "GetAllFinishedOrders");
     params.append("id", localStorage.getItem("Adminid"));
     params.append("token", localStorage.getItem("AdminToken"));
     params.append("searchStr", searchStr);
     params.append("filterDate", filterDate);
+    params.append("pageSize", pageSize);
+    params.append("pageOffset", pageOffset);
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }

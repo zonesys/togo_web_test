@@ -42,7 +42,7 @@ export const PackageTypesIcons = {
 
 
 export default function CreateNewOrder(props) {
-
+    console.log("create order page");
     const history = useHistory();
 
     const styles = {
