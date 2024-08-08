@@ -430,6 +430,7 @@ const AdminOrderDetails = () => {
             AssignStatus, AssignedMemberName,
             isAcceptDelivery,
             SenderName,
+            senderPhone,
             ReceiverName,
             foreign_order_error,
             senderForeignViilageName,
@@ -440,7 +441,7 @@ const AdminOrderDetails = () => {
         let senderAddress = {
             name: SenderName,
             otherDetails: !!senderForeignViilageName ? (senderForeignViilageName + ", " + senderForeignRegionName + " - (" + OtherDetails + ")") : (IdAreaSource == null ? OtherDetails + "  -  " + IdCitySource : IdCitySource + ", " + IdAreaSource + "  -  " + OtherDetails),
-            phoneCustomer: PhoneCustomer,
+            phoneCustomer: senderPhone,//PhoneCustomer,
             long: LongSender,
             lat: LatSender
         };
@@ -638,6 +639,7 @@ const AdminOrderDetails = () => {
                                         {true && <Button
                                             variant="outline-primary"
                                             onClick={() => {
+                                                console.log("pushed to admin waybill")
                                                 history.push("/adminapp/printOrder/" + orderId + "?print=true")
                                             }}
                                             style={styles.actionButton}
