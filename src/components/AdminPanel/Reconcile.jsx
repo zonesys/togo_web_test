@@ -39,16 +39,42 @@ export default function Reconcile() {
                     let jsonArray = [];
                     excelRead.SheetNames.forEach((val, index) => {
                         const sheet = excelRead.Sheets[val];
-                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 0,})
-                        jsonData.forEach((val) => {
-                            jsonArray.push(val);
-                        })
+                        
+                        // Get the range of the sheet
+                        const range = XLSX.utils.decode_range(sheet['!ref']);
+
+                        // Remove empty rows at the beginning
+                        let firstNonEmptyRow = range.s.r;
+                        for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+                            const row = [];
+                            for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
+                                const cell = sheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+                                row.push(cell ? cell.v : null);
+                            }
+                            if (row.some(cell => cell !== null && cell !== undefined && cell !== "")) {
+                                firstNonEmptyRow = rowNum;
+                                break;
+                            }
+                        }
+
+                        // Update the range to start from the first non-empty row
+                        range.s.r = firstNonEmptyRow;
+                        sheet['!ref'] = XLSX.utils.encode_range(range);
+
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 0 })
+                        // jsonData.forEach((val) => {
+                        //     jsonArray.push(val);
+                        // })
+                        jsonArray.push(...jsonData);
                     })
+                    console.log(jsonArray[0])
                     
-                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة"));
+                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة") || val.hasOwnProperty("رقم التتبع"));
                     const Idkey =  filtered[0].hasOwnProperty("التسلسل")?"التسلسل":
                                     filtered[0].hasOwnProperty("Barcode")?"Barcode":
-                                    filtered[0].hasOwnProperty("باركود الشحنة")?"باركود الشحنة":"";
+                                    filtered[0].hasOwnProperty("باركود الشحنة")?"باركود الشحنة":
+                                    filtered[0].hasOwnProperty("رقم التتبع")?"رقم التتبع":
+                                    "";
 
                     filtered = filtered.map(order => {
                             order["barcode"] = order[Idkey];
