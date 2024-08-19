@@ -9,7 +9,6 @@ import { Button } from "react-bootstrap";
 import translate from "../../i18n/translate";
 import CustomIcon from "../../assets/icons";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
-
 let device, zebraPrinter;
 let refIndex = 0;
 let readyStatus;
@@ -91,6 +90,7 @@ export default function PrintAll() {
     const printService = useReactToPrint({
         content: () => containerRef.current,
     });
+    window.print = printService;
 
     let [isLoading, setLoading] = useState(true);
     let [isError, setError] = useState(false);
@@ -139,6 +139,11 @@ export default function PrintAll() {
             refIndex = 0;
             const result = await convertImg(componentRef.current[0])
             if (device === undefined) {
+                if(!device){
+                    console.log("no connected device")
+                 
+                    return;
+                }
                 getDefaultDevice(async () => {
                     printImg(result, componentRef.current)
                 })
@@ -147,16 +152,16 @@ export default function PrintAll() {
             printImg(result, componentRef.current);
         } catch (error) {
             console.log("printhtmlToImage error: " + error)
+
         }
     }
 
-
-        return (
-            <div className="d-flex flex-column align-items-center justify-content-start">
+    return (
+            <div className="d-flex flex-column align-items-center justify-content-start printHeader">
                 {isLoading ? <Loader />
     
                     : isError ?
-                        <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.ERROR_OCCURED")}</div>
+                        <div style={{ margin: "20%" }} className="display-5" >{translate("PRINT_ALL.ERROR_OCCURED")} </div>
     
                         : wayBillList.length == 0 ?
                             <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>
@@ -171,8 +176,7 @@ export default function PrintAll() {
                                     <CustomIcon iconName={"print"}></CustomIcon>
                                 </Button>
     
-    
-                                <div ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
+                                <div className="visibleToPrinter"  ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
                                     {wayBillList}
                                 </div>
                             </>

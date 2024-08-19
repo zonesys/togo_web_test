@@ -1,11 +1,37 @@
-#container{
+@media print {
+    @page{
+        size: 10cm 10cm
+    }
+    body {
+        visibility: hidden;
+    }
+
+    .visibleToPrinter {
+        visibility: visible;
+     /*    width: 12cm;
+        height: 12cm; */
+        position:absolute;
+        top: 0px;
+        bottom: 0px;
+        left:0px;
+        right: 0px;
+        margin: 0px !important;
+    }
+
+
+}
+
+
+#container {
     margin-top: 2%;
 
 }
-.waybillDiv{
+
+.waybillDiv {
     margin: 2%;
 }
-#way_bill{
+
+.way_bill {
     width: 12cm;
     min-width: 12cm;
     max-width: 12cm;
@@ -17,16 +43,18 @@
     overflow: hidden;
     font-family: cairo;
 
-  
+
 }
-.borderCustom{
+
+.borderCustom {
     border: 1px solid black;
     padding: 2%;
     max-lines: 2;
     text-overflow: ellipsis;
     overflow: hidden;
 }
-.sideBorder{
+
+.sideBorder {
     border-right: 1px solid black;
     padding: 1%;
 }

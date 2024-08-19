@@ -44,7 +44,7 @@ export function WayBill3(
 
 
   return (
-    <div className="d-flex flex-column" id="way_bill" dir="ltr">
+    <div className="d-flex flex-column way_bill"  dir="ltr">
 
           {/* section: client info*/}
           <div className="d-flex align-items-center borderCustom" style={styles.clientInfoStyle}>
