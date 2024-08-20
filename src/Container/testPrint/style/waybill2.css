@@ -1,4 +1,4 @@
-@media print {
+/* @media print {
     @page{
         size: 10cm 10cm
     }
@@ -8,8 +8,7 @@
 
     .visibleToPrinter {
         visibility: visible;
-     /*    width: 12cm;
-        height: 12cm; */
+    
         position:absolute;
         top: 0px;
         bottom: 0px;
@@ -20,7 +19,7 @@
 
 
 }
-
+ */
 
 #container {
     margin-top: 2%;

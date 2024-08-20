@@ -85,9 +85,9 @@ const Main = ({ socket, token }) => {
     const [currentPage, setCurrentPage] = useState(getCurrentPage(history) ?? ("all-orders"));
     const [totalNumOfRecs, setTotalNumberOfRecs] = useState(0);
     const [orders, setOrders] = useState([]);
-    const [netAmount,setNetAmount] = useState([]);
+    const [netAmount, setNetAmount] = useState([]);
 
-        const [activePage, setActivePage] = useState(0);
+    const [activePage, setActivePage] = useState(0);
     // const [transactions, setTransactions] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
@@ -163,7 +163,7 @@ const Main = ({ socket, token }) => {
 
     const fetchData = useCallback((functionType, stateKey) => {
         setLoading(true);
-        console.log("state key : "+stateKey);
+        console.log("state key : " + stateKey);
 
         // transporter orders filter variable initialized
         let transporterFunctionfilter = "none";
@@ -215,18 +215,18 @@ const Main = ({ socket, token }) => {
 
         getFunctions(functionType, activePage, transporterFunctionfilter, searchStr)
             .then(resp => {
-                try{
+                try {
                     console.log("RESP")
                     console.log(resp.data) // temp test
 
-                    if(resp.data.netAmount){
+                    if (resp.data.netAmount) {
                         setNetAmount(resp.data.netAmount);
                     }
                     if (resp === 'NotActiveNow') {
                         dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
                     } else {
                         const { data: { server_response, total_orders } } = resp;
-                        
+
                         switch (stateKey) {
                             case 'orders':
                                 setTotalNumberOfRecs(total_orders);
@@ -241,10 +241,10 @@ const Main = ({ socket, token }) => {
                                 break;
                         }
                     }
-                }catch(e){
-                    console.log("fetching data exception: "+e)
+                } catch (e) {
+                    console.log("fetching data exception: " + e)
                 }
-               
+
             })
             .catch((err) => {
                 dispatch(toastMessage(err));
@@ -368,7 +368,7 @@ const Main = ({ socket, token }) => {
     }
 
     const updateNavsArrHandler = (index, linkEvent) => {
-       
+
         const tempArr = ordersNavs;
         tempArr.forEach((item) => { item.isActive = false });
         tempArr[index].isActive = true;
@@ -395,15 +395,15 @@ const Main = ({ socket, token }) => {
                 </Button>
                 {localStorage.getItem("userId") != 97 && <>
                     {!isTransporter() ? (currentPage == "previous-orders" ? <div className="d-flex jsutify-content-between">
-                        <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
+                        <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
                             Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCOD}</span> NIS
                         </div>
 
-                        {localStorage.getItem("userId") == 302 && <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
+                        {localStorage.getItem("userId") == 302 && <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
                             Delivered Orders Total Comission: <span style={{ color: "red" }}>{totalComission}</span> NIS
                         </div>}
 
-                        <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height:"50px" }}>
+                        <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
                             Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCost}</span> NIS
                         </div>
                     </div> : currentPage == "current-orders" ?
@@ -420,36 +420,36 @@ const Main = ({ socket, token }) => {
                             </div>
                         </div>
                         : currentPage == "all-orders" ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height:"50px" }}>
+                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
                                 New Orders Total COD: <span style={{ color: "red" }}>{totalCODNew}</span> NIS
                             </div>
                         </div> : <div style={{ height: "41px" }}></div>) :
-                        (currentPage == "previous-orders" || currentPage == "reviewed-orders" ? 
-                        <div className="d-flex justify-content-between">
-                            <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" ,height:"50px"}}>
-                                Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCODTrans}</span> NIS
-                            </div>
+                        (currentPage == "previous-orders" || currentPage == "reviewed-orders" ?
+                            <div className="d-flex justify-content-between">
+                                <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
+                                    Delivered Orders Total COD: <span style={{ color: "red" }}>{totalCODTrans}</span> NIS
+                                </div>
 
-                            {/* <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                                {/* <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
                                 Delivered Orders Total Comission (including VAT): <span style={{ color: "red" }}>{totalComissionTrans}</span> NIS
                             </div>*/}
 
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" , height:"50px"}}>
-                                Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostTrans}</span> NIS
-                            </div>
-                        </div> : currentPage == "current-orders" ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
-                                Active Orders Total COD: <span style={{ color: "red" }}>{totalCODActiveTrans}</span> NIS
-                            </div>
+                                <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a", height: "50px" }}>
+                                    Delivered Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostTrans}</span> NIS
+                                </div>
+                            </div> : currentPage == "current-orders" ? <div className="d-flex jsutify-content-between">
+                                <div className="p-2 me-1" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                                    Active Orders Total COD: <span style={{ color: "red" }}>{totalCODActiveTrans}</span> NIS
+                                </div>
 
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
-                                Active Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostActiveTrans}</span> NIS
-                            </div>
-                        </div> : currentPage == "all-orders" && false ? <div className="d-flex jsutify-content-between">
-                            <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
-                                New Orders Total COD: <span style={{ color: "red" }}>{totalCODNewTrans}</span> NIS
-                            </div>
-                        </div> : <div style={{ height: "41px" }}></div>)
+                                <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                                    Active Orders Total Delivey Cost: <span style={{ color: "red" }}>{totalDeliveryCostActiveTrans}</span> NIS
+                                </div>
+                            </div> : currentPage == "all-orders" && false ? <div className="d-flex jsutify-content-between">
+                                <div className="p-2" style={{ border: "2px solid #69d4a5", borderRadius: "5px", color: "#26a69a" }}>
+                                    New Orders Total COD: <span style={{ color: "red" }}>{totalCODNewTrans}</span> NIS
+                                </div>
+                            </div> : <div style={{ height: "41px" }}></div>)
                     }
                 </>
                 }
@@ -478,17 +478,18 @@ const Main = ({ socket, token }) => {
                             variant="tabs"
                             defaultActiveKey={currentPage}
                             activeKey={currentPage}
-                            onSelect={(eventKey) => { 
-                                
-                                history.push(`/account/main/${eventKey}`); 
-                                setActivePage(0); setSearchStr(""); (currentPage != "transactions" || currentPage != "create-order") && (document.getElementById("searchText").value = "") }}
+                            onSelect={(eventKey) => {
+
+                                history.push(`/account/main/${eventKey}`);
+                                setActivePage(0); setSearchStr(""); (currentPage != "transactions" || currentPage != "create-order") && (document.getElementById("searchText").value = "")
+                            }}
                         >
                             {ordersNavs.map((item, index) => {
                                 return ((item.linkEventKey == "create-order" && isTransporter()) ? <></> :
                                     <Nav.Item key={index} className="upperNavItemContainer flex-grow-1">
                                         <Nav.Link disabled={loading} eventKey={item.linkEventKey} className="upperNavItem" onClick={() => { updateNavsArrHandler(index, item.linkEventKey) }}>
                                             <div className="mainImage">
-                                                <img style={{color: loading?"grey":null}} src={item.isActive ? item.hoverImageSrc : item.mainImageSrc} alt="" />
+                                                <img style={{ color: loading ? "grey" : null }} src={item.isActive ? item.hoverImageSrc : item.mainImageSrc} alt="" />
                                             </div>
                                             <div className="title">
                                                 {translate("ORDERS." + item.title)}
@@ -520,7 +521,7 @@ const Main = ({ socket, token }) => {
                     </Nav>
                 }
             </div>
-            
+
             {/* search box/*/}
             {true && <div style={{ width: "50%", margin: "20px auto", display: (currentPage == "transactions" || currentPage == "create-order") && "none" }}>
                 <FloatingLabel label="Search...">
@@ -538,7 +539,7 @@ const Main = ({ socket, token }) => {
                                 <OrdersTabularView
                                     socket={socket}
                                     orders={orders}
-                                    netAmount ={netAmount}
+                                    netAmount={netAmount}
                                     currentPage={currentPage}
                                     assignOrders={(ordersIds) => { setAssignedIds(ordersIds); ordersIds.length > 0 ? setOrdersSelected(true) : setOrdersSelected(false) }}
                                     update={() => {
@@ -572,13 +573,21 @@ const Main = ({ socket, token }) => {
     );
 };
 
+
+const formatDate = (date) => `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
 const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum }) => {
 
     const [excelData, setExcelData] = useState([]);
     const [openExportDialog, setOpenExportDialog] = useState(false);
 
-    const [startDate, setStartDate] = useState(new Date(Date.now() - 2 * 24 * 60 * 60 * 1000));
-    const [endDate, setEndDate] = useState(new Date(Date.now() - 1 * 24 * 60 * 60 * 1000));
+    const defaultStartDate = new Date(new Date().setDate(new Date().getDate() - 2))
+    const defaultEndDate = new Date(new Date().setDate(new Date().getDate() - 1))
+    console.log({ defaultStartDate, defaultEndDate })
+
+    const [startDate, setStartDate] = useState(defaultStartDate);
+    const [endDate, setEndDate] = useState(defaultEndDate);
+
+    const [dateColumn, setDateColumn] = useState('option1');
 
     const [loading, setLoading] = useState(false);
 
@@ -636,13 +645,22 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                     setLoading(false);
                 });
             } else {
-                // console.log(userTpye + " - " + filterStr);
-                getOrdersToExport(userTpye, filterStr, startDate, endDate).then((res) => {
-                    // console.log(res.data);
+                getOrdersToExport(userTpye, filterStr, formatDate(startDate), formatDate(endDate)).then((res) => {
+                    console.log({ userTpye, filterStr, startDate: formatDate(startDate), endDate: formatDate(endDate) })
 
-                    setExcelData(res.data.response);
+                    console.log(res.data.response)
+                    setTimeout(() => {
+                        const ws = XLSX.utils.json_to_sheet(res.data.response);
+                        // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
+                        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                        const data = new Blob([excelBuffer], { type: fileType });
+                        FileSaver.saveAs(data, currentPage + fileExtension);
 
-                    setLoading(false);
+                        setOpenExportDialog(false);
+
+                        setLoading(false);
+                    }, 1000)
                 });
             }
 
@@ -668,11 +686,36 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                 <Modal.Header closeButton style={styles.cardHeaderLg}>
                     <Modal.Title>Export to Excel</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{ width: '100%' }}>
                     <Form>
                         <div className="d-flex justify-content-between form-row">
-                            <Form.Group controlId="formStartDate" className="form-group">
-                                <Form.Label className="form-label">Start Date</Form.Label>
+                            <Form.Group controlId="dateColumnPicker" className="form-group" style={{ width: '100%', flex: 1 }}>
+                                <Form.Label>Select Date Column</Form.Label>
+                                <div className="d-flex justify-content-between form-row" style={{ width: '100%' }}>
+                                    <Form.Check
+                                        type="radio"
+                                        label="Create Date"
+                                        value="option1"
+                                        // checked={selectedOption === 'option1'}
+                                        // onChange={handleChange}
+                                        name="radioOptions"
+                                        style={{ flex: 2 }}
+                                    />
+                                    <Form.Check
+                                        type="radio"
+                                        label="Finish Date"
+                                        value="option2"
+                                        // checked={selectedOption === 'option2'}
+                                        // onChange={handleChange}
+                                        name="radioOptions"
+                                        style={{ flex: 2 }}
+                                    />
+                                </div>
+                            </Form.Group>
+                        </div>
+                        <div className="d-flex justify-content-between form-row">
+                            <Form.Group controlId="formStartDate" className="form-group" style={{ flex: 1, maxWidth: "50%" }}>
+                                <Form.Label className="form-label">Start</Form.Label>
                                 <DatePicker
                                     selected={startDate}
                                     onChange={date => setStartDate(date)}
@@ -681,8 +724,8 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                                 />
                             </Form.Group>
 
-                            <Form.Group controlId="formEndDate" className="form-group">
-                                <Form.Label className="form-label">End Date</Form.Label>
+                            <Form.Group controlId="formEndDate" className="form-group" style={{ flex: 1, maxWidth: "50%" }}>
+                                <Form.Label className="form-label">End</Form.Label>
                                 <DatePicker
                                     selected={endDate}
                                     onChange={date => setEndDate(date)}
@@ -694,14 +737,14 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                     </Form>
                     <Button className="w-100" onClick={() => {
                         exportToExcel().then(() => {
-                            const ws = XLSX.utils.json_to_sheet(excelData);
-                            // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
-                            const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-                            const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-                            const data = new Blob([excelBuffer], { type: fileType });
-                            FileSaver.saveAs(data, currentPage + fileExtension);
-    
-                            setOpenExportDialog(false);
+                            // const ws = XLSX.utils.json_to_sheet(excelData);
+                            // // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
+                            // const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                            // const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                            // const data = new Blob([excelBuffer], { type: fileType });
+                            // FileSaver.saveAs(data, currentPage + fileExtension);
+
+                            // setOpenExportDialog(false);
                         })
                     }}>Export</Button>
                 </Modal.Body>

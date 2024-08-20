@@ -146,7 +146,7 @@ input[type='radio']:after {}
   flex-direction: column;
   flex: 1; /* This makes the groups take equal space */
   margin-right: 10px; /* Add some space between the groups */
-  max-width: 50%;
+  /* max-width: 50%; */
 }
 
 .form-group:last-child {
