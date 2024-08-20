@@ -1,13 +1,13 @@
 import Barcode from "react-barcode";
 import logo from "../../assets/logo.png";
-import "./style/waybill2.css";
+import styles from "./WayBillSticker.module.css";
 import React from "react";
 
 
 
 
 
-const styles = {
+const customStyles = {
   clientInfoStyle: {
     height: "3.5cm",
     maxHeight: "3.5cm"
@@ -23,7 +23,7 @@ const styles = {
   }
 }
 
-export function WayBill3(
+export function WayBillSticker(
   {
     clientImgSrc = "",
     transporterImgSrc = "",
@@ -44,10 +44,10 @@ export function WayBill3(
 
 
   return (
-    <div className="d-flex flex-column way_bill"  dir="ltr">
+    <div className={`d-flex flex-column ${styles.way_bill}`}  dir="ltr">
 
           {/* section: client info*/}
-          <div className="d-flex align-items-center borderCustom" style={styles.clientInfoStyle}>
+          <div className={`d-flex align-items-center ${styles.borderCustom}`} style={customStyles.clientInfoStyle}>
             <div className="col-4 d-flex justify-content-center">
               <div style={{ maxHeight: "2cm", maxWidth: "2cm" }}>
                 <img src={clientImgSrc} alt="Client Logo" />
@@ -64,7 +64,7 @@ export function WayBill3(
           </div>
 
           {/* section: receiver info and money*/}
-          <div className="borderCustom" style={styles.receiverInfo}>
+          <div className={`${styles.borderCustom}`} style={customStyles.receiverInfo}>
             <div className="d-flex" dir="rtl">
               <div className="col-6">
                 <div className="h5">تفاصيل المستلم</div>
@@ -73,7 +73,7 @@ export function WayBill3(
                 <div>{receiverAddress}</div>
                 <div>{receiverPhone} </div>
               </div>
-              <div className="col-6 sideBorder">
+              <div className={`col-6 ${styles.sideBorder}`}>
                 <div className="d-flex flex-column ">
                   <div className="h6">قيمة التحصيل : {<span style={{ fontWeight: "bold" }}>{cod + " " + "شيكل"}</span>}</div>
                   <div className="h6" >تاريخ الانشاء: {<span style={{ fontWeight: "bold" }}>{date}</span>}</div>
@@ -85,7 +85,7 @@ export function WayBill3(
           </div>
 
           {/* section: barcode-transporter logo */}
-          <div className="d-flex align-items-center borderCustom" style={styles.barcodeStyle}>
+          <div className={`d-flex align-items-center ${styles.borderCustom}`} style={customStyles.barcodeStyle}>
             <div className="col-6 d-flex justify-content-center align-items-center">
               <div style={{ height: "2cm", width: "2cm" }}>
                 <img src={transporterImgSrc} alt="Transporter Logo" />
@@ -97,7 +97,7 @@ export function WayBill3(
           </div>
 
           {/* section: togo logo */}
-          <div className="col-12 d-flex justify-content-end borderCustom" style={styles.logoStyle}>
+          <div className={`col-12 d-flex justify-content-end ${styles.borderCustom}`} style={customStyles.logoStyle}>
             <div style={{ height: "1.5cm", width: "1.5cm" }}>
               <img src={logo} alt="Togo Logo" />
             </div>

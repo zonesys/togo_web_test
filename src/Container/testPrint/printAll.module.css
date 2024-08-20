@@ -1,0 +1,21 @@
+@media print {
+    @page{
+        size: 10cm 10cm
+    }
+    .printAll {
+        visibility: hidden;
+    }
+
+    .visibleToPrinter {
+        visibility: visible;
+
+        position:absolute;
+        top: 0px;
+        bottom: 0px;
+        left:0px;
+        right: 0px;
+        margin: 0px !important;
+    }
+
+
+}

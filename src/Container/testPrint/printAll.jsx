@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as htmlToImage from "html-to-image"
 import { useReactToPrint } from "react-to-print";
-import { WayBill3 } from "./wayBill";
+import { WayBillSticker } from "./WayBillSticker";
 import Loader from "../../components/Loader/Loader"
 import { getBidAcceptedPrintInfo } from "../../APIs/OrdersAPIs";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
@@ -9,6 +9,7 @@ import { Button } from "react-bootstrap";
 import translate from "../../i18n/translate";
 import CustomIcon from "../../assets/icons";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import styles from "./printAll.module.css"
 let device, zebraPrinter;
 let refIndex = 0;
 let readyStatus;
@@ -106,7 +107,7 @@ export default function PrintAll() {
                 let updatedWayBill = res.data.map((order, index) => {
                     return (
                         <div ref={ele => componentRef.current[index] = ele} key={index}>
-                            <WayBill3
+                            <WayBillSticker
                                 transporterImgSrc={imgBaseUrl + order.transporterImgSrc}
                                 clientImgSrc={imgBaseUrl + order.clientImgSrc}
                                 clientName={order.clientName}
@@ -157,7 +158,7 @@ export default function PrintAll() {
     }
 
     return (
-            <div className="d-flex flex-column align-items-center justify-content-start printHeader">
+            <div className={`d-flex flex-column align-items-center justify-content-start ${styles.printAll}`}>
                 {isLoading ? <Loader />
     
                     : isError ?
@@ -176,7 +177,7 @@ export default function PrintAll() {
                                     <CustomIcon iconName={"print"}></CustomIcon>
                                 </Button>
     
-                                <div className="visibleToPrinter"  ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
+                                <div className={styles.visibleToPrinter}  ref={containerRef} style={{ minWidth: "12cm", maxWidth: "12cm", }}>
                                     {wayBillList}
                                 </div>
                             </>
