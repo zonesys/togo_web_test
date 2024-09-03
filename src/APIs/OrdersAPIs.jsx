@@ -1412,3 +1412,18 @@ export function createOrder_v2(deliveryParams, addressesParams, returnedParams) 
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
+
+export function exportOrders(userType, dateColumn, startDate,  endDate, orderStatuses) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "exportOrders");
+    params.append("id", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
+    params.append("langId", (localStorage.getItem("Language") || "en") === "en" ? "1" : "2");
+    params.append("userType", userType);
+    params.append("dateColumn", dateColumn);
+    params.append("startDate", startDate);
+    params.append("endDate", endDate);
+    params.append("orderStatuses", orderStatuses);
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}

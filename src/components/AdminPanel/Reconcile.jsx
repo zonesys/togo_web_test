@@ -69,11 +69,13 @@ export default function Reconcile() {
                     })
                     console.log(jsonArray[0])
                     
-                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة") || val.hasOwnProperty("رقم التتبع"));
+                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة") || val.hasOwnProperty("رقم التتبع") || val.hasOwnProperty("باركود الطرد"));
+                    console.log({filtered})
                     const Idkey =  filtered[0].hasOwnProperty("التسلسل")?"التسلسل":
                                     filtered[0].hasOwnProperty("Barcode")?"Barcode":
                                     filtered[0].hasOwnProperty("باركود الشحنة")?"باركود الشحنة":
                                     filtered[0].hasOwnProperty("رقم التتبع")?"رقم التتبع":
+                                    filtered[0].hasOwnProperty("باركود الطرد")?"باركود الطرد":
                                     "";
 
                     filtered = filtered.map(order => {
@@ -82,7 +84,6 @@ export default function Reconcile() {
                         });
                     //let ids = filtered.map(val => val[Idkey]).join(",");    
 
-                    console.log(filtered);
                     reconcileOrders(filtered).then((response) => {
                         try {
                             setLoading(false);

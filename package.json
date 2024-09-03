@@ -36,6 +36,7 @@
         "immer": "^9.0.15",
         "jspdf": "^2.5.0",
         "leaflet": "^1.7.1",
+        "multiselect-react-dropdown": "^2.0.25",
         "pm2": "^5.1.2",
         "qrcode": "^1.4.4",
         "qrcode.react": "^1.0.0",

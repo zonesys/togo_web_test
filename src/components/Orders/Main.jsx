@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef } from "react";
+import Multiselect from 'multiselect-react-dropdown';
 import Nav from "react-bootstrap/Nav";
 import {
     getFunctions,
@@ -9,6 +10,7 @@ import {
     getTransporterActiveTotalAmounts,
     getTransporterDeliveredTotalAmounts,
     getOrdersToExport,
+    exportOrders,
     getTransporterTransactionsToExport
 } from "../../APIs/OrdersAPIs";
 import { OrdersTabularView } from "./OrdersTabularView";
@@ -580,14 +582,23 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
     const [excelData, setExcelData] = useState([]);
     const [openExportDialog, setOpenExportDialog] = useState(false);
 
+    const defaultDateColumn = 'dateFinished';
+    const [dateColumn, setDateColumn] = useState(defaultDateColumn);
+
     const defaultStartDate = new Date(new Date().setDate(new Date().getDate() - 2))
     const defaultEndDate = new Date(new Date().setDate(new Date().getDate() - 1))
-    console.log({ defaultStartDate, defaultEndDate })
-
     const [startDate, setStartDate] = useState(defaultStartDate);
     const [endDate, setEndDate] = useState(defaultEndDate);
 
-    const [dateColumn, setDateColumn] = useState('option1');
+    const defaultOrderStatuses = ["Delivered"]
+    const [orderStatuses, setOrderStatuses] = useState(defaultOrderStatuses)
+
+    function setExportDefaults() {
+        setDateColumn(defaultDateColumn)
+        setStartDate(defaultStartDate)
+        setEndDate(defaultEndDate)
+        setOrderStatuses(defaultOrderStatuses)
+    }
 
     const [loading, setLoading] = useState(false);
 
@@ -645,25 +656,47 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                     setLoading(false);
                 });
             } else {
-                getOrdersToExport(userTpye, filterStr, formatDate(startDate), formatDate(endDate)).then((res) => {
-                    console.log({ userTpye, filterStr, startDate: formatDate(startDate), endDate: formatDate(endDate) })
+                console.log({ userTpye, filterStr, dateColumn, start: formatDate(startDate), end: formatDate(endDate), orderStatuses })
+                // getOrdersToExport(userTpye, filterStr, formatDate(startDate), formatDate(endDate)).then((res) => {
+                //     // console.log({ userTpye, filterStr, startDate: formatDate(startDate), endDate: formatDate(endDate) })
+                //     setTimeout(() => {
+                //         const ws = XLSX.utils.json_to_sheet(res.data.response);
+                //         // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
+                //         const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                //         const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                //         const data = new Blob([excelBuffer], { type: fileType });
+                //         FileSaver.saveAs(data, `${orderStatuses.join(" ")} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`);
 
-                    console.log(res.data.response)
-                    setTimeout(() => {
-                        const ws = XLSX.utils.json_to_sheet(res.data.response);
-                        // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
-                        const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-                        const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-                        const data = new Blob([excelBuffer], { type: fileType });
-                        FileSaver.saveAs(data, currentPage + fileExtension);
+                //         setOpenExportDialog(false);
 
-                        setOpenExportDialog(false);
-
-                        setLoading(false);
-                    }, 1000)
-                });
+                //         setLoading(false);
+                //     }, 1000)
+                // });
+                exportOrders(userTpye, dateColumn, formatDate(startDate), formatDate(endDate), orderStatuses).then(res => {
+                    const ws = XLSX.utils.json_to_sheet(res.data.response);
+                    const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                    const data = new Blob([excelBuffer], { type: fileType });
+                    FileSaver.saveAs(data, `${orderStatuses.join(" ")} ${formatDate(startDate)} to ${formatDate(endDate)}.xlsx`);
+                    setOpenExportDialog(false);
+                    setLoading(false);
+                })
             }
 
+        }
+    }
+
+    function onSelect(selectedList, selectedItem) {
+        setOrderStatuses(selectedList.map(item => item.key))
+        if (!selectedList.includes("Delivered")) {
+            setDateColumn('createdAt')
+        }
+    }
+    
+    function onRemove(selectedList, removedItem) {
+        setOrderStatuses(selectedList.map(item => item.key))
+        if (!selectedList.includes("Delivered")) {
+            setDateColumn('createdAt')
         }
     }
 
@@ -671,7 +704,7 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
         <>
             <Button disabled={loading ? true : false} style={{
                 position: "absolute", bottom: ordersNum == 1000 ? "-140px" : ordersNum >= 10 ? "10px" : "-30px", right: "30px"
-            }} variant="outline-success" onClick={() => setOpenExportDialog(true)}><i className=" me-1 bi bi-file-earmark-spreadsheet"></i> Export to Excel {loading && <Spinner size="sm" className="me-1" animation="border" variant="success" />}</Button>
+            }} variant="outline-success" onClick={() => { setExportDefaults(); setOpenExportDialog(true) }}><i className=" me-1 bi bi-file-earmark-spreadsheet"></i> Export to Excel {loading && <Spinner size="sm" className="me-1" animation="border" variant="success" />}</Button>
 
             <Modal
                 show={openExportDialog}
@@ -695,20 +728,21 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                                     <Form.Check
                                         type="radio"
                                         label="Create Date"
-                                        value="option1"
-                                        // checked={selectedOption === 'option1'}
-                                        // onChange={handleChange}
+                                        value="createdAt"
+                                        checked={dateColumn === 'createdAt' || !orderStatuses.includes("Delivered")}
+                                        onChange={(event) => setDateColumn(event.target.value)}
                                         name="radioOptions"
                                         style={{ flex: 2 }}
                                     />
                                     <Form.Check
                                         type="radio"
                                         label="Finish Date"
-                                        value="option2"
-                                        // checked={selectedOption === 'option2'}
-                                        // onChange={handleChange}
+                                        value="dateFinished"
+                                        checked={dateColumn === 'dateFinished'}
+                                        onChange={(event) => setDateColumn(event.target.value)}
                                         name="radioOptions"
                                         style={{ flex: 2 }}
+                                        disabled={!orderStatuses.includes("Delivered")}
                                     />
                                 </div>
                             </Form.Group>
@@ -734,19 +768,30 @@ const ExportExcel = ({ /* excelData, */ /* fileName */ currentPage, ordersNum })
                                 />
                             </Form.Group>
                         </div>
+                        <Multiselect
+                            displayValue="key"
+                            groupBy="cat"
+                            onKeyPressFn={function noRefCheck(){}}
+                            onRemove={onRemove}
+                            onSearch={function noRefCheck(){}}
+                            onSelect={onSelect}
+                            selectedValues={[{
+                                cat: 'Finished',
+                                key: 'Delivered'
+                            }]}
+                            options={[
+                                { cat: 'New', key: 'Waiting for Bids' },
+                                { cat: 'Active', key: 'Bid Accepted' },
+                                { cat: 'Active',  key: 'Out for Delivery' },
+                                { cat: 'Finished', key: 'Delivered' },
+                                { cat: 'Finished', key: 'Deleted' },
+                                { cat: 'Finished', key: 'Returned' },
+                                { cat: 'Finished', key: 'Reviewed' }
+                            ]}
+                            showCheckbox
+                            />
                     </Form>
-                    <Button className="w-100" onClick={() => {
-                        exportToExcel().then(() => {
-                            // const ws = XLSX.utils.json_to_sheet(excelData);
-                            // // ws['!defaultRowHeight'] = 50;  // set the default row height to 20
-                            // const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
-                            // const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-                            // const data = new Blob([excelBuffer], { type: fileType });
-                            // FileSaver.saveAs(data, currentPage + fileExtension);
-
-                            // setOpenExportDialog(false);
-                        })
-                    }}>Export</Button>
+                    <Button className="w-100" onClick={exportToExcel}>Export</Button>
                 </Modal.Body>
             </Modal>
         </>
