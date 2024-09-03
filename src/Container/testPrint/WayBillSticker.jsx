@@ -64,8 +64,8 @@ export function WayBillSticker(
           </div>
 
           {/* section: receiver info and money*/}
-          <div className={`${styles.borderCustom}`} style={customStyles.receiverInfo}>
-            <div className="d-flex" dir="rtl">
+          <div className={`${styles.borderCustom}`} style={customStyles.receiverInfo} dir="rtl">
+            <div className="d-flex" >
               <div className="col-6">
                 <div className="h5">تفاصيل المستلم</div>
                 <div className="h6">{receiverName} </div>

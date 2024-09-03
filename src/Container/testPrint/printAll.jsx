@@ -140,11 +140,11 @@ export default function PrintAll() {
             refIndex = 0;
             const result = await convertImg(componentRef.current[0])
             if (device === undefined) {
-                if(!device){
+              /*   if(!device){
                     console.log("no connected device")
                  
                     return;
-                }
+                } */
                 getDefaultDevice(async () => {
                     printImg(result, componentRef.current)
                 })
