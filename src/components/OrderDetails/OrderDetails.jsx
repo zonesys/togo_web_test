@@ -1020,9 +1020,11 @@ const OrderDetails = () => {
                                             {tripCost.map((costs, index) => {
                                                 return <tr key={index}>
                                                     <td><img style={{
-                                                        width: "50%",
-                                                        height: "50%",
-                                                        objectFit: "cover"
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        objectFit: "cover",
+                                                        marginRight: "auto",
+                                                        marginLeft: "auto"
                                                     }}
                                                         className="rounded-circle align-self-center" src={`${imgBaseUrl}${costs.TransporterPersonalImg}`} alt="transImg" />
                                                     </td>
@@ -1031,7 +1033,7 @@ const OrderDetails = () => {
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
-                                                    <td>{costs.BidCost}</td>
+                                                    <td>{costs.BidCost*orderDetails.package_multiplier}</td>
                                                     <td>
                                                         <Button
                                                             disabled={costs.isEnoughBalance == "1" ? false : true}

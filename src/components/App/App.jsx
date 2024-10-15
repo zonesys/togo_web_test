@@ -21,6 +21,7 @@ const App = () => {
     let dispatch = useDispatch();
 
     const language = useSelector(state => state.general.language);
+    localStorage.setItem("lang",language);
 
     /* ----------------------( FCM )---------------------- */
 

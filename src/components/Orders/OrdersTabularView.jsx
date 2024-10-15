@@ -15,11 +15,12 @@ import { toastMessage } from "../../Actions/GeneralActions";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export const PackageTypes = {
-    "1": "FOOD",
-    "2": "SMALL_PACKAGE_AND_ENVELOPS",
-    "3": "MEDIUM_PACKAGE",
-    "4": "LARGE_PACKAGE"
+    "1": "SMALL_PACKAGE",
+    "2": "MEDIUM_PACKAGE",
+    "3": "LARGE_PACKAGE",
+    "4": "EXTRA_LARGE_PACKAGE"
 };
+
 
 export const DeliveryTypes = {
     "1": "DELIVERY",
@@ -258,6 +259,10 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                     key: "DateFinished",
                     // format: dateFormatter
                 },
+                {
+                    label: translate("ORDERS.CLIENT_NAME"),
+                    key: "BusinessName"
+                },
                 /* {
                     label: translate("ORDERS.ORDER_TIME"),
                     key: "DateLoad",
@@ -378,9 +383,9 @@ export const OrdersTabularView = ({ socket, orders, currentPage, update, assignO
                 }, */
                 {
                     label: translate("ORDERS.COD"),
-                    key: "CostLoad",
-                    format: ({ CostLoad }) => {
-                        return <>{!!CostLoad ? CostLoad : 0}</>
+                    key: "COD",
+                    format: ({ COD }) => {
+                        return <>{!!COD ? COD : 0}</>
                     }
                 },
                 {

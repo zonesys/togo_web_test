@@ -888,7 +888,7 @@ const AdminOrderDetails = () => {
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
-                                                    <td>{costs.BidCost}</td>
+                                                    <td>{costs.BidCost * orderDetails.package_multiplier}</td>
                                                     <td>
                                                         <Button
                                                             disabled={costs.isEnoughBalance == "1" ? false : true}

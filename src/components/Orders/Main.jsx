@@ -11,7 +11,8 @@ import {
     getTransporterDeliveredTotalAmounts,
     getOrdersToExport,
     exportOrders,
-    getTransporterTransactionsToExport
+    getTransporterTransactionsToExport,
+    searchOrders
 } from "../../APIs/OrdersAPIs";
 import { OrdersTabularView } from "./OrdersTabularView";
 import { Box } from "@chakra-ui/react";
@@ -164,62 +165,56 @@ const Main = ({ socket, token }) => {
     }, [history]);
 
     const fetchData = useCallback((functionType, stateKey) => {
+        console.log({functionType})
         setLoading(true);
-        console.log("state key : " + stateKey);
+        let filter = "none";
 
-        // transporter orders filter variable initialized
-        let transporterFunctionfilter = "none";
-
-        /* 
-        set transporter orders function by filter:
-            - NEW_ORDERS -> to get all new orders
-            - MY_ORDERS -> to get all in process orders
-            - DELIVERED -> to get all finished orders
-        */
-
-        /* if (functionType === "TransporterGetOrder" || functionType === "ShowClientOrder") {
-            transporterFunctionfilter = "NEW_ORDERS";
-        } else if (functionType === "TransporterOrderCurrent" || functionType === "ClientShowBidRequistsAccepted") {
-            transporterFunctionfilter = "MY_ORDERS";
-        } else if (functionType === "TransporterHistoryOrder" || functionType === "ClientHistoryOrder") {
-            transporterFunctionfilter = "DELIVERED";
-        } else if (functionType === "TransporterReviewedOrder" || functionType === "ClientReviewedOrder") {
-            transporterFunctionfilter = "REVIEWED";
-        } else {
-            transporterFunctionfilter = "none";
-        } */
-
-        if (functionType === "TransporterGetOrder" || functionType === "TransporterOrderCurrent" || functionType === "TransporterHistoryOrder" || functionType === "TransporterReviewedOrder") {
-
-            switch (functionType) {
-                case 'TransporterGetOrder':
-                    transporterFunctionfilter = "NEW_ORDERS";
-                    break;
-                case 'TransporterOrderCurrent':
-                    transporterFunctionfilter = "MY_ORDERS";
-                    break;
-                case 'TransporterHistoryOrder':
-                    transporterFunctionfilter = "DELIVERED";
-                    break;
-                case 'TransporterReviewedOrder':
-                    transporterFunctionfilter = "REVIEWED";
-                    break;
-                default:
-                    transporterFunctionfilter = "none";
-                    break;
+            if (['TransporterGetOrder', 'ShowClientOrder'].includes(functionType)) {
+                filter = "NEW_ORDERS";
+            } else if (['TransporterOrderCurrent', "ClientShowBidRequistsAccepted"].includes(functionType)) {
+                filter = "MY_ORDERS";
+            } else if (['TransporterHistoryOrder', "ClientHistoryOrder"].includes(functionType)) {
+                filter = "DELIVERED";
+            } else if (['TransporterReviewedOrder', "ClientReviewedOrder"].includes(functionType)) {
+                filter = "REVIEWED";
+            } else {
+                filter = "none";
             }
 
-            // transporter orders function type
-            functionType = "getTransporterRelatedOrdersByPage";
-        }
-
-        console.log(functionType + " - " + activePage + " - " + transporterFunctionfilter + " - " + searchStr)
-
-        getFunctions(functionType, activePage, transporterFunctionfilter, searchStr)
+        console.log(functionType + " - " + activePage + " - " + filter + " - " + searchStr)
+        if (isTransporter()) {
+            searchOrders(isTransporter() ? "transporter" : "client", filter, 100, activePage, searchStr)
+                .then(response => {
+                    try {
+                        console.log("RESP SEARCH ORDERS")
+                        console.log(response.data)
+    
+                        if (response.data.netAmount) {
+                            setNetAmount(response.data.netAmount);
+                        }
+                        if (response === 'NotActiveNow') {
+                            dispatch(toastMessage(translate("GENERAL.COULD_NOT_FETCH"), translate("GENERAL.ERROR")));
+                        } else {
+                            const { data: { server_response, total_orders } } = response;
+                            setTotalNumberOfRecs(total_orders);
+                            setOrders(server_response);
+                        }
+                    } catch (e) {
+                        console.log("fetching data exception: " + e)
+                    }
+                })
+                .catch((err) => {
+                    dispatch(toastMessage(err));
+                }).finally(() => {
+                    setLoading(false);
+    
+                    setSearching(false);
+                });
+        } else {getFunctions(functionType, activePage, filter, searchStr)
             .then(resp => {
                 try {
                     console.log("RESP")
-                    console.log(resp.data) // temp test
+                    console.log(resp.data)
 
                     if (resp.data.netAmount) {
                         setNetAmount(resp.data.netAmount);
@@ -255,6 +250,7 @@ const Main = ({ socket, token }) => {
 
                 setSearching(false);
             });
+        }
 
     }, [dispatch, activePage, searchStr, refresh]);
 
@@ -564,7 +560,6 @@ const Main = ({ socket, token }) => {
 
                         {currentPage === "transactions" && <>
                             <Transactions />
-                            <ExportExcel currentPage={currentPage} ordersNum={1000} />
                         </>}
 
                         {currentPage === "create-order" && (isFoodClient() ? <CreateNewFoodOrderCo /> : <CreateOrder_v2 />)}

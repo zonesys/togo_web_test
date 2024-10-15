@@ -43,39 +43,46 @@ function timeFormatter(value) {
 }
 
 export default function Transactions() {
+  const [data, setData] = useState([]);
+  const [totalSize, setTotalSize] = useState(null); // Total number of records
+  const [currentPage, setCurrentPage] = useState(1);
+  const [sizePerPage, setSizePerPage] = useState(10);
+  const [refFilter, setRefFilter] = useState(undefined)
 
-  const [transactions, setTransactions] = useState([]);
-  const [isEmpty, setIsEmpty] = useState(false); // isEmpty used for showing the loader when there are no data yet
+  const paginationOptions = {
+    page: currentPage,            // Initialize the current page
+    sizePerPage: sizePerPage,               // The number of rows per page
+    totalSize: totalSize,
+    showTotal: true,              // Show total number of records
+    alwaysShowAllBtns: true,      // Always show next and previous buttons
+    sizePerPageList: [10, 25, 100], // Options for rows per page
+    onPageChange: (page, sizePerPage) => {
+      setCurrentPage(page)
+      setSizePerPage(sizePerPage)
+    },
+    onSizePerPageChange: (sizePerPage, page) => {
+      setSizePerPage(sizePerPage);  // Update size per page
+      setCurrentPage(page);  // Reset to the first page of the new size
+    }
+  };
+
+  // Handle filter changes
+  const handleFilterChange = (filterObj) => {
+    setRefFilter(filterObj); // Update the filters state
+    setCurrentPage(1);  // Reset to the first page whenever filters change
+  };
 
   useEffect(() => {
-
     let isMounted = true;
-    getFinancialTransactions(localStorage.getItem("userId")).then(res => {
-
-      let tempArr = res.data.server_response.data.result.response;
-      // tempArr = tempArr.filter(data => (data.journal_id_name != 'Bank Transfer Hold' && data.journal_id_name != 'Bank Transfer Reject'));
-      tempArr = tempArr.filter(data => (
-        (data.journal_id_name != 'Bank Transfer Hold') &&
-        (data.journal_id_name != 'Bank Transfer Reject') &&
-        ((data.journal_id_name == "Customer Invoices" && data.debit != 0) || (data.journal_id_name != "Customer Invoices")) &&
-        ((data.journal_id_name == "Vendor Bills" && data.credit != 0) || (data.journal_id_name != "Vendor Bills"))
-      ));
-
-      // console.log(tempArr);
+    getFinancialTransactions(localStorage.getItem("userId"), currentPage, sizePerPage, refFilter).then(res => {
+      setTotalSize(res.data.server_response.count)
 
       if (isMounted) {
-        setTransactions(tempArr);
-
-
-        if (tempArr.length > 0) {
-          setIsEmpty(false)
-        } else {
-          setIsEmpty(true)
-        }
+        setData(res.data.server_response.data.result.response);
       }
     })
     return () => { isMounted = false };
-  }, []);
+  }, [currentPage, sizePerPage, refFilter]);
 
   /* table columns */
   const columns = [
@@ -120,23 +127,37 @@ export default function Transactions() {
     columns[i].headerStyle = { border: 'none' }
   }
 
-  if (transactions.length > 0) {
+  if (totalSize > 0 || totalSize == 0) {
     return (
       <div className="pe-4 ps-4 pt-2">
 
         <BootstrapTable
           keyField='id'
-          data={transactions}
+          data={data}
           columns={columns}
-          pagination={paginationFactory()}
+          pagination={paginationFactory(paginationOptions)}
           rowClasses={"custom-row-class"}
           columnClasses={"custom-column-class"}
           filter={filterFactory()}
+          remote={{
+            pagination: true, // Enable server-side pagination
+            filter: true // Enable server-side filtering
+          }}
+          onTableChange={(type, { page, sizePerPage, filters }) => {
+            console.log({ type, page, sizePerPage, filters })
+            if (type === 'pagination') {
+              setCurrentPage(page);
+              setSizePerPage(sizePerPage);
+            }
+            if (type === 'filter') {
+              handleFilterChange(filters); // Capture filter changes
+            }
+          }}
         />
 
       </div>
     );
-  } else if (!isEmpty) {
+  } else if (totalSize == null) {
     return <Box height="400px"><Loader /></Box>
   }
 
