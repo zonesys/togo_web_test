@@ -479,7 +479,7 @@ const AdminOrderDetails = () => {
                     name: timelineArr[i].fullName,
                     id: timelineArr[i].transporter_id,
                     phone: timelineArr[i].PhoneNumber,
-                    price: timelineArr[i].transporter_bidprice,
+                    price: timelineArr[i].transporter_bidprice * orderDetails.package_multiplier,
                     current: timelineArr[i].isCurrent === "1" ? true : false,
                     imageURL: timelineArr[i].PersonalImgPath,
                     pickupDate: timelineArr[i].transporter_pickupdate,
@@ -932,7 +932,7 @@ const AdminOrderDetails = () => {
                                                                     </div>
                                                                     <div className="d-flex justify-content-between">
                                                                         <div>Bid Price:</div>
-                                                                        <div>{bidReqTransPrice}</div>
+                                                                        <div>{costs.BidCost * orderDetails.package_multiplier}</div>
                                                                     </div>
                                                                     <div className="w-100 d-flex justify-content-center">
                                                                         <Rating name="size-large" size="large" defaultValue={bidReqTransRate} precision={0.1} readOnly />
