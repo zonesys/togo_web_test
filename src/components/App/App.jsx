@@ -20,7 +20,8 @@ import PaymentPage from "../PaymentPage/PaymentPage";
 import PaymentRequest from "../PaymentPage/PaymentRedirect";
 import InitializeTransaction from "../PaymentPage/PaymentRedirect";
 import PaymentPage2 from "../PaymentPage/test";
-import Prices from "./Prices/Prices"
+import Prices from "./Prices/Prices";
+
 const App = () => {
 
     let dispatch = useDispatch();
