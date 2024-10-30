@@ -39,8 +39,10 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../../Actions/GeneralActions";
 import { imgBaseUrl } from "../../../Constants/GeneralCont";
 import Rating from '@material-ui/lab/Rating';
+import packages from '../../CreateOrder_v2/CreateOrder_v2'
 
 import { useImmer } from "use-immer";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 /* format time from 24hr system to 12hr (am/pm) system */
 function timeFormat(time) {
@@ -86,6 +88,7 @@ const AdminOrderDetails = () => {
     const [showPickupModal, setShowPickupModal] = useState(false);
     const [showUndoCanceledModal, setShowUndoCanceledModal] = useState(false);
     const [showChangeCODModal, setShowChangeCODModal] = useState(false);
+    const [showChangePackageSizeModal, setShowChangePackageSizeModal] = useState(false);
 
     /* selected available offer variables (to display transporter info to accept offer) */
     const [bidReqTransImg, setBidReqTransImg] = useState();
@@ -115,6 +118,9 @@ const AdminOrderDetails = () => {
 
     const handleShowChangeCODdModal = () => setShowChangeCODModal(true);
     const handleCloseChangeCODdModal = () => setShowChangeCODModal(false);
+
+    const handleShowChangePackageSizeModal = () => setShowChangePackageSizeModal(true)
+    const handleCloseChangePackageSizeModal = () => setShowChangePackageSizeModal(false)
 
     const newCODAmountRef = useRef();
 
@@ -796,8 +802,36 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
+
+                                        <Modal show={showChangePackageSizeModal} onHide={handleCloseChangePackageSizeModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Change Package Size</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body /* className="mt-5" */>
+                                                {/* Enter new COD amount */}
+                                                Change order {orderId} Package Size?
+                                                <Form.Group>
+                                                    <FloatingLabel className="mb-3" controlId="placeName" label={"Select new Package Size"}>
+                                                    </FloatingLabel>
+                                                </Form.Group>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseChangePackageSizeModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="success" disabled={loading ? true : false} onClick={() => { handleChangeCOD(orderId) }}>
+                                                    {loading && <Spinner animation="border" size="sm" />} Confirm
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                     </Box>
                                 </Col>
+                            </Row>
+                            <Row className="mt-5">
+                                {true && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangePackageSizeModal}>
+                                    Change Package Size
+                                </Button>}
                             </Row>
                         </Col>
                     </Row>
@@ -851,6 +885,10 @@ const AdminOrderDetails = () => {
                                         </tbody>
                                     </Table>
                                 </Card.Body>
+                                
+                                <Card.Footer>
+                                    {translate("TEMP.LOAD_INFO")}
+                                </Card.Footer>
                             </Card>
                         </Col>
 

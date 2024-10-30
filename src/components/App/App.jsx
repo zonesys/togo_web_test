@@ -16,12 +16,18 @@ import { toastNotification } from "../../Actions/GeneralActions";
 import { onMessageListener } from "../../firebase";
 // import * as Sticker from '../../Sticker.jsx'
 import PrintAll from "../../Container/testPrint/printAll";
+import PaymentPage from "../PaymentPage/PaymentPage";
+import PaymentRequest from "../PaymentPage/PaymentRedirect";
+import InitializeTransaction from "../PaymentPage/PaymentRedirect";
+import PaymentPage2 from "../PaymentPage/test";
+import Prices from "./Prices/Prices"
 const App = () => {
 
     let dispatch = useDispatch();
 
     const language = useSelector(state => state.general.language);
-
+    //console.log("local storage lang set to:",language);
+    localStorage.setItem("lang",language);
     /* ----------------------( FCM )---------------------- */
 
     // notReload used in order to update the DOM at every notification
@@ -67,28 +73,10 @@ const App = () => {
                         <Route path="/" component={Home} exact />
                         <Route path="/privacy-policy" component={PrivacyPolicy} exact />
                         <Route path="/contact-us" component={ContactUs} exact />
-                 {/*        <Route path="/testPrint" component={() => {
-                            return (
-                                <div>
-                                    <WayBill3
-                                        transporterImgSrc={"https://dev.togo.ps/togo/MobileAPi/img/PersonalImg/image1660121614124.jpg?t=0.6941913539420765"}
-                                        clientImgSrc={"https://dev.togo.ps/togo/MobileAPi/img/BusinessLogo/image1634560141266.jpg?t=0.869448993020816"}
-                                        clientName=" شركة الارض الفلسطينية"
-                                        clientPhone="+972599876543"
-                                        foreignBarcode="57238592421358485845"
-                                        senderAddress="Near super market abu mohammad street-234"
-                                        senderCity="Ramallah"
-                                        receiverAddress="Near Rafidia Hostpital"
-                                        receiverCity="Nablus"
-                                        receiverPhone="+972599233432"
-                                        cod="30323"
-                                        date="03/02/2022"
-                                        orderId="1198642"
-                                        note="التوصيل عند الساعة ١٠ صباحا "
-                                    />
-                                </div>
-                            )
-                        }} /> */}
+                        <Route path="/payment" component={PaymentPage} exact />
+                        <Route path="/payment-request" component={InitializeTransaction} exact />
+                        <Route path="/test" component={PaymentPage2} exact />
+                        <Route path="/prices" component={Prices} exact />
                         <Route path="/printAll/:orderId?" component={() => {
                             return (
                                 <PrintAll/>

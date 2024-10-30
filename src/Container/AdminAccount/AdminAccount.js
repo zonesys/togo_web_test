@@ -41,7 +41,7 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
         { "id": 10, "name": "Loans", "active": "", "route": "loans" },
         { "id": 11, "name": "Reconcile", "active": "", "route": "reconcile" },
         { "id": 11, "name": "Finished Orders", "active": "", "route": "finished-orders" },
-
+        { "id": 11, "name": "Prices", "active": "", "route": "prices" },
         /* { "id": 8, "name": "Test", "active": "", "route": "test_2" }, *//* test */
     ])
 

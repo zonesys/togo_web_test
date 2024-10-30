@@ -1,6 +1,7 @@
 import { getUserCreditialParams, PAGE_SIZE } from "./AuthenticationAPIs";
 import { isTransporter } from "../Util";
 import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
+import { SizePerPageDropdownStandalone } from "react-bootstrap-table2-paginator";
 
 const axios = require("axios");
 
@@ -735,10 +736,13 @@ export function AssginOrderToMemberOnNetwork(orderId, userId) {
 
 /* edited (get transactions) */
 
-export function getFinancialTransactions(customerId) {
+export function getFinancialTransactions(customerId, activePage, sizePerPage, refFilter) {
     var params = new URLSearchParams();
-    params.append("CheckTypeFunction", "getFinancialTransactions");
+    params.append("CheckTypeFunction", "getFinancialTransactionsWeb");
     params.append("customerId", customerId);
+    params.append("page", activePage);
+    params.append("sizePerPage", sizePerPage);
+    if (refFilter && refFilter.ref) { params.append("refFilter", refFilter.ref.filterVal) }
     params.append("TokenDevice", localStorage.getItem("TokenDevice"));
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
@@ -1424,6 +1428,21 @@ export function exportOrders(userType, dateColumn, startDate,  endDate, orderSta
     params.append("startDate", startDate);
     params.append("endDate", endDate);
     params.append("orderStatuses", orderStatuses);
+
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+
+export function searchOrders(userType, filter, PageSize, PageNumber, searchStr) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "searchOrders");
+    params.append("tokenDevice", localStorage.getItem("TokenDevice"));
+    params.append("userType", userType);
+    params.append("filter", filter);
+    params.append("customerId", localStorage.getItem("userId"));
+    params.append("langId", (localStorage.getItem("Language") || "en") === "en" ? "1" : "2");
+    params.append("PageSize", PageSize);
+    params.append("PageNumber", PageNumber);
+    params.append("searchStr", searchStr);
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }

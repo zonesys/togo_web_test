@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Map from "../Address/Map";
+
 import { Accordion, Card, Button, Badge, Dropdown, Form, Modal, Spinner, Col, Row, Container, Table, ModalHeader } from "react-bootstrap";
 import { MdOutlineFastfood } from 'react-icons/md';
 import { BiPackage } from 'react-icons/bi'
@@ -457,7 +458,8 @@ const OrderDetails = () => {
         return (
 
             <React.Fragment>
-                {orderDetails && <Container fluid className='ps-5 pe-5 pb-5'>
+                {orderDetails && 
+                <Container fluid className='ps-5 pe-5 pb-5'>
 
                     <div style={{ position: "absolute", left: 0, right: 0, backgroundColor: "#ededed", height: "140px", zIndex: "-1" }}></div>
 
@@ -1019,15 +1021,17 @@ const OrderDetails = () => {
                                         {order_status === "Waiting for Bids" && tripCost && tripCost.length !== 0 ? <tbody>
                                             {tripCost.map((costs, index) => {
                                                 return <tr key={index}>
-                                                    <td><img style={{
-                                                        width: "50%",
-                                                        height: "50%",
-                                                        objectFit: "cover"
+                                                    <td ><img style={{
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        objectFit: "cover",
+                                                        marginRight: "auto",
+                                                        marginLeft: "auto"
                                                     }}
                                                         className="rounded-circle align-self-center" src={`${imgBaseUrl}${costs.TransporterPersonalImg}`} alt="transImg" />
                                                     </td>
-                                                    <td>{costs.isNetwork === "1" && <i className="bi bi-check-circle-fill h5" style={{ color: "green" }}></i>}</td>
-                                                    <td>
+                                                    <td className="text-center">{costs.isNetwork === "1" && <i className="bi bi-check-circle-fill h5" style={{ color: "green" }}></i>}</td>
+                                                    <td className="text-center">
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
