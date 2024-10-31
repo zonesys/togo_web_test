@@ -210,8 +210,7 @@ const Main = ({ socket, token }) => {
     
                     setSearching(false);
                 });
-        } else {
-            getFunctions(functionType, activePage, filter, searchStr)
+        } else {getFunctions(functionType, activePage, filter, searchStr)
             .then(resp => {
                 try {
                     console.log("RESP")

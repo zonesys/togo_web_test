@@ -43,7 +43,7 @@ export const PackageTypesIcons = {
 
 
 
-export const packages = [
+export const orderPackages = [
     {
         id: 1, name: translate("ORDERS.SMALL_PACKAGE"), mul: "1", size: "Up to [40 x 40 x 40] cm",
         max: "40",
@@ -66,66 +66,6 @@ export const packages = [
     },
 ];
 
-const CustomTypeahead = () => {
-    const [selected, setSelected] = useState([]);
-
-    return (
-        <div className='row' style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', margin: 0, padding: 0 }}>
-            <Typeahead
-                id="custom-typeahead"
-                labelKey="name"
-                onChange={setSelected}
-                options={packages}
-                selected={selected}
-                placeholder="Select Your package type"
-                style={{ display: 'flex', flexDirection: 'row', flex: 12 }}
-                renderMenuItemChildren={(option) => (
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ marginRight: '.5rem' }}>
-                            {option.icon} {/* Icon with fixed size */}
-                        </div>
-                        <div>
-                            {option.name}
-                        </div>
-                    </div>
-                )}
-            />
-            {(selected.length && selected[0].size) ? <div className="row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingTop: '10px', paddingBottom: '10px', paddingLeft: 0, paddingRight: 0, margin: 0 }}>
-                <div className="col-md-4">
-                    <Form.Control
-                        name="height"
-                        type="number"
-                        data-test="package-height"
-                        className="input-inner-shadow"
-                        placeholder={`${selected[0].size.split(" [")[0]} ${selected[0].size.split(" x ")[1]} cm`}
-                    />
-                    <span style={{ color: "#1f8379" }}>{"Width"} ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
-                </div>
-                <div className="col-md-4">
-                    <Form.Control
-                        name="width"
-                        type="number"
-                        data-test="package-width"
-                        className="input-inner-shadow"
-                        placeholder={`${selected[0].size.split(" [")[0]} ${selected[0].size.split(" x ")[1]} cm`}
-                    />
-                    <span style={{ color: "#1f8379" }}>{"Height"} ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
-                </div>
-                <div className="col-md-4">
-                    <Form.Control
-                        name="length"
-                        type="number"
-                        className="input-inner-shadow"
-                        data-test="package-length"
-                        placeholder={`${selected[0].size.split(" [")[0]} ${selected[0].size.split(" x ")[1]} cm`}
-                    />
-                    <span style={{ color: "#1f8379" }}>{"Depth"} ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
-                </div>
-                <div style={{ color: "grey", fontSize: '1vh', margin: '1vh' }}>{"ℹ️ℹ Note: the delivery fee will be multiplied according to the reported package size. Your order may be rejected by the transportation company if the reported size is not accurate."}</div>
-            </div> : <></>}
-        </div>
-    );
-};
 
 
 
@@ -144,7 +84,7 @@ export default function CreateOrder_v2(props) {
     // form validation
     const [validated, setValidated] = useState(false);
     const [packageType, setPackageType] = useState(1);
-    const selectedItem = packages.find((item) => item.id == packageType);
+    const selectedItem = orderPackages.find((item) => item.id == packageType);
 
 
     const [deliveryType, setDeliveryType] = useState("2");
@@ -520,15 +460,10 @@ export default function CreateOrder_v2(props) {
                                                         data-test="package-types-dropdown"
                                                         onSelect={(eve) => {
                                                             setPackageType(eve);
-                                                         /*    setHeightErr("");
-                                                            setWidthErr("");
-                                                            setLengthErr("") */
+                       
                                                         }}>
                                                         <Dropdown.Toggle variant="" className="w-100 text-start d-flex align-items-center">
-                                                            {/*   {React.createElement(PackageTypesIcons[packageType], { style: { width: "20px", height: "20px" }, className: "me-1" })}
-                                                            <div style={{ width: "97%" }}>
-                                                                {translate("ORDERS." + PackageTypes[packageType])}
-                                                            </div> */}
+
                                                             {selectedItem.icon}
 
                                                             <div style={{ width: "97%", marginInlineStart: "5px" }}>
@@ -540,7 +475,7 @@ export default function CreateOrder_v2(props) {
 
                                                         <Dropdown.Menu className="w-100" data-test="package-types-dropdown-menu"
                                                         >
-                                                            {packages.map((item) => {
+                                                            {orderPackages.map((item) => {
                                                                 return (
                                                                     <Dropdown.Item eventKey={item.id} className="d-flex">
                                                                         {item.icon}
@@ -553,33 +488,13 @@ export default function CreateOrder_v2(props) {
                                                                 )
 
                                                             })}
-                                                            {/*    <Dropdown.Item eventKey="2" className="d-flex">
-                                                                <FoodIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[2])}
-                                                            </Dropdown.Item>
-                                                            <Dropdown.Item eventKey="4" className="d-flex">
-                                                                <BigBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[4])}
-                                                            </Dropdown.Item>
-                                                            <Dropdown.Item eventKey="3" className="d-flex">
-                                                                <MedBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[3])}
-                                                            </Dropdown.Item> 
-                                        
-                                                            temp comment food choice
-                                                            <Dropdown.Item eventKey="1" className="d-flex">
-                                                                <SmBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[1])}
-                                                            </Dropdown.Item>
-                                                            
-                                                            */}
-
+                                 
 
                                                         </Dropdown.Menu>
 
                                                     </Dropdown>}
                                                 </div>
-                                                {(packages.length && selectedItem.size) ? <div className="row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingTop: '10px', paddingBottom: '10px', paddingLeft: 0, paddingRight: 0, margin: 0 }}>
+                                                {(orderPackages.length && selectedItem.size) ? <div className="row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingTop: '10px', paddingBottom: '10px', paddingLeft: 0, paddingRight: 0, margin: 0 }}>
                                                     <div className="col-md-4">
                                                         <Form.Group>
                                                         {translate("ORDER_DETAILS.LOAD_WIDTH")}

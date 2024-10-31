@@ -24,6 +24,17 @@ export function getAllOrders(searchStr) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
+export function changePackageMultiplier(orderId,newMultiplier){
+    const params = new URLSearchParams();
+    params.append("CheckTypeFunction","change_order_multiplier");
+    params.append("admin_id", localStorage.getItem("Adminid"));
+    params.append("admin_token", localStorage.getItem("AdminToken"));
+    params.append("order_id", orderId);
+    params.append("new_multiplier",newMultiplier);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+
+}
+
 export function GetAllNewOrders(searchStr, filterDate) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "GetAllNewOrders");

@@ -1021,7 +1021,7 @@ const OrderDetails = () => {
                                         {order_status === "Waiting for Bids" && tripCost && tripCost.length !== 0 ? <tbody>
                                             {tripCost.map((costs, index) => {
                                                 return <tr key={index}>
-                                                    <td ><img style={{
+                                                    <td><img style={{
                                                         width: "50px",
                                                         height: "50px",
                                                         objectFit: "cover",
@@ -1035,7 +1035,7 @@ const OrderDetails = () => {
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
-                                                    <td>{costs.BidCost}</td>
+                                                    <td>{costs.BidCost*orderDetails.package_multiplier}</td>
                                                     <td>
                                                         <Button
                                                             disabled={costs.isEnoughBalance == "1" ? false : true}
@@ -1079,7 +1079,7 @@ const OrderDetails = () => {
                                                                     </div>
                                                                     <div className="d-flex justify-content-between">
                                                                         <div>Bid Price:</div>
-                                                                        <div>{bidReqTransPrice}</div>
+                                                                        <div>{costs.BidCost*orderDetails.package_multiplier}</div>
                                                                     </div>
                                                                     <div className="w-100 d-flex justify-content-center">
                                                                         <Rating name="size-large" size="large" defaultValue={bidReqTransRate} precision={0.1} readOnly />

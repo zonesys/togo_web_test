@@ -21,6 +21,7 @@ export const PackageTypes = {
     "4": "EXTRA_LARGE_PACKAGE"
 };
 
+
 export const DeliveryTypes = {
     "1": "DELIVERY",
     "2": "COD",

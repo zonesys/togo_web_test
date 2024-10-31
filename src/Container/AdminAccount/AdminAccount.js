@@ -24,6 +24,7 @@ import Loans from "../../components/AdminPanel/Loans";
 import Test2 from "../../components/AdminPanel/Test2";
 import Reconcile from '../../components/AdminPanel/Reconcile';
 import FinishedOrders from '../../components/AdminPanel/FinishedOrders';
+import Prices from '../../components/AdminPanel/Prices/Prices.jsx'
 
 export default function AdminAccount({ /* match: { path } */ path, notReload }) {
 
@@ -204,7 +205,7 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
             <AdminPrivateRoute path={`${path}/loans`} component={Loans} />
             <AdminPrivateRoute path={`${path}/reconcile`} component={Reconcile} />
             <AdminPrivateRoute path={`${path}/finished-orders`} component={FinishedOrders} />
-
+            <AdminPrivateRoute path={`${path}/prices`} component={Prices} />
         </>
     );
 };

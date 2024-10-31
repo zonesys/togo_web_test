@@ -20,15 +20,15 @@ import PaymentPage from "../PaymentPage/PaymentPage";
 import PaymentRequest from "../PaymentPage/PaymentRedirect";
 import InitializeTransaction from "../PaymentPage/PaymentRedirect";
 import PaymentPage2 from "../PaymentPage/test";
-import Prices from "./Prices/Prices";
+import Prices from "../AdminPanel/Prices/Prices";
 
 const App = () => {
 
     let dispatch = useDispatch();
 
     const language = useSelector(state => state.general.language);
-    //console.log("local storage lang set to:",language);
     localStorage.setItem("lang",language);
+
     /* ----------------------( FCM )---------------------- */
 
     // notReload used in order to update the DOM at every notification
