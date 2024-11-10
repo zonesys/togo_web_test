@@ -58,6 +58,7 @@ function Convert_HTML_To_PDF() {
 
 export default function AdminWayBill() {
     const { id } = useParams();
+    console.log("opened way bill admin")
 
     const [orderDetails, setOrderDetails] = useState();
     const location = useLocation();
@@ -98,11 +99,12 @@ export default function AdminWayBill() {
             console.log("customer info --------------------");
             console.log(res.data);
 
+
             setBusinessName(res.data.BusinessName);
             setLogoURL(res.data.logoURL);
             setFullName(res.data.FullName);
             setEmail(res.data.Email);
-            setPhone(res.data.phone);
+           // setPhone(res.data.phone);
         })
     }, [])
 
@@ -119,6 +121,7 @@ export default function AdminWayBill() {
             console.log("order/receiver info --------------------");
             console.log(orderDetails); // temp test
             setOrderDetails(orderDetails);
+            setPhone(orderDetails.senderPhone)
         });
 
     }, [id]);
@@ -128,7 +131,7 @@ export default function AdminWayBill() {
     const [showTrems, setShowTrems] = useState(true);
     const [containerWidth, setContainerWidth] = useState("1000px");
     const [isSelected, setIsSelected] = useState(true);
-
+    console.log({phone})
     return (
         <>
             <div className="d-flex justify-content-center py-3 d-print-none">
@@ -275,7 +278,7 @@ export default function AdminWayBill() {
                                                 {orderDetails?.OtherDetails}
                                             </p>
                                             <p className="h5">
-                                                {phone}
+                                                {orderDetails.senderPhone}
                                             </p>
                                         </div>
                                         <div className="col-3 border-start d-flex justify-content-center align-items-center">
@@ -426,12 +429,12 @@ export default function AdminWayBill() {
                                             >
                                                 {translate("WAYBILL.SENDER")}
                                             </legend>
-                                            <p>{translate("WORKING_TIME.FROM")}: {businessName},<br />
+                                            <p>{translate("WORKING_TIME.FROM")}: {orderDetails?.SenderName ? orderDetails?.SenderName : businessName},<br />
                                                 {orderDetails?.IdCitySource},<br />
                                                 {orderDetails?.OtherDetails}
                                             </p>
                                             <hr className="my-2" />
-                                            <p>{translate("ADMIN.MOBILE_NUMBER")}: {orderDetails?.PhoneCustomer}</p>
+                                            <p>{translate("ADMIN.MOBILE_NUMBER")}: { phone/* orderDetails?.PhoneCustomer */}</p>
                                         </fieldset>
                                     </div>
 

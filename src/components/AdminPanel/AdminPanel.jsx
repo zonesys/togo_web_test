@@ -12,11 +12,11 @@ import CustomIcon from '../../assets/icons';
 import { Spinner, Modal, Button, Form, FloatingLabel } from 'react-bootstrap';
 import "./OrdersPage.css";
 
-const getCurrentDate = () => {
+export const getCurrentDate = () => {
     return new Date().toJSON().slice(0, 7);
 }
 
-const get2monthsbefore = () => {
+export const get2monthsbefore = () => {
     const currentDate = new Date();
     currentDate.setMonth(currentDate.getMonth() - 1);
     const previousMonth = currentDate.toJSON().slice(0, 7);
@@ -27,14 +27,14 @@ export default function AdminPanel() {
 
     const [newOrders, setNewOrders] = useState([]); // new orders
     const [activeOrders, setActiveOrders] = useState([]); // in-process orders
-    const [finishedOrders, setFinishedOrders] = useState([]); // finished orders
+    // const [finishedOrders, setFinishedOrders] = useState([]); // finished orders
     const [deletedOrders, setDeletedOrders] = useState([]); // deleted orders
     const [exceptionOrders, setExceptionOrders] = useState([]); // returned/stuck orders
     const [errorOrders, setErrorOrders] = useState([]); // exception error marked orders
 
     const [newOrdersNum, setNewOrdersNum] = useState(0);
     const [activeOrdersNum, setActiveOrdersNum] = useState(0);
-    const [finishedOrdersNum, setFinishedOrdersNum] = useState(0);
+    // const [finishedOrdersNum, setFinishedOrdersNum] = useState(0);
     const [deletedOrdersNum, setDeletedOrdersNum] = useState(0);
     const [exceptionOrdersNum, setExceptionOrdersNum] = useState(0);
     const [errorOrdersNum, setErrorOrdersNum] = useState(0);
@@ -42,7 +42,7 @@ export default function AdminPanel() {
     // to display loading spinner
     const [newOrdersLoading, setNewOrdersLoading] = useState(false);
     const [activeOrdersLoading, setActiveOrdersLoading] = useState(false);
-    const [finishedOrdersLoading, setFinishedOrdersLoading] = useState(false);
+    // const [finishedOrdersLoading, setFinishedOrdersLoading] = useState(false);
     const [exceptionOrdersLoading, setExceptionOrdersLoading] = useState(false);
     const [errorOrdersLoading, setErrorOrdersLoading] = useState(false);
     const [deletedOrdersLoading, setDeletedOrdersLoading] = useState(false);
@@ -52,21 +52,21 @@ export default function AdminPanel() {
 
     const [newOrdersFromToDate, setNewOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
     const [activeOrdersFromToDate, setActiveOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
-    const [finishedOrdersFromToDate, setFinishedOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
+    // const [finishedOrdersFromToDate, setFinishedOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
     const [deletedOrdersFromToDate, setDeletedOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
     const [exceptionOrdersFromToDate, setExceptionOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
     const [errorOrdersFromToDate, setErrorOrdersFromToDate] = useState(get2monthsbefore() + " -- " + getCurrentDate());
 
     const [newOrdersSearchStr, setNewOrdersSearchStr] = useState("no_str");
     const [activeOrdersSearchStr, setActiveOrdersSearchStr] = useState("no_str");
-    const [finishedOrdersSearchStr, setFinishedOrdersSearchStr] = useState("no_str");
+    // const [finishedOrdersSearchStr, setFinishedOrdersSearchStr] = useState("no_str");
     const [deletedOrdersSearchStr, setDeletedOrdersSearchStr] = useState("no_str");
     const [exceptionOrdersSearchStr, setExceptionOrdersSearchStr] = useState("no_str");
     const [errorOrdersSearchStr, setErrorOrdersSearchStr] = useState("no_str");
 
     const [newOrdersErr, setNewOrdersErr] = useState(false);
     const [activeOrdersErr, setActiveOrdersErr] = useState(false);
-    const [finishedOrdersErr, setFinishedOrdersErr] = useState(false);
+    // const [finishedOrdersErr, setFinishedOrdersErr] = useState(false);
     const [deletedOrdersErr, setDeletedOrdersErr] = useState(false);
     const [exceptionOrdersErr, setExceptionOrdersErr] = useState(false);
     const [errorOrdersErr, setErrorOrdersErr] = useState(false);
@@ -123,26 +123,26 @@ export default function AdminPanel() {
         });
     }, [activeOrdersFromToDate])
 
-    useEffect(() => {
-        setFinishedOrdersLoading(true);
-        // get all finished orders
-        GetAllFinishedOrders(finishedOrdersSearchStr, finishedOrdersFromToDate).then((res) => {
-            // console.log(res.data.orders_list)
-            setFinishedOrders(res.data.orders_list)
+    // useEffect(() => {
+    //     setFinishedOrdersLoading(true);
+    //     // get all finished orders
+    //     GetAllFinishedOrders(finishedOrdersSearchStr, finishedOrdersFromToDate).then((res) => {
+    //         // console.log(res.data.orders_list)
+    //         setFinishedOrders(res.data.orders_list)
 
-            setFinishedOrdersNum(res.data.orders_list.length);
+    //         setFinishedOrdersNum(res.data.orders_list.length);
 
-            setFinishedOrdersLoading(false);
+    //         setFinishedOrdersLoading(false);
 
-            const temp_orders = res.data.orders_list;
-            for (let i = 0; i < temp_orders.length; i++) {
-                if (temp_orders[i].foreign_order_error == 1) {
-                    setFinishedOrdersErr(true);
-                    break;
-                }
-            }
-        })
-    }, [finishedOrdersFromToDate])
+    //         const temp_orders = res.data.orders_list;
+    //         for (let i = 0; i < temp_orders.length; i++) {
+    //             if (temp_orders[i].foreign_order_error == 1) {
+    //                 setFinishedOrdersErr(true);
+    //                 break;
+    //             }
+    //         }
+    //     })
+    // }, [finishedOrdersFromToDate])
 
     useEffect(() => {
         // console.log(deletedOrdersFromToDate);
@@ -225,7 +225,7 @@ export default function AdminPanel() {
             <div className='orders-grid'>
                 <OrdersColumn index="first" title="New Orders" orders={newOrders} ordersCount={newOrdersNum} loading={newOrdersLoading} searchAndFilter={() => filterHandler("New Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={newOrdersErr} />
                 <OrdersColumn title="Active Orders" orders={activeOrders} ordersCount={activeOrdersNum} loading={activeOrdersLoading} searchAndFilter={() => filterHandler("Active Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={activeOrdersErr} />
-                <OrdersColumn title="Finished Orders" orders={finishedOrders} ordersCount={finishedOrdersNum} loading={finishedOrdersLoading} searchAndFilter={() => filterHandler("Finished Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={finishedOrdersErr} />
+                {/*<OrdersColumn title="Finished Orders" orders={finishedOrders} ordersCount={finishedOrdersNum} loading={finishedOrdersLoading} searchAndFilter={() => filterHandler("Finished Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={finishedOrdersErr} />*/}
                 <OrdersColumn title="Deleted Orders" orders={deletedOrders} ordersCount={deletedOrdersNum} loading={deletedOrdersLoading} searchAndFilter={() => filterHandler("Deleted Orders")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={deletedOrdersErr} />
                 <OrdersColumn index="last" title="Exception Orders" orders={errorOrders} ordersCount={errorOrdersNum} loading={errorOrdersLoading} searchAndFilter={() => filterHandler("Exceptions")} handleSelect={(id, title, isActive) => handleSelectOrder(id, title, isActive)} isErrs={errorOrdersErr} />
             </div>
@@ -293,7 +293,7 @@ export default function AdminPanel() {
                             } else if (filterModalTitle == "Active Orders") {
                                 setActiveOrdersFromToDate(fromToDate);
                             } else if (filterModalTitle == "Finished Orders") {
-                                setFinishedOrdersFromToDate(fromToDate);
+                                // setFinishedOrdersFromToDate(fromToDate);
                             } else if (filterModalTitle == "Deleted Orders") {
                                 setDeletedOrdersFromToDate(fromToDate);
                             } else if (filterModalTitle == "Exceptions") {
@@ -511,7 +511,8 @@ const OrdersColumn = ({ index, title, orders, ordersCount, loading, searchAndFil
         if (!!val) {
 
             // console.log(ordersState)
-            let tempOrders = ordersState.filter(order => (order.id.includes(val) || (order.foreignOrderId && order.foreignOrderId === val) || (order.foreignOrderBarcode && order.foreignOrderBarcode === val) || (order.fromCity && order.fromCity.toLowerCase().includes(val.toLowerCase())) || (order.toCity && order.toCity.toLowerCase().includes(val.toLowerCase())) || (order.receiverName && order.receiverName.toLowerCase().includes(val.toLowerCase())) || (order.clientBusinessName && order.clientBusinessName.toLowerCase().includes(val.toLowerCase())) || (order.transporterAccountName && order.transporterAccountName.toLowerCase().includes(val.toLowerCase())) || (order.DateLoad && order.DateLoad.includes(val)) || (order.foreign_order_error && order.foreign_order_error == 1 && val.includes('!'))));
+            // let tempOrders = ordersState.filter(order => (order.id.includes(val) || (order.foreignOrderId && order.foreignOrderId === val) || (order.foreignOrderBarcode && order.foreignOrderBarcode === val) || (order.fromCity && order.fromCity.toLowerCase().includes(val.toLowerCase())) || (order.toCity && order.toCity.toLowerCase().includes(val.toLowerCase())) || (order.receiverName && order.receiverName.toLowerCase().includes(val.toLowerCase())) || (order.clientBusinessName && order.clientBusinessName.toLowerCase().includes(val.toLowerCase())) || (order.transporterAccountName && order.transporterAccountName.toLowerCase().includes(val.toLowerCase())) || (order.DateLoad && order.DateLoad.includes(val)) || (order.foreign_order_error && order.foreign_order_error == 1 && val.includes('!'))));
+            let tempOrders = ordersState.filter(order => Object.values(order).join(" ").toLowerCase().includes(val.toLowerCase()));
 
             setSearchedOrders(tempOrders)
         } else {

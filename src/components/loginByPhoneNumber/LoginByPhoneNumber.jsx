@@ -13,6 +13,8 @@ import { getUserToken } from "../../firebase";
 import { refreshPage } from "../../Functions/CommonFunctions";
 import "./styles.css";
 
+import { isSupported } from "firebase/messaging";
+
 export default function LoginByPhoneNumber() {
     const styles = {
         cardHeaderLg: {
@@ -98,17 +100,20 @@ export default function LoginByPhoneNumber() {
         }
     }
 
-    function requestPermission() {
+    async function requestPermission() {
         console.log('Requesting permission...');
-        Notification.requestPermission().then((permission) => {
-            if (permission === 'granted') {
-                // console.log('Notification permission granted.');
-
-                tokenFunc();
-            } else {
-                // console.log('Notification permission denied.');
-            }
-        })
+        const hasFirebaseMessagingSupport = await isSupported();
+        if (hasFirebaseMessagingSupport) {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    // console.log('Notification permission granted.');
+                    
+                    tokenFunc();
+                } else {
+                    // console.log('Notification permission denied.');
+                }
+            })
+        }
     }
 
     let data;
@@ -125,7 +130,7 @@ export default function LoginByPhoneNumber() {
         return data;
     }
 
-    function handleLogin() {
+    async function handleLogin() {
         setStartValidationForCode(true);
         if (codeRef.current.value.length !== 4) {
             setShowErrorForCode(true);
@@ -136,7 +141,7 @@ export default function LoginByPhoneNumber() {
 
             // console.log("----> " + customerId);
 
-            loginWithNumber(customerId, codeRef.current.value).then((res) => {
+            loginWithNumber(customerId, codeRef.current.value).then(async (res) => {
                 // console.log(res.data);
                 if (res.data === "Wrong Code!") {
                     dispatch(toastNotification("Error", res.data, "error"));
@@ -175,7 +180,7 @@ export default function LoginByPhoneNumber() {
 
                     // console.log("before permissions check");
                     // request notification permission and get FCM token
-                    requestPermission();
+                    await requestPermission();
 
                     setLloadingLogin(false);
 
@@ -206,13 +211,13 @@ export default function LoginByPhoneNumber() {
                                 }}>
                                     <Form.Group className="mb-3" controlId="formBasicEmail">
                                         <Form.Label>Please enter your phone number (start with 0)</Form.Label>
-                                        <Form.Control type="number" placeholder="Phone number..." ref={numberRef} />
-                                        {shadowErrorForMobile && startValidationForMobile && <Form.Text className="text-danger">
+                                        <Form.Control type="number" placeholder="Phone number..." ref={numberRef} data-test="mobile-number-input" />
+                                        {shadowErrorForMobile && startValidationForMobile && <Form.Text className="text-danger" data-test="invalid-number-error-message">
                                             Please enter a valid phone number!
                                         </Form.Text>}
                                     </Form.Group>
 
-                                    <Button type="submit" className="btn-grad">
+                                    <Button type="submit" className="btn-grad" data-test="send-number-btn">
                                         {loadingSend && <Spinner animation="border" size="sm" />}
                                         Send
                                     </Button>
@@ -238,13 +243,13 @@ export default function LoginByPhoneNumber() {
                     }}>
                         <Form.Group className="mb-3" controlId="formBasicEmail">
                             <Form.Label>Enter the code</Form.Label>
-                            <Form.Control type="number" placeholder="####" ref={codeRef} />
-                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger">
+                            <Form.Control type="number" placeholder="####" ref={codeRef} data-test="OTP-code-input" />
+                            {shadowErrorForCode && startValidationForCode && <Form.Text className="text-danger" data-test="invalid-code-message">
                                 Enter four-digit Code!
                             </Form.Text>}
                         </Form.Group>
 
-                        <Button type="submit" className="btn-grad">
+                        <Button type="submit" className="btn-grad" data-test="submit-login">
                             {loadingLogin && <Spinner animation="border" size="sm" />}
                             Login
                         </Button>

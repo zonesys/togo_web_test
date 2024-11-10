@@ -23,13 +23,14 @@ import {
     AdminAcceptOfferReqFIX,
     AdminRemoveAddErrorMark,
     undoCancledActiveOrder,
-    alterActiveOrderCOD,
-    getOliveryStatus
+    getForeignStatus,
+    changeCodAdmin,
+    changePackageMultiplier
 } from "../../../APIs/AdminPanelApis";
 import translate from "../../../i18n/translate";
 import { Alert, AlertDescription, AlertIcon, AlertTitle } from "@chakra-ui/alert";
 import { Box } from "@chakra-ui/layout";
-import { deliverFormatter, packageFormatter } from "../../Orders/OrdersTabularView";
+import { deliverFormatter, packageFormatter, PackageTypes } from "../../Orders/OrdersTabularView";
 import { useLocation, useParams, useHistory } from "react-router";
 import { refreshPage } from "../../../Functions/CommonFunctions";
 import Timeline from "../../TimeLine/TimeLine";
@@ -39,8 +40,9 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../../Actions/GeneralActions";
 import { imgBaseUrl } from "../../../Constants/GeneralCont";
 import Rating from '@material-ui/lab/Rating';
+import { orderPackages } from "../../CreateOrder_v2/CreateOrder_v2";
+import { PackageTypesDropdown } from "../../Order/PackageTypesDropdown";
 
-import { useImmer } from "use-immer";
 
 /* format time from 24hr system to 12hr (am/pm) system */
 function timeFormat(time) {
@@ -86,6 +88,7 @@ const AdminOrderDetails = () => {
     const [showPickupModal, setShowPickupModal] = useState(false);
     const [showUndoCanceledModal, setShowUndoCanceledModal] = useState(false);
     const [showChangeCODModal, setShowChangeCODModal] = useState(false);
+    const [showChangePackageSizeModal, setShowChangePackageSizeModal] = useState(false);
 
     /* selected available offer variables (to display transporter info to accept offer) */
     const [bidReqTransImg, setBidReqTransImg] = useState();
@@ -94,9 +97,12 @@ const AdminOrderDetails = () => {
     const [bidReqTransRate, setBidReqTransRate] = useState();
     const [bidReqTransName, setBidReqTransName] = useState();
 
+    const [selectedPackageType, setSelectedPackageType] = useState(orderPackages[0]);
+
+
     const [loadingAcceptOffer, setLoadingAcceptOffer] = useState(false);
 
-    const [oliveryStatus, setOliveryStatus] = useState("");
+    const [foreignStatus, setForeignStatus] = useState("");
 
     const handleCloseCancelActiveModal = () => setShowCancelActiveModal(false);
     const handleShowCancelActiveModal = () => setShowCancelActiveModal(true);
@@ -115,6 +121,9 @@ const AdminOrderDetails = () => {
 
     const handleShowChangeCODdModal = () => setShowChangeCODModal(true);
     const handleCloseChangeCODdModal = () => setShowChangeCODModal(false);
+
+    const handleShowChangePackageSizeModal = () => setShowChangePackageSizeModal(true)
+    const handleCloseChangePackageSizeModal = () => setShowChangePackageSizeModal(false)
 
     const newCODAmountRef = useRef();
 
@@ -228,7 +237,6 @@ const AdminOrderDetails = () => {
         /* setRefresh(!refresh);
         handleCloseCancelNewModal(); */
     }
-
     const handleChangeCOD = (orderId) => {
 
         if (/* newCODAmountRef.current.value */ true) {
@@ -237,7 +245,7 @@ const AdminOrderDetails = () => {
             // const newCOD = newCODAmountRef.current.value;
             const newCOD = 0;
 
-            alterActiveOrderCOD(orderId, newCOD).then((res) => {
+            changeCodAdmin(orderId, newCOD).then((res) => {
                 if (res.data === "TokenError" || res.data.includes("error")) {
                     dispatch(toastNotification("Error", res.data, "error"));
                 } else if (res.data.includes("success")) {
@@ -268,6 +276,9 @@ const AdminOrderDetails = () => {
         /* setRefresh(!refresh);
         handleCloseCancelNewModal(); */
     }
+
+
+
 
     const styles = {
         cardHeaderLg: {
@@ -339,7 +350,7 @@ const AdminOrderDetails = () => {
 
             AdminCheckTripCost(orderDetailsRes.CustomerId, orderId, orderDetailsRes.CostLoad, orderDetailsRes.cityFromId, orderDetailsRes.cityToId).then((tripCostRes) => {
 
-                console.log({tripCostRes}); // temp test
+                console.log({ tripCostRes }); // temp test
 
                 if (tripCostRes.data && tripCostRes.data !== "CostNotSend") {
                     setTripCost(tripCostRes.data.CostDetail);
@@ -362,11 +373,11 @@ const AdminOrderDetails = () => {
 
     useEffect(() => {
         /* get all actions related to this order */
-        getOliveryStatus(orderId).then((res) => {
+        getForeignStatus(orderId).then((res) => {
             if (res && res.data) {
-                console.log({res})
-                console.log(res.data.status)
-                setOliveryStatus(res.data.status);
+                console.log({ res })
+                console.log(res.data)
+                setForeignStatus(res.data);
             }
         })
     }, [refresh])
@@ -428,16 +439,18 @@ const AdminOrderDetails = () => {
             AssignStatus, AssignedMemberName,
             isAcceptDelivery,
             SenderName,
+            senderPhone,
             ReceiverName,
             foreign_order_error,
             senderForeignViilageName,
-            senderForeignRegionName
+            senderForeignRegionName,
+            foreignBarcode
         } = orderDetails;
 
         let senderAddress = {
             name: SenderName,
             otherDetails: !!senderForeignViilageName ? (senderForeignViilageName + ", " + senderForeignRegionName + " - (" + OtherDetails + ")") : (IdAreaSource == null ? OtherDetails + "  -  " + IdCitySource : IdCitySource + ", " + IdAreaSource + "  -  " + OtherDetails),
-            phoneCustomer: PhoneCustomer,
+            phoneCustomer: senderPhone,//PhoneCustomer,
             long: LongSender,
             lat: LatSender
         };
@@ -475,7 +488,7 @@ const AdminOrderDetails = () => {
                     name: timelineArr[i].fullName,
                     id: timelineArr[i].transporter_id,
                     phone: timelineArr[i].PhoneNumber,
-                    price: timelineArr[i].transporter_bidprice,
+                    price: timelineArr[i].transporter_bidprice * orderDetails.package_multiplier,
                     current: timelineArr[i].isCurrent === "1" ? true : false,
                     imageURL: timelineArr[i].PersonalImgPath,
                     pickupDate: timelineArr[i].transporter_pickupdate,
@@ -508,7 +521,7 @@ const AdminOrderDetails = () => {
         return (
 
             <React.Fragment>
-                
+
                 <div className="container-fluid">
 
                 </div>
@@ -576,10 +589,19 @@ const AdminOrderDetails = () => {
 
                                                 {<tr>
                                                     <th scope="row">
-                                                        <span>Olivery Status</span>
+                                                        <span>Foreign Status</span>
                                                     </th>
                                                     <td style={{ textAlign: "right" }}>
-                                                        <span style={{ color: "#35b09d" }}>{oliveryStatus}</span>
+                                                        <span style={{ color: "#35b09d" }}>{foreignStatus}</span>
+                                                    </td>
+                                                </tr>}
+
+                                                {<tr>
+                                                    <th scope="row">
+                                                        <span>Foreign Barcode</span>
+                                                    </th>
+                                                    <td style={{ textAlign: "right" }}>
+                                                        <span style={{ color: "#35b09d" }}>{foreignBarcode}</span>
                                                     </td>
                                                 </tr>}
 
@@ -602,9 +624,11 @@ const AdminOrderDetails = () => {
                         {/* Actions Buttons */}
                         <Col className="mt-5" xl="8">
                             <Row style={{
-                                marginTop: "40px"
+                                marginTop: '5px'
                             }}>
-                                <Col>
+                                <Col style={{
+                                    marginBlock: newCod ? "10px" : null
+                                }}>
                                     {
                                         <Button disabled={loadingMark ? true : false} variant={foreign_order_error == 1 ? "danger" : "outline-danger"} className="rounded-pill"><i className="bi bi-exclamation-circle-fill" onClick={() => {
                                             let status = (foreign_order_error == 1 ? 0 : 1);
@@ -624,6 +648,7 @@ const AdminOrderDetails = () => {
                                         {true && <Button
                                             variant="outline-primary"
                                             onClick={() => {
+                                                console.log("pushed to admin waybill")
                                                 history.push("/adminapp/printOrder/" + orderId + "?print=true")
                                             }}
                                             style={styles.actionButton}
@@ -657,9 +682,8 @@ const AdminOrderDetails = () => {
                                             Uncancel Order
                                         </Button>}
 
-                                        {/* change COD amount for active order */}
                                         {!!newCod && (order_status === "Bid Accepted" || order_status === "Out for Delivery") && DeliveryId != null && (CostLoad != newCod) && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangeCODdModal}>
-                                            Apply COD change <br /> ({CostLoad + " -> " + newCod})
+                                            COD change
                                         </Button>}
 
                                         {/* alter cod action */}
@@ -756,7 +780,6 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
-
                                         <Modal show={showChangeCODModal} onHide={handleCloseChangeCODdModal}>
                                             <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
                                                 <Modal.Title>Change order COD</Modal.Title>
@@ -782,9 +805,56 @@ const AdminOrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
+
+                                        <Modal show={showChangePackageSizeModal} onHide={handleCloseChangePackageSizeModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Change Package Size</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body style={{width: "850px"}} /* className="mt-5" */>
+                                                {/* Enter new COD amount */}
+                                                Choose type from list
+                                                <PackageTypesDropdown 
+                                                handler={(eve)=>{
+                                                    setSelectedPackageType(orderPackages.find(item=> item.id == eve))
+                                                }}
+                                                selectedItem={selectedPackageType}/>
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseChangePackageSizeModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="success" disabled={loading ? true : false} onClick={async () => { 
+                                                
+                                                    console.log({orderId},{selectedPackageType})
+                                                    setLoading(true)
+                                                    changePackageMultiplier(orderId,selectedPackageType.mul).then(res=>{
+                                                        setLoading(false)
+                                                        const response = res.data;
+                                                        console.log("response status",response.status)
+                                                        handleCloseChangePackageSizeModal()
+                                                        if(response.status == "error"){
+                                                            dispatch(toastNotification("Error!",response.error,"error"))
+                                                            return;
+                                                        }
+                                                        setRefresh(!refresh)
+                                                        dispatch(toastNotification("Success!","Package Size changed successfully","success"))
+
+
+                                                        
+                                                    })
+                                                    
+                                                   // handleCloseChangePackageSizeModal()    
+                                                    
+                                                    }}>
+                                                    {loading && <Spinner animation="border" size="sm" />} Confirm
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
+
                                     </Box>
                                 </Col>
                             </Row>
+
                         </Col>
                     </Row>
 
@@ -803,19 +873,34 @@ const AdminOrderDetails = () => {
                                     {translate("TEMP.LOAD_INFO")}
                                 </Card.Header>
                                 <Card.Body>
-                                    <div className="w-100 d-flex justify-content-center mt-2" style={{ fontSize: "1.5rem" }}>
-                                        <Badge bg="warning" className="rounded-22">
-                                            {
-                                                TypeLoad === "1" ? <MdOutlineFastfood style={{ height: '50px', width: '50px' }} /> :
-                                                    TypeLoad === "2" ? <FcPackage style={{ height: '50px', width: '50px' }} /> :
-                                                        TypeLoad === "3" ? <BiPackage style={{ height: '50px', width: '50px' }} /> :
-                                                            <FiPackage style={{ height: '50px', width: '50px' }} />
-                                            }
-                                        </Badge>
+                                    <div className="d-flex align-items-center justify-content-center">
+
+                                        <div className="d-flex flex-column">
+                                            <div className="w-100 d-flex justify-content-center mt-2" style={{ fontSize: "1.5rem" }}>
+                                                <Badge bg="warning" className="rounded-22">
+                                                    {
+                                                        TypeLoad === "1" ? <MdOutlineFastfood style={{ height: '50px', width: '50px' }} /> :
+                                                            TypeLoad === "2" ? <FcPackage style={{ height: '50px', width: '50px' }} /> :
+                                                                TypeLoad === "3" ? <BiPackage style={{ height: '50px', width: '50px' }} /> :
+                                                                    <FiPackage style={{ height: '50px', width: '50px' }} />
+                                                    }
+                                                </Badge>
+
+                                            </div>
+                                            <div className="w-100 d-flex justify-content-center" style={{ fontSize: "1.5rem" }}>
+                                                {packageFormatter({ PackageType: TypeLoad })}
+                                            </div>
+                                        </div>
+                                        <div className="d-flex justify-content-center align-items-center">
+                                            <Button style={styles.actionButton} variant="danger" onClick={handleShowChangePackageSizeModal}>
+                                                Change
+                                            </Button>
+                                        </div>
+
+
                                     </div>
-                                    <div className="w-100 d-flex justify-content-center" style={{ fontSize: "1.5rem" }}>
-                                        {packageFormatter({ PackageType: TypeLoad })}
-                                    </div>
+
+
                                     <Table className="mt-3">
                                         <tbody>
                                             <tr>
@@ -837,6 +922,10 @@ const AdminOrderDetails = () => {
                                         </tbody>
                                     </Table>
                                 </Card.Body>
+
+                                <Card.Footer>
+                                    {translate("TEMP.LOAD_INFO")}
+                                </Card.Footer>
                             </Card>
                         </Col>
 
@@ -874,7 +963,7 @@ const AdminOrderDetails = () => {
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
-                                                    <td>{costs.BidCost}</td>
+                                                    <td>{costs.BidCost * orderDetails.package_multiplier}</td>
                                                     <td>
                                                         <Button
                                                             disabled={costs.isEnoughBalance == "1" ? false : true}
@@ -918,7 +1007,7 @@ const AdminOrderDetails = () => {
                                                                     </div>
                                                                     <div className="d-flex justify-content-between">
                                                                         <div>Bid Price:</div>
-                                                                        <div>{bidReqTransPrice}</div>
+                                                                        <div>{costs.BidCost * orderDetails.package_multiplier}</div>
                                                                     </div>
                                                                     <div className="w-100 d-flex justify-content-center">
                                                                         <Rating name="size-large" size="large" defaultValue={bidReqTransRate} precision={0.1} readOnly />
@@ -948,7 +1037,8 @@ const AdminOrderDetails = () => {
                                                                                 resp.data == "OrderNotAccept" ||
                                                                                 resp.data == "BidChanged" ||
                                                                                 resp.data == "Blocked" ||
-                                                                                resp.data == "TokenError"
+                                                                                resp.data == "TokenError" ||
+                                                                                resp.data == "Failed"
                                                                             ) {
                                                                                 dispatch(toastNotification("Error!", resp.data, "error"));
                                                                             } else if (resp.data.indexOf("Success") !== -1) {

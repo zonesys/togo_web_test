@@ -158,3 +158,10 @@ export function checkSubaccountUserName(usernameStr) {
     params.append("usernameStr", usernameStr);
     return axios.post(apiUrl, params);
 }
+
+export function getTransporterStatById() {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "getTransporterStatById");
+    params.append("transporterId", localStorage.getItem("userId"));
+    return axios.post(apiUrl, params);
+}

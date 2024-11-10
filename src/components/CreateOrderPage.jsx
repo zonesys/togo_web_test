@@ -272,7 +272,7 @@ const TitleTag = ({ title, iconClass, themeColor }) => {
 
 
     return (
-        <div className="title-tag">
+        <div className="title-tag" data-test='create-new-order'>
             {/* <i className={iconClass}>{title}</i> */}
             <div className="icon"><div><i className={iconClass}></i></div></div>
             <div className="text">{title}</div>

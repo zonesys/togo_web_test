@@ -1,6 +1,8 @@
 import { Button, Dropdown, Form, Modal, Spinner, Table, Container, Row, Col, ListGroup, FloatingLabel, Badge } from "react-bootstrap";
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import React, { useEffect, useRef, useState } from "react";
-import translate from "../../i18n/translate";
+import translate, { translateToString } from "../../i18n/translate";
 import { ReactComponent as SendIcon } from "../../assets/images/send.svg";
 import {
     createOrder_v2,
@@ -17,13 +19,14 @@ import { ReactComponent as FoodIcon } from "../../assets/images/food.svg";
 import { ReactComponent as SmBoxIcon } from "../../assets/images/smallBox.svg";
 import { ReactComponent as MedBoxIcon } from "../../assets/images/medbox.svg";
 import { ReactComponent as BigBoxIcon } from "../../assets/images/largebox.svg";
+import { ReactComponent as XLBoxIcon } from "../../assets/images/XLBox.svg";
 import { ReactComponent as DeliveryTruckIcon } from "../../assets/images/deliveryTruck.svg";
 import { ReactComponent as LocationIcon } from "../../assets/images/location.svg";
 import { ReactComponent as AttachmentIcon } from "../../assets/images/attachment.svg";
 import { DeliveryTypes, PackageTypes } from "../Orders/OrdersTabularView";
 import { AddIcon } from "@chakra-ui/icons";
 import { useIntl } from "react-intl";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { isTransporter } from "../../Util";
 import "./CreateOrder_v2.css";
@@ -38,8 +41,35 @@ export const PackageTypesIcons = {
     "4": BigBoxIcon
 };
 
-export default function CreateOrder_v2(props) {
 
+
+export const orderPackages = [
+    {
+        id: 1, name: translate("ORDERS.SMALL_PACKAGE"), mul: "1", size: "Up to [40 x 40 x 40] cm",
+        max: "40",
+        icon: <SmBoxIcon style={{ width: '2vh', height: '2vh' }} />
+    },
+
+    {
+        id: 2, name: translate("ORDERS.MEDIUM_PACKAGE"), mul: "2", size: "Up to [80 x 80 x 80] cm",
+        max: "80",
+        icon: <MedBoxIcon style={{ width: '2vh', height: '2vh' }} />
+    },
+    {
+        id: 3, name: translate("ORDERS.LARGE_PACKAGE"), mul: "3", size: "Up to [100 x 100 x 100] cm",
+        max: "100",
+        icon: <BigBoxIcon style={{ width: '2vh', height: '2vh' }} />
+    },
+    {
+        id: 4, name: translate("ORDERS.EXTRA_LARGE_PACKAGE"), mul: "4", size: "Bigger than [100 x 100 x 100] cm",
+        icon: <XLBoxIcon style={{ width: '2vh', height: '2vh' }} />
+    },
+];
+
+
+
+
+export default function CreateOrder_v2(props) {
     const history = useHistory();
     let dispatch = useDispatch();
 
@@ -53,7 +83,10 @@ export default function CreateOrder_v2(props) {
 
     // form validation
     const [validated, setValidated] = useState(false);
-    const [packageType, setPackageType] = useState("2");
+    const [packageType, setPackageType] = useState(1);
+    const selectedItem = orderPackages.find((item) => item.id == packageType);
+
+
     const [deliveryType, setDeliveryType] = useState("2");
     const [inputValue, setInputValue] = useState('');
     const [clientInputValue, setClientInputValue] = useState('');
@@ -72,6 +105,9 @@ export default function CreateOrder_v2(props) {
 
     const [showPickupAddressModal, setShowPickupAddressModal] = useState(false);
     const [showReceiverAddressModal, setShowReceiverAddressModal] = useState(false);
+    const [heightErr, setHeightErr] = useState("")
+    const [widthErr, setWidthErr] = useState("")
+    const [lengthErr, setLengthErr] = useState("")
 
     // selected areas
     const [provinces, setProvinces] = useState([]);
@@ -237,13 +273,43 @@ export default function CreateOrder_v2(props) {
         setShowReceiverAddressModal(false);
     }
 
+    const [selectedProvince, setSelectedProvince] = useState([]);
+    const [selectedGovernorate, setSelectedGovernorate] = useState([]);
+    const [selectedCity, setSelectedCity] = useState([]);
+    const [selectedArea, setSelectedArea] = useState([]);
+  
+    const handleWidthChange = (e)=>{
+        if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
+            const msg = `${translateToString("ORDER_DETAILS","WIDTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`;
+            
+           setWidthErr(msg)
+        } else {
+            setWidthErr("")
+        }
+    }
+    const handleHeightChange = (e)=>{
+        if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
+            const msg =`${translateToString("ORDER_DETAILS","HEIGHT_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`
+            setHeightErr(msg)
+        } else {
+            setHeightErr("")
+        }
+    }
+    const handleLengthChange = (e)=>{
+        if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
+            const msg = `${translateToString("ORDER_DETAILS","LENGTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`
+            setLengthErr(msg);
+        } else {
+            setLengthErr("")
+        }
+    }
     return (
         <>
             {/* upper background */}
             <div className="upperBackground">
             </div>
 
-            <div className="mainContainer" style={{ height: null, marginTop:"10%" }}>
+            <div className="mainContainer" style={{ height: null, marginTop: "10%" }}>
                 <Container fluid className="pb-5">
                     <Row className="h2 d-flex justify-content-center" style={{ marginTop: "50px", marginBottom: "0px", fontWeight: "bold", color: "white" }}>
                         {translate("CREATE_NEW_ORDER.CREATE_ORDER")}
@@ -257,11 +323,14 @@ export default function CreateOrder_v2(props) {
                                 validated={validated}
                                 noValidate
                                 onSubmit={(event) => {
+
                                     event.preventDefault();
                                     event.stopPropagation();
 
-                                    const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+                                    console.log({ event })
 
+                                    const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+                                    console.log({ formData })
                                     // debug
                                     /* console.log("--==( formDataObj )==--")
                                     console.log(formDataObj); */
@@ -271,12 +340,22 @@ export default function CreateOrder_v2(props) {
                                     if (form.checkValidity() === true) {
                                         // if all set, create order here: (get data from formDataObj, pickUpAddress, and dileveryAddress)
 
+                                        if ((selectedItem.max && parseInt(formDataObj.length) > selectedItem.max) ||
+                                            (selectedItem.max && parseInt(formDataObj.width) > selectedItem.max) ||
+                                            (selectedItem.max && parseInt(formDataObj.height) > selectedItem.max)
+                                        ) {
+                                            dispatch(toastNotification("Error", `Size must not be larger than ${selectedItem.max} for your selected package type`, "error"));
+                                            setValidated(false)
+                                            return;
+                                        }
+
                                         // delivery params
                                         let delivery_params = {
                                             cod: formDataObj.codAmount != undefined ? formDataObj.codAmount : "",
                                             currency: formDataObj.currency != undefined ? formDataObj.currency : "1",
                                             delivery_type: deliveryType,
                                             load_type: packageType,
+                                            package_multiplier:selectedItem.mul,
                                             notes: formDataObj.notes != undefined ? formDataObj.notes : "",
                                             load_length: formDataObj.length != undefined ? formDataObj.length : "",
                                             load_width: formDataObj.width != undefined ? formDataObj.width : "",
@@ -319,10 +398,10 @@ export default function CreateOrder_v2(props) {
                                             addresses_params.receiver_phone = formDataObj.receiverPhone
                                             addresses_params.receiver_other_details = (formDataObj.address != undefined ? formDataObj.address : "")
                                             addresses_params.receiver_notes = (formDataObj.addressinfo != undefined ? formDataObj.addressinfo : "")
-                                            addresses_params.receiver_area_id = formDataObj.area
-                                            addresses_params.receiver_city_id = formDataObj.city
-                                            addresses_params.receiver_governorate_id = formDataObj.governorate
-                                            addresses_params.receiver_province_id = formDataObj.province
+                                            addresses_params.receiver_area_id = selectedArea[0].id
+                                            addresses_params.receiver_city_id = selectedCity[0].id
+                                            addresses_params.receiver_governorate_id = selectedGovernorate[0].id
+                                            addresses_params.receiver_province_id = selectedProvince[0].id
                                             /* addresses_params.receiver_latitude = ""
                                             addresses_params.receiver_longitude = "" */
                                         } else {
@@ -355,7 +434,9 @@ export default function CreateOrder_v2(props) {
                                         createOrderHandler(delivery_params, addresses_params, returned_params);
 
                                         setShowError(false);
-                                    } else {
+                                    }
+
+                                    else {
                                         setShowError(true);
                                     }
 
@@ -365,54 +446,125 @@ export default function CreateOrder_v2(props) {
 
                                     {/* ------------------( package types )------------------ */}
                                     <ListGroup.Item className="py-4">
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="package-types-container">
                                             <div className="div-title">
                                                 {translate("ORDERS.WHAT_TO_TRANS")}
                                             </div>
 
                                             <div className="row">
-                                                <div className="col-lg-4">
-                                                    <Dropdown
+                                                {/* <CustomTypeahead/> */}
+                                                <div className="col-lg-4" style={{ margin: '5px' }}>
+                                                    {<Dropdown
                                                         style={{ width: "100%" }}
                                                         className="togo-dropdown shadow"
+                                                        data-test="package-types-dropdown"
                                                         onSelect={(eve) => {
                                                             setPackageType(eve);
+                       
                                                         }}>
                                                         <Dropdown.Toggle variant="" className="w-100 text-start d-flex align-items-center">
-                                                            {React.createElement(PackageTypesIcons[packageType], { style: { width: "20px", height: "20px" }, className: "me-1" })}
-                                                            <div style={{ width: "97%" }}>
-                                                                {translate("ORDERS." + PackageTypes[packageType])}
+
+                                                            {selectedItem.icon}
+
+                                                            <div style={{ width: "97%", marginInlineStart: "5px" }}>
+
+                                                                {selectedItem.name}
+                                                                (x{selectedItem.mul})
                                                             </div>
                                                         </Dropdown.Toggle>
 
-                                                        <Dropdown.Menu className="w-100">
-                                                            <Dropdown.Item eventKey="2" className="d-flex">
-                                                                <FoodIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[2])}
-                                                            </Dropdown.Item>
-                                                            <Dropdown.Item eventKey="4" className="d-flex">
-                                                                <BigBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[4])}
-                                                            </Dropdown.Item>
-                                                            <Dropdown.Item eventKey="3" className="d-flex">
-                                                                <MedBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[3])}
-                                                            </Dropdown.Item>
-                                                            {/* temp comment food choice */}
-                                                            {/* <Dropdown.Item eventKey="1" className="d-flex">
-                                                                <SmBoxIcon style={{ width: "20px", height: "20px" }} className="me-1" />
-                                                                {translate("ORDERS." + PackageTypes[1])}
-                                                            </Dropdown.Item> */}
-                                                        </Dropdown.Menu>
-                                                    </Dropdown>
-                                                </div>
+                                                        <Dropdown.Menu className="w-100" data-test="package-types-dropdown-menu"
+                                                        >
+                                                            {orderPackages.map((item) => {
+                                                                return (
+                                                                    <Dropdown.Item eventKey={item.id} className="d-flex">
+                                                                        {item.icon}
+                                                                        <dev style={{ marginInlineStart: "5px" }}>
+                                                                            {item.name}
+                                                                            (x{item.mul})
+                                                                        </dev>
 
-                                                {packageType !== "1" && packageType !== "2" && <div className="col-lg-8" style={{ marginTop: "2px" }}>
+                                                                    </Dropdown.Item>
+                                                                )
+
+                                                            })}
+                                 
+
+                                                        </Dropdown.Menu>
+
+                                                    </Dropdown>}
+                                                </div>
+                                                {(orderPackages.length && selectedItem.size) ? <div className="row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingTop: '10px', paddingBottom: '10px', paddingLeft: 0, paddingRight: 0, margin: 0 }}>
+                                                    <div className="col-md-4">
+                                                        <Form.Group>
+                                                        {translate("ORDER_DETAILS.LOAD_WIDTH")}
+                                                            <Form.Control
+                                                                name="width"
+                                                                type="number"
+                                                                data-test="package-height"
+                                                                className="input-inner-shadow"
+                                                                isInvalid={widthErr}
+                                                                onChange={handleWidthChange}
+                                                                placeholder={`${translateToString(`ORDER_DETAILS`,selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+
+                                                            />
+                                                            {!widthErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
+
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {widthErr}
+                                                            </Form.Control.Feedback>
+                                                        </Form.Group>
+
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <Form.Group>
+                                                        {translate("ORDER_DETAILS.LOAD_HEIGHT")}
+                                                            <Form.Control
+                                                                name="height"
+                                                                type="number"
+                                                                data-test="package-width"
+                                                                className="input-inner-shadow"
+                                                                isInvalid={heightErr}
+                                                                onChange={handleHeightChange}
+                                                                placeholder={`${translateToString("ORDER_DETAILS",selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+                                                            />
+                                                            {!heightErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
+
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {heightErr}
+                                                            </Form.Control.Feedback>
+                                                        </Form.Group>
+
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <Form.Group>
+                                                        {translate("ORDER_DETAILS.LOAD_LENGTH")}
+                                                            <Form.Control
+                                                                name="length"
+                                                                type="number"
+                                                                className="input-inner-shadow"
+                                                                data-test="package-length"
+                                                                isInvalid={lengthErr}
+                                                                onChange={handleLengthChange}
+                                                                placeholder={`${translateToString("ORDER_DETAILS",selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+                                                            />
+                                                            {!lengthErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
+
+                                                            <Form.Control.Feedback type="invalid">
+                                                                {lengthErr}
+                                                            </Form.Control.Feedback>
+                                                        </Form.Group>
+
+                                                    </div>
+                                                    <div style={{ color: "grey", fontSize: '1.5vh', margin: '1vh' }}>{translate("ORDER_DETAILS.PACKAGE_TYPE_WARNING")}</div>
+                                                </div> : <></>}
+                                                {/*    {packageType !== 1 && packageType !== 2 && <div className="col-lg-8" style={{ marginTop: "2px" }}>
                                                     <div className="row">
                                                         <div className="col-md-3">
                                                             <Form.Control
                                                                 name="height"
                                                                 type="number"
+                                                                data-test="package-height"
                                                                 className="input-inner-shadow"
                                                                 placeholder={intl.formatMessage({ id: "TEMP.HEIGHT" })}
                                                             />
@@ -422,6 +574,7 @@ export default function CreateOrder_v2(props) {
                                                             <Form.Control
                                                                 name="width"
                                                                 type="number"
+                                                                data-test="package-width"
                                                                 className="input-inner-shadow"
                                                                 placeholder={intl.formatMessage({ id: "TEMP.WIDTH" })}
                                                             />
@@ -432,6 +585,7 @@ export default function CreateOrder_v2(props) {
                                                                 name="length"
                                                                 type="number"
                                                                 className="input-inner-shadow"
+                                                                data-test="package-length"
                                                                 placeholder={intl.formatMessage({ id: "TEMP.LENGTH" })}
                                                             />
                                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
@@ -441,19 +595,20 @@ export default function CreateOrder_v2(props) {
                                                                 name="weight"
                                                                 type="number"
                                                                 className="input-inner-shadow"
+                                                                data-test="package-weight"
                                                                 placeholder={intl.formatMessage({ id: "TEMP.WEIGHT" })}
                                                             />
                                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
                                                         </div>
                                                     </div>
-                                                </div>}
+                                                </div>} */}
                                             </div>
                                         </div>
                                     </ListGroup.Item>
 
                                     {/* ------------------( delivery type )------------------ */}
                                     <ListGroup.Item className="py-4" style={{ backgroundColor: "#ededed" }}>
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="delivery-type-container">
                                             <div className="div-title">
                                                 <DeliveryTruckIcon className="title-icon-stroke" />
                                                 {translate("CREATE_NEW_ORDER.SELECT_DELIVERY_TYPE")}
@@ -464,7 +619,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="toggleButtonsContainer">
                                                         {
                                                             deliverTypeArr.map((item, index) => {
-                                                                return <div key={index} className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
+                                                                return <div key={index} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
                                                                     <div className="radio"><div className="innerRadio"></div></div> {item.name}
                                                                 </div>
                                                             })
@@ -478,11 +633,12 @@ export default function CreateOrder_v2(props) {
                                                                 type="number"
                                                                 step="0.01"
                                                                 className="input-inner-shadow"
+                                                                data-test="amount-input"
                                                                 placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
                                                                 ref={codAmountRef}
                                                                 style={{ width: "100px" }}
                                                             />
-                                                            {<Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example">
+                                                            {<Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example" data-test="currency-type-dropdown">
                                                                 <option value={1}>ILS</option>
                                                                 <option value={2}>JOD</option>
                                                             </Form.Select>}
@@ -514,7 +670,7 @@ export default function CreateOrder_v2(props) {
 
                                     {/* ------------------( sender address )------------------ */}
                                     <ListGroup.Item className="py-4">
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="pickup-address-container">
                                             <div className="div-title">
                                                 <LocationIcon className="title-icon-fill" />
                                                 {translate("ORDERS.PICKUP_ADDRESS")}
@@ -533,9 +689,9 @@ export default function CreateOrder_v2(props) {
                                                         </thead>
                                                         <tbody>
                                                             <tr>
-                                                                <td><Form.Control readOnly placeholder={pickUpAddress.name} /></td>
-                                                                <td><Form.Control readOnly placeholder={pickUpAddress.details + ", " + pickUpAddress.areaName} /></td>
-                                                                <td><Form.Control readOnly placeholder={pickUpAddress.phone_number} /></td>
+                                                                <td><Form.Control readOnly data-test="name-input" placeholder={pickUpAddress.name} /></td>
+                                                                <td><Form.Control readOnly data-test="pickedUp-address-input" placeholder={pickUpAddress.details + ", " + pickUpAddress.areaName} /></td>
+                                                                <td><Form.Control readOnly data-test="mobile-number-input" placeholder={pickUpAddress.phone_number} /></td>
                                                                 <td>
                                                                     <Button
                                                                         className="btn-grad-circle"
@@ -543,6 +699,7 @@ export default function CreateOrder_v2(props) {
                                                                         onClick={() => {
                                                                             setShowPickupAddressModal(true);
                                                                         }}
+                                                                        data-test="pickup-address-button"
                                                                     >
                                                                         <i className="bi bi-arrow-repeat h3"></i>
                                                                     </Button>
@@ -557,12 +714,12 @@ export default function CreateOrder_v2(props) {
 
                                     {/* ------------------( receiver address )------------------ */}
                                     <ListGroup.Item className="py-4" style={{ backgroundColor: "#ededed" }}>
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="receiver-address-container">
                                             <div className="div-title">
                                                 {
                                                     (isNewAddress) ? <>
                                                         <SendIcon className="title-icon-fill" />
-                                                        {translate("CREATE_NEW_ORDER.SET_NEW_ADDRESS")} &nbsp; <Badge className="custome-link rounded-pill" onClick={() => {
+                                                        {translate("CREATE_NEW_ORDER.SET_NEW_ADDRESS")} &nbsp; <Badge className="custome-link rounded-pill" data-test="change-receiver-address-button" onClick={() => {
                                                             setShowReceiverAddressModal(true);
                                                             setInputValue("");
                                                         }}>{translate("CREATE_NEW_ORDER.OR_CHOOSE_FROM_LIST")} <i className="bi bi-list"></i></Badge>
@@ -583,7 +740,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="placeName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" required />
+                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input" required />
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
                                                                 </Form.Control.Feedback>
@@ -593,7 +750,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="userPhone" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}>
-                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" pattern="^0[0-9]{9}$" required />
+                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" data-test="receiver-phone-input" pattern="^0[0-9]{9}$" required />
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ENTER_VALID_NUMBER")}
                                                                 </Form.Control.Feedback>
@@ -605,7 +762,7 @@ export default function CreateOrder_v2(props) {
                                                 <div className="row">
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.PROVINCE")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="province" required aria-label="Default select example"
+                                                        {/* <Form.Select style={{ cursor: "pointer" }} className="shadow" name="province" data-test="receiver-province-dropdown" required aria-label="Default select example"
                                                             onClick={() => {
                                                                 getProvences();
                                                             }}
@@ -618,11 +775,35 @@ export default function CreateOrder_v2(props) {
                                                                     return <option key={index} value={item.id}>{item.name}</option>
                                                                 })
                                                             }
-                                                        </Form.Select>
+                                                        </Form.Select> */}
+                                                        <Typeahead
+                                                            style={{ cursor: "pointer" }}
+                                                            className="shadow"
+                                                            name="province"
+                                                            data-test="receiver-province-dropdown"
+                                                            required
+                                                            aria-label="Default select example"
+                                                            id="province-typeahead"
+                                                            labelKey="name" // The key used to display options (province name)
+                                                            onChange={(e) => {
+                                                                e.length ? updateSubLevel("governorates", e[0].id) : null
+                                                                setSelectedProvince(e)
+                                                            }}
+                                                            selected={selectedProvince}
+                                                            onClick={() => {
+                                                                getProvences()
+                                                            }}
+                                                            onFocus={() => {
+                                                                getProvences()
+                                                            }}
+                                                            options={provinces}
+                                                            placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_PROVINCE" })}
+                                                            clearButton // Optional: shows a button to clear the selection
+                                                        />
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.GOVERNORATE")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="governorate" required aria-label="Default select example" onChange={(e) => {
+                                                        {/* <Form.Select style={{ cursor: "pointer" }} className="shadow" name="governorate" data-test="receiver-governorate-dropdown" required aria-label="Default select example" onChange={(e) => {
                                                             updateSubLevel("cities", e.target.value)
                                                         }}>
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_GOVERNORATE" })}</option>
@@ -631,11 +812,30 @@ export default function CreateOrder_v2(props) {
                                                                     return <option key={index} value={item.id}>{item.name}</option>
                                                                 })
                                                             }
-                                                        </Form.Select>
+                                                        </Form.Select> */}
+                                                        <Typeahead
+                                                            style={{ cursor: "pointer" }}
+                                                            className="shadow"
+                                                            name="governorate"
+                                                            data-test="receiver-governorate-dropdown"
+                                                            required
+                                                            aria-label="Default select example"
+                                                            id="governorate-typeahead"
+                                                            labelKey="name" // The key used to display options (governorate name)
+                                                            onChange={(e) => {
+                                                                console.log({ e })
+                                                                e.length ? updateSubLevel("cities", e[0].id) : null
+                                                                setSelectedGovernorate(e)
+                                                            }}
+                                                            selected={selectedGovernorate}
+                                                            options={governorates}
+                                                            placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_GOVERNORATE" })}
+                                                            clearButton // Optional: shows a button to clear the selection
+                                                        />
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.CITY")}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="city" required aria-label="Default select example" onChange={(e) => {
+                                                        {/* <Form.Select style={{ cursor: "pointer" }} className="shadow" data-test="receiver-city-dropdown" name="city" required aria-label="Default select example" onChange={(e) => {
                                                             updateSubLevel("areas", e.target.value)
                                                         }}>
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_CITY" })}</option>
@@ -644,18 +844,55 @@ export default function CreateOrder_v2(props) {
                                                                     return <option key={index} value={item.id}>{item.name}</option>
                                                                 })
                                                             }
-                                                        </Form.Select>
+                                                        </Form.Select> */}
+                                                        <Typeahead
+                                                            style={{ cursor: "pointer" }}
+                                                            className="shadow"
+                                                            name="city"
+                                                            data-test="receiver-city-dropdown"
+                                                            required
+                                                            aria-label="Default select example"
+                                                            id="city-typeahead"
+                                                            labelKey="name" // The key used to display options (city name)
+                                                            onChange={(e) => {
+                                                                console.log({ e })
+                                                                e.length ? updateSubLevel("areas", e[0].id) : null
+                                                                setSelectedCity(e)
+                                                            }}
+                                                            selected={selectedCity}
+                                                            options={cities}
+                                                            placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_CITY" })}
+                                                            clearButton // Optional: shows a button to clear the selection
+                                                        />
                                                     </Col>
                                                     <Col lg={3} className="">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.AREA")} {/* <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span> */}:</Form.Label>
-                                                        <Form.Select style={{ cursor: "pointer" }} className="shadow" name="area" required aria-label="Default select example">
+                                                        {/* <Form.Select style={{ cursor: "pointer" }} className="shadow" name="area" required aria-label="Default select example" data-test="receiver-area-dropdown">
                                                             <option value={""} style={{ color: "lightgray" }}>{intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_AREA" })}</option>
                                                             {
                                                                 areas.map((item, index) => {
                                                                     return <option key={index} value={item.id}>{item.name}</option>
                                                                 })
                                                             }
-                                                        </Form.Select>
+                                                        </Form.Select> */}
+                                                        <Typeahead
+                                                            style={{ cursor: "pointer" }}
+                                                            className="shadow"
+                                                            name="area"
+                                                            data-test="receiver-area-dropdown"
+                                                            required
+                                                            aria-label="Default select example"
+                                                            id="area-typeahead"
+                                                            labelKey="name" // The key used to display options (area name)
+                                                            options={areas}
+                                                            placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.SELECT_AREA" })}
+                                                            clearButton // Optional: shows a button to clear the selection
+                                                            onChange={(e) => {
+                                                                console.log({ e })
+                                                                setSelectedArea(e)
+                                                            }}
+                                                            selected={selectedArea}
+                                                        />
                                                     </Col>
                                                 </div>
 
@@ -663,7 +900,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="" controlId="userAddress" label={translate("CREATE_NEW_ORDER.ADDRESS")}>
-                                                                <Form.Control required className="input-inner-shadow" type="text" placeholder="..." name="address" />
+                                                                <Form.Control required className="input-inner-shadow" type="text" placeholder="..." name="address" data-test="receiver-address-input" />
                                                             </FloatingLabel>
                                                             {/*  <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span> */}
                                                         </Form.Group>
@@ -671,7 +908,7 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="" controlId="addressInfo" label={translate("CREATE_NEW_ORDER.ADDRESS_INFO")}>
-                                                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." name="addressinfo" />
+                                                                <Form.Control className="input-inner-shadow" type="text" placeholder="..." name="addressinfo" data-test="receiver-address-info-input" />
                                                             </FloatingLabel>
                                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
                                                         </Form.Group>
@@ -682,36 +919,36 @@ export default function CreateOrder_v2(props) {
                                                 <div className="row mt-1 mb-3">
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.NAME")}</label>
-                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.name} />
+                                                        <Form.Control disabled className="input-inner-shadow" type="text" data-test="receiver-name-input" placeholder={dileveryAddress?.name} />
                                                     </div>
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}</label>
-                                                        <Form.Control disabled className="input-inner-shadow" type="tel" placeholder={dileveryAddress?.phone_number} />
+                                                        <Form.Control disabled className="input-inner-shadow" type="tel" data-test="receiver-phone-input" placeholder={dileveryAddress?.phone_number} />
                                                     </div>
                                                 </div>
 
                                                 <div className="row">
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.PROVINCE")}:</Form.Label>
-                                                        <Form.Select disabled className="shadow" aria-label="Default select example">
+                                                        <Form.Select disabled className="shadow" aria-label="Default select example" data-test="receiver-province-dropdown">
                                                             <option>{dileveryAddress?.provName}</option>
                                                         </Form.Select>
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.GOVERNORATE")}:</Form.Label>
-                                                        <Form.Select disabled className="shadow" aria-label="Default select example">
+                                                        <Form.Select disabled className="shadow" aria-label="Default select example" data-test="receiver-governorate-dropdown">
                                                             <option>{dileveryAddress?.govName}</option>
                                                         </Form.Select>
                                                     </Col>
                                                     <Col lg={3} className="mb-4">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.CITY")}:</Form.Label>
-                                                        <Form.Select disabled className="shadow" aria-label="Default select example">
+                                                        <Form.Select disabled className="shadow" aria-label="Default select example" data-test="receiver-city-dropdown">
                                                             <option>{dileveryAddress?.cityName}</option>
                                                         </Form.Select>
                                                     </Col>
                                                     <Col lg={3} className="">
                                                         <Form.Label>{translate("CREATE_NEW_ORDER.AREA")}:</Form.Label>
-                                                        <Form.Select disabled className="shadow" aria-label="Default select example">
+                                                        <Form.Select disabled className="shadow" aria-label="Default select example" data-test="receiver-area-dropdown">
                                                             <option>{dileveryAddress?.areaName}</option>
                                                         </Form.Select>
                                                     </Col>
@@ -720,11 +957,11 @@ export default function CreateOrder_v2(props) {
                                                 <div className="row">
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.ADDRESS")}</label>
-                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.details} />
+                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.details} data-test="receiver-address-input" />
                                                     </div>
                                                     <div className="col-lg-6">
                                                         <label>{translate("CREATE_NEW_ORDER.ADDRESS_INFO")}</label>
-                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.additional_info} />
+                                                        <Form.Control disabled className="input-inner-shadow" type="text" placeholder={dileveryAddress?.additional_info} data-test="receiver-address-info-input" />
                                                     </div>
                                                 </div>
                                             </>}
@@ -733,20 +970,20 @@ export default function CreateOrder_v2(props) {
 
                                     {/* ------------------( order notes )------------------ */}
                                     <ListGroup.Item className="py-4">
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="attachments-container">
                                             <div className="div-title">
                                                 <AttachmentIcon className="title-icon-fill" />
                                                 {translate("CREATE_NEW_ORDER.ATTACHMENTS_LABEL")}
                                             </div>
 
-                                            <Form.Control name="notes" type="text" className="mt-2 input-inner-shadow" placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.NOTES" })} />
+                                            <Form.Control name="notes" type="text" className="mt-2 input-inner-shadow" placeholder={intl.formatMessage({ id: "CREATE_NEW_ORDER.NOTES" })} data-test="new-order-notes-input" />
                                             <span style={{ color: "#1f8379" }}>({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>
                                         </div>
                                     </ListGroup.Item>
 
                                     {/* ------------------( create order )------------------ */}
                                     <ListGroup.Item className="py-4" style={{ backgroundColor: "#ededed" }}>
-                                        <div className="container-fluid">
+                                        <div className="container-fluid" data-test="required-error-container">
                                             {showError && <span style={{ color: "#d9534f" }}>
                                                 <i className="bi bi-info-circle"></i>{" "}
                                                 {translate("CREATE_NEW_ORDER.REQUIRED_ERROR")}
@@ -755,6 +992,7 @@ export default function CreateOrder_v2(props) {
                                                 className="btn-grad"
                                                 style={{ width: "30%", float: "right" }}
                                                 disabled={loadingSubmit}
+                                                data-test="submit-order-button"
                                                 type="submit"
                                             >
                                                 {loadingSubmit && <Spinner animation="border" size="sm" />}
@@ -774,7 +1012,7 @@ export default function CreateOrder_v2(props) {
                         centered
                         animation={true}
                         size="xl"
-
+                        data-test="change-pickup-address-model"
                         style={{ backgroundColor: "rgba(0,0,0,0.5)", }}
                     >
                         <Modal.Header closeButton className="card-header-lg">
@@ -788,7 +1026,7 @@ export default function CreateOrder_v2(props) {
                                     </Col>
                                     <Col lg={1}>
                                         <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>
-                                            <Button style={{ cursor: "pointer" }} className="btn-grad p-2">
+                                            <Button style={{ cursor: "pointer" }} className="btn-grad p-2" data-test="create-address-button">
                                                 <AddIcon w={6} h={6} color="gray.50" />
                                             </Button>
                                         </CreateAddress>
@@ -800,7 +1038,7 @@ export default function CreateOrder_v2(props) {
                                             <tr>
                                                 <th style={{ width: "25%" }} scope="col">
                                                     <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." onChange={(e) => {
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="address-name-search-input" onChange={(e) => {
                                                             setInputValue(e.target.value);
                                                         }} />
 
@@ -812,7 +1050,7 @@ export default function CreateOrder_v2(props) {
                                                 <th style={{ width: "25%", paddingBottom: "30px" }} className="fs-6" scope="col">{translate("CREATE_NEW_ORDER.ADDRESS")}</th>
                                                 <th style={{ width: "20%" }} scope="col">
                                                     <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}>
-                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." onChange={(e) => {
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="mobile-number-search-input" onChange={(e) => {
                                                             setInputValue(e.target.value);
                                                         }} />
 
@@ -827,7 +1065,7 @@ export default function CreateOrder_v2(props) {
                                     </Table>
                                     <div style={{ height: "300px", overflowY: "scroll", fontSize: "1rem" }}>
                                         <Table>
-                                            <tbody>
+                                            <tbody data-test="pickup-addresses-table">
                                                 {
                                                     clientAddresses.map((address, index) => {
                                                         return <tr key={index}>
@@ -835,13 +1073,13 @@ export default function CreateOrder_v2(props) {
                                                             <td style={{ width: "25%" }}>{address.details + ", " + address.cityName}</td>
                                                             <td style={{ width: "20%" }}>{address.phone_number}</td>
                                                             {address.is_default == "0" ? <td style={{ width: "30%" }}>
-                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad fs-4" onClick={() => {
+                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad fs-4" data-test="set-default-button" onClick={() => {
                                                                     setDefaultAddressHandler(address.id);
                                                                 }}>
                                                                     {loadingSetDefault && <Spinner animation="border" size="sm" />}
                                                                     {translate("CREATE_NEW_ORDER.SET_DEFAULT")}
                                                                 </Button>
-                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad mx-2 fs-4" onClick={() => {
+                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad mx-2 fs-4" data-test="set-default-button" onClick={() => {
                                                                     setTempAddressHandler(address.id);
                                                                 }}>
                                                                     {loadingSetDefault && <Spinner animation="border" size="sm" />}
@@ -872,72 +1110,72 @@ export default function CreateOrder_v2(props) {
 
                         style={{ backgroundColor: "rgba(0,0,0,0.5)", }}
                     >
-                        <Modal.Header closeButton className="card-header-lg">
-                            <Modal.Title>{translate("CREATE_NEW_ORDER.CHOOSE_DELIVERY_ADDRESS")}</Modal.Title>
+                        <Modal.Header closeButton className="card-header-lg" data-test="modal-header">
+                            <Modal.Title data-test="modal-title">{translate("CREATE_NEW_ORDER.CHOOSE_DELIVERY_ADDRESS")}</Modal.Title>
                         </Modal.Header>
-                        <Modal.Body className="mt-5">
-                            <Container fluid>
-                                <Row className="mb-2">
-                                    <Col lg={11}>
-                                        <span className="h4">{translate("CREATE_NEW_ORDER.SELECT_DELIVERY_ADDRESS_FROM_LIST")}:</span>
+                        <Modal.Body className="mt-5" data-test="modal-body">
+                            <Container fluid data-test="container">
+                                <Row className="mb-2" data-test="row-header">
+                                    <Col lg={11} data-test="col-header">
+                                        <span className="h4" data-test="span-header">{translate("CREATE_NEW_ORDER.SELECT_DELIVERY_ADDRESS_FROM_LIST")}:</span>
                                     </Col>
                                     {/* <Col lg={1}>
-                                                                    <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>
-                                                                        <Button style={{ cursor: "pointer" }} className="btn-grad p-2">
-                                                                            <AddIcon w={6} h={6} color="gray.50" />
-                                                                        </Button>
-                                                                    </CreateAddress>
-                                                                </Col> */}
+                <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>
+                    <Button style={{ cursor: "pointer" }} className="btn-grad p-2">
+                        <AddIcon w={6} h={6} color="gray.50" />
+                    </Button>
+                </CreateAddress>
+            </Col> */}
                                 </Row>
-                                <Row>
-                                    <Table>
-                                        <thead>
-                                            <tr>
-                                                <th style={{ width: "30%" }} scope="col">
-                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." onChange={(e) => {
+                                <Row data-test="row-table">
+                                    <Table data-test="table-header">
+                                        <thead data-test="thead-header">
+                                            <tr data-test="tr-header">
+                                                <th style={{ width: "30%" }} scope="col" data-test="th-name">
+                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.NAME")} data-test="floating-label-name">
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-name" onChange={(e) => {
                                                             setInputValue(e.target.value);
                                                         }} />
-
-                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }}>
+                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon">
                                                             <FaSearch />
                                                         </div>
                                                     </FloatingLabel>
                                                 </th>
-                                                <th style={{ width: "35%", paddingBottom: "30px" }} className="fs-6" scope="col">{translate("CREATE_NEW_ORDER.ADDRESS")}</th>
-                                                <th style={{ width: "20%" }} scope="col">
-                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}>
-                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." onChange={(e) => {
+                                                <th style={{ width: "35%", paddingBottom: "30px" }} className="fs-6" scope="col" data-test="th-address">{translate("CREATE_NEW_ORDER.ADDRESS")}</th>
+                                                <th style={{ width: "20%" }} scope="col" data-test="th-mobile">
+                                                    <FloatingLabel className="mb-2 fs-6" controlId="addressName" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")} data-test="floating-label-mobile">
+                                                        <Form.Control className="input-inner-shadow" type="text" placeholder="..." data-test="form-control-mobile" onChange={(e) => {
                                                             setInputValue(e.target.value);
                                                         }} />
-
-                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }}>
+                                                        <div style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", right: "15px", top: "20px", opacity: "0.2" } : { position: "absolute", left: "15px", top: "20px", opacity: "0.2" }} data-test="div-search-icon-mobile">
                                                             <FaSearch />
                                                         </div>
                                                     </FloatingLabel>
                                                 </th>
-                                                <th style={{ width: "15%" }} scope="col"> </th>
+                                                <th style={{ width: "15%" }} scope="col" data-test="th-empty"></th>
                                             </tr>
                                         </thead>
                                     </Table>
-                                    <div style={{ height: "300px", overflowY: "scroll" }}>
-                                        <Table>
-                                            <tbody>
+                                    <div style={{ height: "300px", overflowY: "scroll" }} data-test="div-scroll">
+                                        <Table data-test="table-body">
+                                            <tbody data-test="tbody">
                                                 {
                                                     deliverAddresses.map((address, index) => {
-                                                        return <tr key={index}>
-                                                            <td style={{ width: "30%" }}>{address.name}</td>
-                                                            <td style={{ width: "35%" }}>{address.details + ", " + address.cityName}</td>
-                                                            <td style={{ width: "20%" }}>{address.phone_number}</td>
-                                                            <td style={{ width: "15%" }}>
-                                                                <Button disabled={loadingSetDefault ? true : false} className="btn-grad" onClick={() => {
-                                                                    setDeliverAddressHandler(address);
-                                                                }}>
-                                                                    {loadingSetDefault && <Spinner animation="border" size="sm" />}
-                                                                    {translate("CREATE_NEW_ORDER.SELECT")}
-                                                                </Button>
-                                                            </td>
-                                                        </tr>
+                                                        return (
+                                                            <tr key={index} data-test={`tr-${index}`}>
+                                                                <td style={{ width: "30%" }} data-test={`td-name-${index}`}>{address.name}</td>
+                                                                <td style={{ width: "35%" }} data-test={`td-details-${index}`}>{address.details + ", " + address.cityName}</td>
+                                                                <td style={{ width: "20%" }} data-test={`td-phone-${index}`}>{address.phone_number}</td>
+                                                                <td style={{ width: "15%" }} data-test={`td-button-${index}`}>
+                                                                    <Button disabled={loadingSetDefault ? true : false} data-test="select-receiver-address-button" className="btn-grad" onClick={() => {
+                                                                        setDeliverAddressHandler(address);
+                                                                    }}>
+                                                                        {loadingSetDefault && <Spinner animation="border" size="sm" data-test="spinner" />}
+                                                                        {translate("CREATE_NEW_ORDER.SELECT")}
+                                                                    </Button>
+                                                                </td>
+                                                            </tr>
+                                                        )
                                                     })
                                                 }
                                             </tbody>
@@ -946,6 +1184,7 @@ export default function CreateOrder_v2(props) {
                                 </Row>
                             </Container>
                         </Modal.Body>
+
                     </Modal>
 
                 </Container>

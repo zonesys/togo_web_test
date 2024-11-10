@@ -4,7 +4,6 @@ import CustomIcon from "../../assets/icons";
 import XLSX, { read } from "sheetjs-style";
 import { reconcileOrders } from "../../APIs/AdminPanelApis";
 import Loader from "../Loader/Loader"
-import { JsonToTable } from "react-json-to-table";
 import { useDispatch } from "react-redux";
 import { toastMessage, toastNotification } from "../../Actions/GeneralActions";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -15,6 +14,7 @@ export default function Reconcile() {
     const [loading, setLoading] = useState(false)
     const [resultData, setResult] = useState(null);
     const [columns, setColumns] = useState([]);
+    const [file, setFile] = useState(null);
     const clickHiddenInput = () => {
         inputRef.current.click();
     }
@@ -26,12 +26,17 @@ export default function Reconcile() {
     const handleInput = (e) => {
         try {
             const file = e.target.files[0];
+            setFile(file);
+            
             if (!isExcelFile(file)) {
                 dispatch(toastMessage("The selected file is not Excel", "File Error"));
                 return;
             }
             const reader = new FileReader();
+            setColumns([])
+            setResult(null)
             setLoading(true);
+
             reader.onload = (event) => {
                 try {
                     const data = new Uint8Array(event.target.result);
@@ -39,23 +44,64 @@ export default function Reconcile() {
                     let jsonArray = [];
                     excelRead.SheetNames.forEach((val, index) => {
                         const sheet = excelRead.Sheets[val];
-                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 0,})
-                        jsonData.forEach((val) => {
-                            jsonArray.push(val);
-                        })
+
+                        // Get the range of the sheet
+                        const range = XLSX.utils.decode_range(sheet['!ref']);
+
+                        // Remove empty rows at the beginning
+                        let firstNonEmptyRow = range.s.r;
+                        for (let rowNum = range.s.r; rowNum <= range.e.r; rowNum++) {
+                            const row = [];
+                            for (let colNum = range.s.c; colNum <= range.e.c; colNum++) {
+                                const cell = sheet[XLSX.utils.encode_cell({ r: rowNum, c: colNum })];
+                                row.push(cell ? cell.v : null);
+                            }
+                            if (row.some(cell => cell !== null && cell !== undefined && cell !== "")) {
+                                firstNonEmptyRow = rowNum;
+                                break;
+                            }
+                        }
+
+                        // Update the range to start from the first non-empty row
+                        range.s.r = firstNonEmptyRow;
+                        sheet['!ref'] = XLSX.utils.encode_range(range);
+
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 0 })
+                        // jsonData.forEach((val) => {
+                        //     jsonArray.push(val);
+                        // })
+                        jsonData.forEach((row) => {
+                            // Check and convert specific date fields
+                            ["أنشئ في", "اخر تحديث للحالة في"].forEach((field) => {
+                                if (row[field] && typeof row[field] === "number") {
+                                    const parsedDate = XLSX.SSF.parse_date_code(row[field]);
+                                    row[field] = `${parsedDate.y}-${String(parsedDate.m).padStart(2, '0')}-${String(parsedDate.d).padStart(2, '0')}`;
+                                }
+                            });
+                        });
+                        jsonArray.push(...jsonData);
                     })
-                    
-                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode);
-                    const Idkey =  filtered[0].hasOwnProperty("التسلسل")?"التسلسل":
-                    filtered[0].hasOwnProperty("Barcode")?"Barcode":"";
+
+                    let filtered = jsonArray.filter((val) => val.التسلسل || val.Barcode || val.hasOwnProperty("باركود الشحنة") || val.hasOwnProperty("رقم التتبع") || val.hasOwnProperty("باركود الطرد"));
+                    const Idkey = filtered[0].hasOwnProperty("التسلسل") ? "التسلسل" :
+                        filtered[0].hasOwnProperty("Barcode") ? "Barcode" :
+                            filtered[0].hasOwnProperty("باركود الشحنة") ? "باركود الشحنة" :
+                                filtered[0].hasOwnProperty("رقم التتبع") ? "رقم التتبع" :
+                                    filtered[0].hasOwnProperty("باركود الطرد") ? "باركود الطرد" :
+                                        "";
+                    const deliveryPriceKey = filtered[0].hasOwnProperty("رسوم التوصيل") ? "رسوم التوصيل" :
+                        filtered[0].hasOwnProperty("سعر التوصيل") ? "سعر التوصيل" :
+                            "";
 
                     filtered = filtered.map(order => {
-                            order[Idkey] = parseInt(order[Idkey])
-                            return order
-                        });
-                    //let ids = filtered.map(val => val[Idkey]).join(",");    
+                        order["barcode"] = order[Idkey];
+                        order["delivery_price"] = order[deliveryPriceKey];
+                        return order
+                    });
 
-                    console.log(filtered);
+                    //let ids = filtered.map(val => val[Idkey]).join(",");    
+                    console.log({ filtered })
+
                     reconcileOrders(filtered).then((response) => {
                         try {
                             setLoading(false);
@@ -77,31 +123,50 @@ export default function Reconcile() {
                                 setResult([]);
                                 return;
                             }
-                            const cols = Object.keys(response.data[0]).map((val) => {
+
+                            const fieldsMap = response.data[0];
+                            delete fieldsMap["delivery_price"]
+
+                            if(fieldsMap["barcode"])
+                            delete fieldsMap[Idkey]
+                            const cols = Object.keys(fieldsMap).map((val) => {
                                 return {
                                     dataField: val,
-                                    text: val == "togoId" ? "Togo Id" : val,
+                                    text: val == "togoId" ? "Togo Id" : val == "togoPrice" ? "Togo Delivery Price" : val,
                                     headerStyle: {
                                         fontSize: "1em"
 
                                     },
                                     formatter:
-                                        val != "togoId" ? null :
+                                        val == "togoId" ?
+
                                             (cell, row) => {
 
-                                                return row.togoId == "N/A"? 
-                                                "N/A":
-                                                (
-                                                    <a style={{
-                                                        fontWeight: "bold",
-                                                        color: "blue"
-                                                    }} href={"/adminapp/orderDetails/" + row.togoId} target="_blank">
-                                                        {cell}
-                                                    </a>)
-                                            },
+                                                return row.togoId == "N/A" ?
+                                                    "N/A" :
+                                                    (
+                                                        <a style={{
+                                                            fontWeight: "bold",
+                                                            color: "blue"
+                                                        }} href={"/adminapp/orderDetails/" + row.togoId} target="_blank">
+                                                            {cell}
+                                                        </a>)
+                                            }
+                                            :
+
+                                            null,
+
 
                                 }
                             });
+
+                            // Reorder the columns to place "Togo Delivery Price" after "someField"
+                            const togoPriceIndex = cols.findIndex((col) => col.dataField === "togoPrice");
+                            const deliveryPriceIndex = cols.findIndex((col) => col.dataField === deliveryPriceKey);
+                            if (togoPriceIndex > -1 && deliveryPriceIndex > -1 && togoPriceIndex !== deliveryPriceIndex + 1) {
+                                const togoPriceColumn = cols.splice(togoPriceIndex, 1)[0];
+                                cols.splice(deliveryPriceIndex + 1, 0, togoPriceColumn);
+                            }
                             setColumns(cols);
                             setResult(response.data);
 
@@ -115,7 +180,7 @@ export default function Reconcile() {
                 } catch (e) {
                     setResult(null);
                     setLoading(false);
-                    dispatch(toastMessage("Error Reading Excel File", "File Error"))
+                    dispatch(toastMessage(JSON.stringify(e), "File Error"))
                     console.log("reader.onload error: " + e)
                 }
 
@@ -134,11 +199,15 @@ export default function Reconcile() {
 
                 :
                 <div >
-
+                    {
+                        file && file.name && <div className="d-flex justify-content-center">
+                            <h1 style={{fontSize: "18px"}} >File: {file.name}</h1>
+                        </div>
+                    }
                     {
                         resultData ?
                             resultData.length > 0 ?
-                                <div style={{ margin: "5%" }}>
+                                <div style={{ margin: "2%" }}>
                                     <BootstrapTable keyField={'togoId'} data={resultData} columns={columns} />
                                 </div>
                                 :

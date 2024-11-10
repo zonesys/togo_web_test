@@ -86,6 +86,7 @@ export default function UploadAndEditImage({ currentImage, setImage, setImageToU
                         }) => (
                             <div className="upload__image-wrapper">
                                 {images.length == 0 && <Button
+                                    data-test="upload-image-button"
                                     className='w-100'
                                     style={{ height: "300px" }}
                                     variant={isDragging ? "secondary" : "outline-secondary"}
@@ -130,7 +131,7 @@ export default function UploadAndEditImage({ currentImage, setImage, setImageToU
                     <Button variant="outline-secondary" onClick={handleClose}>
                         Cancel <i className="bi bi-x"></i>
                     </Button>
-                    <Button variant="outline-success" onClick={async () => {
+                    <Button variant="outline-success" data-test="save-image-button" onClick={async () => {
                         if (editor.current) {
 
                             // console.log("uploading... ")

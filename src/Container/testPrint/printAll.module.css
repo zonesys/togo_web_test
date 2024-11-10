@@ -1,0 +1,20 @@
+@media print {
+
+    .printAll {
+        visibility: hidden;
+    }
+
+    .visibleToPrinter {
+        zoom: 83%;
+        visibility: visible;
+        position: absolute;
+        top:0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0!important;
+        box-sizing: border-box;
+    }
+}

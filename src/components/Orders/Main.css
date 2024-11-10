@@ -120,15 +120,47 @@ input[type='radio']:after {}
 /* -------------( date picker )-------------- */
 
 .react-datepicker-wrapper{
-  text-align: center;
+  /* text-align: center; */
 }
 
 .react-datepicker-wrapper > div > input{
   cursor: pointer;
   border: 1px solid gray;
-  border-radius: 10px;
+  border-radius: 4px;
+  /* justify-content: center; */
 }
 
 .react-datepicker-wrapper > div > input:hover{
   background-color: lightgray;
+}
+
+.form-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1; /* This makes the groups take equal space */
+  margin-right: 10px; /* Add some space between the groups */
+  /* max-width: 50%; */
+}
+
+.form-group:last-child {
+  margin-right: 0; /* Remove margin for the last group */
+}
+
+.form-label {
+  flex: 1; /* Adjust this value to control label size */
+  margin: 0px
+}
+
+.form-input {
+  flex: 1; /* Adjust this value to control input size */
+  max-width: 90%; /* Example fixed width for the input */
+  margin: 0px;
+  padding: 0px;
 }

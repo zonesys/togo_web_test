@@ -245,7 +245,6 @@ export function ClientNetweokMemberCar({ member }) {
     )
 }
 
-
 export default function Network() {
 
     const intl = useIntl();

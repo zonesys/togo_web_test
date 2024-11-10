@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import "./Header.css";
 import {
     Menu,
@@ -23,7 +24,7 @@ import { AiFillHome } from 'react-icons/ai';
 import { RiTeamFill } from 'react-icons/ri';
 import { FaBoxes } from 'react-icons/fa';
 import { Link } from "react-router-dom";
-import { getWallet, updateWebNotificationToken, getViewBalalnce } from "../../APIs/ProfileAPIs";
+import { getWallet, updateWebNotificationToken, getViewBalalnce, getTransporterStatById } from "../../APIs/ProfileAPIs";
 import { getTotalOrdersNum } from "../../APIs/OrdersAPIs";
 import { setWallet, toastMessage } from "../../Actions/GeneralActions";
 import { LOGOUT } from "../../Actions/ActionsTypes";
@@ -189,6 +190,8 @@ function Header({/* socket */ }) {
     const [totalOrdersNum, setTotalOrdersNum] = useState(0);
 
     const [openProfileDialog, setOpenProfileDialog] = useState(false);
+    const [openStatsDialog, setOpenStatsDialog] = useState(false);
+    const [transporterStats, setTransporterStats] = useState({});
 
     const [profileDropList, setProfileDropList] = useState([
         { id: 1, text: "Profile Settings", iconClass: "bi bi-gear-fill me-2", link: "profile", action: "profile" },
@@ -257,6 +260,10 @@ function Header({/* socket */ }) {
                 dispatch(setWallet(res.data.balance));
             }).catch(err => {
                 dispatch(toastMessage(err));
+            })
+            getTransporterStatById().then(({ data: { transporters } }) => {
+                console.log({transporters})
+                setTransporterStats(transporters)
             })
         }
         return () => setWallet(null);
@@ -340,12 +347,12 @@ function Header({/* socket */ }) {
                             </Flex>
                         </Flex>}
                         <Flex {...styles.actionsContainer}>
-                            <Flex {...styles.headerItemsContainer}>
+                            <Flex {...styles.headerItemsContainer} onClick={() => isTransporter() ? setOpenStatsDialog(true) : null}>
                                 <Icon as={FaBoxes} mr={2} fontSize="2xl" />
                                 <Text>{translate("HEADER.TOTAL_ORDERS")}: {totalOrdersNum}</Text>
                             </Flex>
                             <Box {...styles.horizontalBreakLine} />
-                            {localStorage.getItem("userId") != 97 && <Link to='/account/financial-management' style={styles.link}>
+                            {localStorage.getItem("userId") != 97 && localStorage.getItem("userId") != 361 && <Link to='/account/financial-management' style={styles.link}>
                                 <Flex {...styles.headerItemsContainer}>
                                     <Icon as={IoIosWallet} fontSize="2xl" />
                                     {isNaN(wallet) ? <Loader color="white" width="40px" height="40px" /> : <Text fontSize="14px">{wallet} NIS</Text>}
@@ -363,12 +370,12 @@ function Header({/* socket */ }) {
                                         onClick={() => { history.push("/account/cities-prices") }}>{translate("HEADER.CITIES_PRICES")}</MenuItem>}
                                     <MenuItem icon={<IoMdGitNetwork />}
                                         onClick={() => { history.push("/account/my-network") }}>{translate("NETWORK.NETWORK_TITLE")}</MenuItem>
-                                    {!isTransporter() && <MenuItem icon={<IoMdGitNetwork />}
+                                    {!isTransporter() && localStorage.getItem("userId") != 361 && <MenuItem icon={<IoMdGitNetwork />}
                                         onClick={() => { history.push("/account/my-users") }}>{translate("HEADER.MANAGE_SUBUSERS")}</MenuItem>}
                                     {/* {localStorage.getItem("userId") == "40" && <MenuItem icon={<RiTeamFill />}
                                     onClick={() => { history.push("/account/team-admin") }}>{translate("TEMP.MANAGE_TEAMS")}</MenuItem>} */}
-                                    <MenuItem icon={<IoIosCard />}
-                                        onClick={() => history.push("/account/financial-management")}>{translate("HEADER.REQUEST_WITHDRAWAL")}</MenuItem>
+                                   {localStorage.getItem("userId") != 361 && <MenuItem icon={<IoIosCard />}
+                                        onClick={() => history.push("/account/financial-management")}>{translate("HEADER.REQUEST_WITHDRAWAL")}</MenuItem>}
                                     {isTransporter() && <MenuItem icon={<FaUsersGear />}
                                         onClick={() => history.push("/account/manage-clients")}>{translate("HEADER.MANAGE_CLIENTS")}</MenuItem>}
                                     <MenuItem icon={<IoIosExit />}
@@ -394,6 +401,41 @@ function Header({/* socket */ }) {
             </header >
         }
             {openProfileDialog && <CustomDropDown dropList={profileDropList} x_pos={15} y_pos={70} fromDirection="right" close={handleOpenProfileDropdown} action={(action, link) => { actionHandler(action, link) }} />}
+            {openStatsDialog && <Modal show={openStatsDialog} onHide={() => setOpenStatsDialog(false)} contentClassName="togo-button">
+                
+                {/* <Modal.Header>
+                    <h1><strong>Transporter Stats</strong></h1>
+                </Modal.Header> */}
+
+                <Modal.Body>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', color: "black", background: "white" }}>
+                        <thead>
+                            <tr>
+                                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total Active Orders</th>
+                                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Total Active COD</th>
+                                <th style={{ border: '1px solid #ddd', padding: '8px' }}>Loan Balance</th>
+                                <th style={{ border: '1px solid #ddd', padding: '8px' }}>To Pay</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {transporterStats.length ? transporterStats.map((transporter) => (
+                            <tr key={transporter.id}>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{transporter.orders_count}</td>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{transporter.total_cod}</td>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{transporter.loan_balance}</td>
+                                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{transporter.loan_balance - transporter.total_cod - transporter.balance}</td>
+                            </tr>
+                            )) : null}
+                        </tbody>
+                    </table>
+                </Modal.Body>
+
+                <Modal.Footer className="justify-content-center border-0 pt-0">
+                    <Button variant="secondary" className="border rounded-22 togo-button" onClick={() => setOpenStatsDialog(false)}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>}
         </>
     );
 }

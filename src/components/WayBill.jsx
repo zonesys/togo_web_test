@@ -429,12 +429,12 @@ export default function WayBill() {
                                         >
                                             {translate("WAYBILL.SENDER")}
                                         </legend>
-                                        <p>{translate("WORKING_TIME.FROM")}: {BusinessName ? BusinessName : FullName},<br />
+                                        <p>{translate("WORKING_TIME.FROM")}: {orderDetails?.SenderName ? orderDetails?.SenderName : BusinessName},<br />
                                             {orderDetails?.IdCitySource},<br />
                                             {orderDetails?.OtherDetails}
                                         </p>
                                         <hr className="my-2" />
-                                        <p>{translate("ADMIN.MOBILE_NUMBER")}: {orderDetails?.PhoneCustomer}</p>
+                                        <p>{translate("ADMIN.MOBILE_NUMBER")}: {orderDetails?.senderPhone/* orderDetails?.PhoneCustomer */}</p>
                                     </fieldset>
                                 </div>
 

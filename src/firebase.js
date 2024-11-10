@@ -18,7 +18,19 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const messaging = getMessaging(firebaseApp);
+const messaging = (async () => {
+    try {
+        const isSupportedBrowser = await isSupported();
+        if (isSupportedBrowser) {
+            return getMessaging(firebaseApp);
+        }
+        console.log('Firebase not supported this browser');
+        return null;
+    } catch (err) {
+        console.log(err);
+        return null;
+    }
+    })();
 const { REACT_APP_VAPID_KEY } = process.env;
 const publicKey = "BK1onSdP3jZqkXPuhNnpXw-vjS4k-jhUtQwWnWnolR7xqBNopgcenixt2b7CP4Uat8yosMY2KC0LTN8exLmEWbk";
 

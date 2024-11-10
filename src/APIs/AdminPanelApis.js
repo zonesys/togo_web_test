@@ -24,6 +24,17 @@ export function getAllOrders(searchStr) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
+export function changePackageMultiplier(orderId,newMultiplier){
+    const params = new URLSearchParams();
+    params.append("CheckTypeFunction","change_order_multiplier");
+    params.append("admin_id", localStorage.getItem("Adminid"));
+    params.append("admin_token", localStorage.getItem("AdminToken"));
+    params.append("order_id", orderId);
+    params.append("new_multiplier",newMultiplier);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+
+}
+
 export function GetAllNewOrders(searchStr, filterDate) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "GetAllNewOrders");
@@ -77,13 +88,15 @@ export function GetAllMarkedOrders() {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function GetAllFinishedOrders(searchStr, filterDate) {
+export function GetAllFinishedOrders(searchStr, filterDate,pageSize,pageOffset) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "GetAllFinishedOrders");
     params.append("id", localStorage.getItem("Adminid"));
     params.append("token", localStorage.getItem("AdminToken"));
     params.append("searchStr", searchStr);
     params.append("filterDate", filterDate);
+    params.append("pageSize", pageSize);
+    params.append("pageOffset", pageOffset);
 
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
@@ -857,15 +870,25 @@ export function undoCancledActiveOrder(orderId) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function alterActiveOrderCOD(orderId, newCOD) {
+export function changeCod(orderId, newCOD) {
     var params = new URLSearchParams();
-    params.append("CheckTypeFunction", "alterActiveOrderCOD");
+    params.append("CheckTypeFunction", "changeCod");
+    params.append("id", localStorage.getItem("userId"));
+    params.append("token", localStorage.getItem("TokenDevice"));
+    params.append("newCOD", newCOD);
+    params.append("orderId", orderId);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
+}
+export function changeCodAdmin(orderId, newCOD) {
+    var params = new URLSearchParams();
+    params.append("CheckTypeFunction", "changeCod");
     params.append("id", localStorage.getItem("Adminid"));
     params.append("token", localStorage.getItem("AdminToken"));
     params.append("newCOD", newCOD);
     params.append("orderId", orderId);
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
+
 
 export function getTotalTempBalance() {
     var params = new URLSearchParams();
@@ -1007,5 +1030,13 @@ export function getOliveryStatus(oliveryOrderId) {
     formData.append("username", "0568866124");
     formData.append("password", "123123123");
     formData.append("orderId", oliveryOrderId);
+    return axios.post(apiUrl, formData, { headers: requestHeaders });
+}
+
+export function getForeignStatus(orderId) {
+    console.log({ orderId })
+    var formData = new FormData();
+    formData.append("CheckTypeFunction", "getForeignStatus");
+    formData.append("orderId", orderId);
     return axios.post(apiUrl, formData, { headers: requestHeaders });
 }

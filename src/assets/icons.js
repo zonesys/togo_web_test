@@ -3,6 +3,9 @@ import React from 'react';
 const CustomIcon = ({ iconName, color, size }) => {
 
     switch (iconName) {
+        case "warning": return (
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16"><g fill="none"><path fill="url(#fluentColorWarning160)" d="M9.092 2.638a1.25 1.25 0 0 0-2.182 0L2.157 11.14A1.25 1.25 0 0 0 3.247 13h9.504a1.25 1.25 0 0 0 1.091-1.86z"/><path fill="url(#fluentColorWarning161)" d="M8.75 10.25a.75.75 0 1 1-1.5 0a.75.75 0 0 1 1.5 0M7.5 8V5.5a.5.5 0 0 1 1 0V8a.5.5 0 0 1-1 0"/><defs><linearGradient id="fluentColorWarning160" x1="3.872" x2="10.725" y1=".279" y2="14.525" gradientUnits="userSpaceOnUse"><stop stop-color="#ffcd0f"/><stop offset="1" stop-color="#fe8401"/></linearGradient><linearGradient id="fluentColorWarning161" x1="6" x2="8.466" y1="5" y2="11.575" gradientUnits="userSpaceOnUse"><stop stop-color="#4a4a4a"/><stop offset="1" stop-color="#212121"/></linearGradient></defs></g></svg>
+        )
         case "done":
             return (
                 <svg xmlns="http://www.w3.org/2000/svg" width="55" height="55" viewBox="0 0 24 24"><path fill="#00ff59" d="m9.55 18l-5.7-5.7l1.425-1.425L9.55 15.15l9.175-9.175L20.15 7.4z"/></svg>

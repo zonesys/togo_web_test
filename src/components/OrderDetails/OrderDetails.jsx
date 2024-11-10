@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Map from "../Address/Map";
+
 import { Accordion, Card, Button, Badge, Dropdown, Form, Modal, Spinner, Col, Row, Container, Table, ModalHeader } from "react-bootstrap";
 import { MdOutlineFastfood } from 'react-icons/md';
 import { BiPackage } from 'react-icons/bi'
@@ -53,8 +54,23 @@ import { useDispatch } from "react-redux";
 import { toastNotification } from "../../Actions/GeneralActions";
 import { imgBaseUrl } from "../../Constants/GeneralCont";
 import { FiEdit3 } from 'react-icons/fi';
-
+import { changeCod } from "../../APIs/AdminPanelApis";
 import { useImmer } from "use-immer";
+// import orderStatusNames from "src/constants/order_status_names.js";
+
+const orderStatusNames = {
+    bid_accepted: "Bid Accepted",
+    out_for_delivery: "Out for Delivery",
+    bids_available: "Bids Available",
+    returned_order: "Returned Order",
+    stuck_order: "Stuck Order",
+    waiting_for_bids: "Waiting for Bids",
+    delivered: "Delivered",
+    deleted: "Deleted",
+    picked_up: "Picked Up",
+
+
+}
 
 /* format time from 24hr system to 12hr (am/pm) system */
 function timeFormat(time) {
@@ -83,6 +99,8 @@ const OrderDetails = () => {
     const [loadingCreateReturned, setLoadingCreateReturned] = useState(false);
     const [loadingEditCod, setLoadingEditCod] = useState(false);
     const [loadingEditNotes, setLoadingEditNotes] = useState(false);
+    const [showChangeCODModal, setShowChangeCODModal] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -99,6 +117,8 @@ const OrderDetails = () => {
     const [showEditNotesModal, setShowEditNotesModal] = useState(false);
     const handleCloseEditNotesModal = () => setShowEditNotesModal(false);
     const handleShowEditNotesModal = () => setShowEditNotesModal(true);
+    const handleShowChangeCODdModal = () => setShowChangeCODModal(true);
+    const handleCloseChangeCODdModal = () => setShowChangeCODModal(false);
 
     const { id: orderId } = useParams();
     const location = useLocation();
@@ -126,6 +146,46 @@ const OrderDetails = () => {
     const newNotesRef = useRef();
     const newCodRef = useRef();
     const newCurrencyRef = useRef();
+    const handleChangeCOD = (orderId) => {
+
+        if (/* newCODAmountRef.current.value */ true) {
+            // console.log("yes");
+            setLoading(true);
+            // const newCOD = newCODAmountRef.current.value;
+            const newCOD = 0;
+
+            changeCod(orderId, newCOD).then((res) => {
+                if (res.data === "TokenError" || res.data.includes("error")) {
+                    dispatch(toastNotification("Error", res.data, "error"));
+                } else if (res.data.includes("success")) {
+                    setLoading(false);
+                    // console.log(res.data)
+                    dispatch(toastNotification("Changed", "COD Changed", "success"));
+                    setRefresh(!refresh);
+                    handleCloseChangeCODdModal(true);
+                } else {
+                    dispatch(toastNotification("Error", "unknown error", "error"));
+                }
+            })
+        } else {
+            // console.log("no");
+        }
+
+        /* deleteNewOrderForAdmin(orderId).then((res) => {
+            if (res.data === "TokenError" || res.data === "OrderNotFound2" || res.data === "OrderNotFound1" || res.data === "OrderStatusNotUpdated" || res.data === "deliveryWayNotFound" || res.data === "orderAlreadyAccepted!") {
+                dispatch(toastNotification("Error", res.data, "error"));
+            } else {
+                setLoading(false);
+                dispatch(toastNotification("Canceled", "Order Canceled", "success"));
+                setRefresh(!refresh);
+                handleCloseCancelNewModal();
+            }
+        }) */
+
+        /* setRefresh(!refresh);
+        handleCloseCancelNewModal(); */
+    }
+
 
     const styles = {
         cardHeaderLg: {
@@ -230,7 +290,7 @@ const OrderDetails = () => {
     useEffect(() => {
         getOrderDetails(orderId).then((orderDetailsRes) => {
 
-            // console.log(orderDetailsRes); // temp test
+            // console.log({ orderDetailsRes }); // temp test
 
             setOrderDetails(orderDetailsRes);
 
@@ -314,21 +374,23 @@ const OrderDetails = () => {
             DetailsLoad,
             LengthLoad,
             WeightLoad,
+            newCod,
             WidthLoad,
             OtherDetails,
             TypeLoad,
             PhoneCustomer,
+            senderPhone,
             LongSender, LatSender,
             AssignStatus, AssignedMemberName,
             isAcceptDelivery,
             SenderName,
             ReceiverName
         } = orderDetails;
-
+        console.log({senderPhone})
         let senderAddress = {
             name: SenderName,
             otherDetails: IdAreaSource == null ? OtherDetails + "  -  " + IdCitySource : IdCitySource + ", " + IdAreaSource + "  -  " + OtherDetails,
-            phoneCustomer: PhoneCustomer,
+            phoneCustomer: senderPhone,//PhoneCustomer,
             long: LongSender,
             lat: LatSender
         };
@@ -391,11 +453,13 @@ const OrderDetails = () => {
                 }
             ]
         }
+        // console.log({ orderDetails })
 
         return (
 
             <React.Fragment>
-                {orderDetails && <Container fluid className='ps-5 pe-5 pb-5'>
+                {orderDetails && 
+                <Container fluid className='ps-5 pe-5 pb-5'>
 
                     <div style={{ position: "absolute", left: 0, right: 0, backgroundColor: "#ededed", height: "140px", zIndex: "-1" }}></div>
 
@@ -594,6 +658,32 @@ const OrderDetails = () => {
                                                 </Button>
                                             </Modal.Footer>
                                         </Modal>
+
+                                        <Modal show={showChangeCODModal} onHide={handleCloseChangeCODdModal}>
+                                            <Modal.Header closeButton /* style={styles.cardHeaderSm} */>
+                                                <Modal.Title>Change order COD</Modal.Title>
+                                            </Modal.Header>
+                                            <Modal.Body /* className="mt-5" */>
+                                                {/* Enter new COD amount */}
+                                                {/* <Form.Group>
+                                                    <FloatingLabel className="mb-3" controlId="placeName" label={"Enter new COD amount"}>
+                                                        <Form.Control  type="number" placeholder="..." name="placeName" required ref={newCODAmountRef} />
+                                                        <Form.Control.Feedback type="invalid">
+                                                            {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
+                                                        </Form.Control.Feedback>
+                                                    </FloatingLabel>
+                                                </Form.Group> */}
+                                                Change order {orderId} COD from ({CostLoad} NIS) to ({newCod} NIS)?
+                                            </Modal.Body>
+                                            <Modal.Footer>
+                                                <Button variant="secondary" disabled={loading ? true : false} onClick={handleCloseChangeCODdModal}>
+                                                    Cancel
+                                                </Button>
+                                                <Button variant="success" disabled={loading ? true : false} onClick={() => { handleChangeCOD(orderId) }}>
+                                                    {loading && <Spinner animation="border" size="sm" />} Confirm
+                                                </Button>
+                                            </Modal.Footer>
+                                        </Modal>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -781,15 +871,21 @@ const OrderDetails = () => {
                                         {
                                             /* Client actions */
                                             !isTransporter() && <>
+
+
                                                 {/* display cancel order button when the order is waiting for bids OR the order is assigned and not accepted */}
-                                                {(order_status === 'Waiting for Bids' || (order_status === 'Order Assigned' && ClientAssignAccepted == 0 && clientAssigneeId != null)) &&
+                                                {(order_status === 'Waiting for Bids' || order_status === orderStatusNames.bid_accepted || (order_status === 'Order Assigned' && ClientAssignAccepted == 0 && clientAssigneeId != null)) &&
 
                                                     <CancelOrder orderId={orderId} className="mx-1" onSuccess={() => {
                                                         // history.goBack();
                                                         setRefresh(!refresh);
                                                     }} />
                                                 }
-
+                                                {/* change COD amount for active order */}
+                                                {!!newCod && (order_status === "Bid Accepted" || order_status === "Out for Delivery") && DeliveryId != null && (CostLoad != newCod) && <Button style={styles.actionButton} variant="danger" onClick={handleShowChangeCODdModal}>
+                                                    COD change <br />
+                                                    {/* ({CostLoad + " -> " + newCod}) */}
+                                                </Button>}
                                                 {/* display assign order button when the order is waiting for bids and it is not assigned */}
                                                 {/* {(order_status === 'Waiting for Bids' && order_status !== 'Order Assigned') &&
 
@@ -834,6 +930,7 @@ const OrderDetails = () => {
                                                                 setLoadingCreateReturned(true);
 
                                                                 // redirect to create-order page
+                                                                console.log("redirect to create-order page")
                                                                 history.push(`/account/main/create-order?id=${orderId}`)
                                                             }}
                                                         >
@@ -925,18 +1022,20 @@ const OrderDetails = () => {
                                             {tripCost.map((costs, index) => {
                                                 return <tr key={index}>
                                                     <td><img style={{
-                                                        width: "50%",
-                                                        height: "50%",
-                                                        objectFit: "cover"
+                                                        width: "50px",
+                                                        height: "50px",
+                                                        objectFit: "cover",
+                                                        marginRight: "auto",
+                                                        marginLeft: "auto"
                                                     }}
                                                         className="rounded-circle align-self-center" src={`${imgBaseUrl}${costs.TransporterPersonalImg}`} alt="transImg" />
                                                     </td>
-                                                    <td>{costs.isNetwork === "1" && <i className="bi bi-check-circle-fill h5" style={{ color: "green" }}></i>}</td>
-                                                    <td>
+                                                    <td className="text-center">{costs.isNetwork === "1" && <i className="bi bi-check-circle-fill h5" style={{ color: "green" }}></i>}</td>
+                                                    <td className="text-center">
                                                         <span>{costs.TransporterName}</span><br />
                                                         <span>{costs.mobile}</span>
                                                     </td>
-                                                    <td>{costs.BidCost}</td>
+                                                    <td>{costs.BidCost*orderDetails.package_multiplier}</td>
                                                     <td>
                                                         <Button
                                                             disabled={costs.isEnoughBalance == "1" ? false : true}
@@ -980,7 +1079,7 @@ const OrderDetails = () => {
                                                                     </div>
                                                                     <div className="d-flex justify-content-between">
                                                                         <div>Bid Price:</div>
-                                                                        <div>{bidReqTransPrice}</div>
+                                                                        <div>{costs.BidCost*orderDetails.package_multiplier}</div>
                                                                     </div>
                                                                     <div className="w-100 d-flex justify-content-center">
                                                                         <Rating name="size-large" size="large" defaultValue={bidReqTransRate} precision={0.1} readOnly />
@@ -1009,7 +1108,8 @@ const OrderDetails = () => {
                                                                                 resp.data == "OrderNotAccept" ||
                                                                                 resp.data == "BidChanged" ||
                                                                                 resp.data == "Blocked" ||
-                                                                                resp.data == "TokenError"
+                                                                                resp.data == "TokenError" || 
+                                                                                resp.data == "Failed"
                                                                             ) {
                                                                                 dispatch(toastNotification("Error!", resp.data, "error"));
                                                                             } else if (resp.data.indexOf("Success") !== -1) {

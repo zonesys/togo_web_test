@@ -109,7 +109,7 @@ export default function ActivationCodeForm(){
 
                         ActivateUser(localStorage.getItem("RegPostCode") + localStorage.getItem("PhoneNumber"), code, shasum).then((res)=>{
                             const userInfo = res.data.server_response?.[0];
-
+                            
                             if(userInfo){
                                 localStorage.setItem("userId", userInfo.id);
                                 localStorage.setItem("TokenDevice", shasum);

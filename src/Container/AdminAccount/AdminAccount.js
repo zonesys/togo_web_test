@@ -23,6 +23,8 @@ import TransportersStat from "../../components/AdminPanel/TransportersStat";
 import Loans from "../../components/AdminPanel/Loans";
 import Test2 from "../../components/AdminPanel/Test2";
 import Reconcile from '../../components/AdminPanel/Reconcile';
+import FinishedOrders from '../../components/AdminPanel/FinishedOrders';
+import Prices from '../../components/AdminPanel/Prices/Prices.jsx'
 
 export default function AdminAccount({ /* match: { path } */ path, notReload }) {
 
@@ -39,7 +41,8 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
         { "id": 9, "name": "Transporters Stat.", "active": "", "route": "transporters-stat" },
         { "id": 10, "name": "Loans", "active": "", "route": "loans" },
         { "id": 11, "name": "Reconcile", "active": "", "route": "reconcile" },
-
+        { "id": 11, "name": "Finished Orders", "active": "", "route": "finished-orders" },
+        { "id": 11, "name": "Prices", "active": "", "route": "prices" },
         /* { "id": 8, "name": "Test", "active": "", "route": "test_2" }, *//* test */
     ])
 
@@ -201,7 +204,8 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
             <AdminPrivateRoute path={`${path}/transporters-stat`} component={TransportersStat} />
             <AdminPrivateRoute path={`${path}/loans`} component={Loans} />
             <AdminPrivateRoute path={`${path}/reconcile`} component={Reconcile} />
-
+            <AdminPrivateRoute path={`${path}/finished-orders`} component={FinishedOrders} />
+            <AdminPrivateRoute path={`${path}/prices`} component={Prices} />
         </>
     );
 };
