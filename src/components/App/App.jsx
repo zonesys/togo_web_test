@@ -21,6 +21,7 @@ import PaymentRequest from "../PaymentPage/PaymentRedirect";
 import InitializeTransaction from "../PaymentPage/PaymentRedirect";
 import PaymentPage2 from "../PaymentPage/test";
 import Prices from "../AdminPanel/Prices/Prices";
+import 'dotenv/config'
 
 const App = () => {
 
@@ -28,7 +29,6 @@ const App = () => {
 
     const language = useSelector(state => state.general.language);
     localStorage.setItem("lang",language);
-
     /* ----------------------( FCM )---------------------- */
 
     // notReload used in order to update the DOM at every notification
