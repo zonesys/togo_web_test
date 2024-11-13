@@ -12,7 +12,8 @@ import {
     setClientDefaultAddress,
     getClientTempAddress,
     getPrivateAddresses,
-    sendCustomNotification
+    sendCustomNotification,
+    receiverNameOrPhoneExists
 } from "../../APIs/OrdersAPIs";
 import { GetTransporterClients } from "../../APIs/OrdersAPIs"
 import { ReactComponent as FoodIcon } from "../../assets/images/food.svg";
@@ -33,6 +34,9 @@ import "./CreateOrder_v2.css";
 import { useHistory } from "react-router";
 import CreateAddress from "../CreateAddress";
 import { FaSearch } from "react-icons/fa";
+import { useCallback } from "react";
+import debounce from "lodash.debounce";
+import { Alert } from "@material-ui/lab";
 
 export const PackageTypesIcons = {
     "1": FoodIcon,
@@ -98,6 +102,30 @@ export default function CreateOrder_v2(props) {
     const [deliverTypeArr, setDeliverTypeArr] = useState([]);
     const [isNewAddress, setIsNewAddress] = useState(true);
     const [dileveryAddress, setDileveryAddress] = useState({});
+
+
+    const [receiverNameExist, setReceiverNameExist] = useState(false)
+    const [receiverPhoneExist, setReceiverPhoneExist] = useState(false)
+
+    const handleReceiverNameChange = useCallback(
+        debounce(async (value) => {
+            if(!value) return;
+            const res = await receiverNameOrPhoneExists(value);
+            console.log({ "receiverNameExist": res.data.exists })
+            setReceiverNameExist(res.data.exists);
+        }, 500), // Adjust delay in milliseconds (e.g., 500ms)
+        []
+    );
+    const handleReceiverPhoneChange = useCallback(
+        debounce(async (value) => {
+            if(!value) return;
+            const res = await receiverNameOrPhoneExists(value);
+            console.log({ "receiverPhoneExist": res.data.exists })
+            setReceiverPhoneExist(res.data.exists);
+        }, 500), // Adjust delay in milliseconds (e.g., 500ms)
+        []
+    );
+
 
     const [loading, setLoading] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -165,7 +193,8 @@ export default function CreateOrder_v2(props) {
         });
     }
 
-    const getDeliveryAddresses = () => {
+    const getDeliveryAddresses = async () => {
+
         GetDefinedAddresses(inputValue).then((res) => {
             setLoading(false);
             setDeliverAddresses(res.data);
@@ -186,7 +215,7 @@ export default function CreateOrder_v2(props) {
         setDeliverTypeArr(tempArr);
     }
 
-    const createOrderHandler = (delivery_params, addresses_params, returned_params) => {
+    const createOrderHandler = async (delivery_params, addresses_params, returned_params) => {
 
         setLoadingSubmit(true)
 
@@ -277,27 +306,27 @@ export default function CreateOrder_v2(props) {
     const [selectedGovernorate, setSelectedGovernorate] = useState([]);
     const [selectedCity, setSelectedCity] = useState([]);
     const [selectedArea, setSelectedArea] = useState([]);
-  
-    const handleWidthChange = (e)=>{
+
+    const handleWidthChange = (e) => {
         if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
-            const msg = `${translateToString("ORDER_DETAILS","WIDTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`;
-            
-           setWidthErr(msg)
+            const msg = `${translateToString("ORDER_DETAILS", "WIDTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS", "CM")}`;
+
+            setWidthErr(msg)
         } else {
             setWidthErr("")
         }
     }
-    const handleHeightChange = (e)=>{
+    const handleHeightChange = (e) => {
         if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
-            const msg =`${translateToString("ORDER_DETAILS","HEIGHT_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`
+            const msg = `${translateToString("ORDER_DETAILS", "HEIGHT_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS", "CM")}`
             setHeightErr(msg)
         } else {
             setHeightErr("")
         }
     }
-    const handleLengthChange = (e)=>{
+    const handleLengthChange = (e) => {
         if (selectedItem.max && parseInt(e.target.value) > selectedItem.max) {
-            const msg = `${translateToString("ORDER_DETAILS","LENGTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS","CM")}`
+            const msg = `${translateToString("ORDER_DETAILS", "LENGTH_NOT_LARGER")} ${selectedItem.max} ${translateToString("ORDER_DETAILS", "CM")}`
             setLengthErr(msg);
         } else {
             setLengthErr("")
@@ -355,7 +384,7 @@ export default function CreateOrder_v2(props) {
                                             currency: formDataObj.currency != undefined ? formDataObj.currency : "1",
                                             delivery_type: deliveryType,
                                             load_type: packageType,
-                                            package_multiplier:selectedItem.mul,
+                                            package_multiplier: selectedItem.mul,
                                             notes: formDataObj.notes != undefined ? formDataObj.notes : "",
                                             load_length: formDataObj.length != undefined ? formDataObj.length : "",
                                             load_width: formDataObj.width != undefined ? formDataObj.width : "",
@@ -460,7 +489,7 @@ export default function CreateOrder_v2(props) {
                                                         data-test="package-types-dropdown"
                                                         onSelect={(eve) => {
                                                             setPackageType(eve);
-                       
+
                                                         }}>
                                                         <Dropdown.Toggle variant="" className="w-100 text-start d-flex align-items-center">
 
@@ -488,7 +517,7 @@ export default function CreateOrder_v2(props) {
                                                                 )
 
                                                             })}
-                                 
+
 
                                                         </Dropdown.Menu>
 
@@ -497,7 +526,7 @@ export default function CreateOrder_v2(props) {
                                                 {(orderPackages.length && selectedItem.size) ? <div className="row" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', paddingTop: '10px', paddingBottom: '10px', paddingLeft: 0, paddingRight: 0, margin: 0 }}>
                                                     <div className="col-md-4">
                                                         <Form.Group>
-                                                        {translate("ORDER_DETAILS.LOAD_WIDTH")}
+                                                            {translate("ORDER_DETAILS.LOAD_WIDTH")}
                                                             <Form.Control
                                                                 name="width"
                                                                 type="number"
@@ -505,7 +534,7 @@ export default function CreateOrder_v2(props) {
                                                                 className="input-inner-shadow"
                                                                 isInvalid={widthErr}
                                                                 onChange={handleWidthChange}
-                                                                placeholder={`${translateToString(`ORDER_DETAILS`,selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+                                                                placeholder={`${translateToString(`ORDER_DETAILS`, selectedItem.id != 4 ? "UP_TO" : "BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS", "CM")}`}
 
                                                             />
                                                             {!widthErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
@@ -518,7 +547,7 @@ export default function CreateOrder_v2(props) {
                                                     </div>
                                                     <div className="col-md-4">
                                                         <Form.Group>
-                                                        {translate("ORDER_DETAILS.LOAD_HEIGHT")}
+                                                            {translate("ORDER_DETAILS.LOAD_HEIGHT")}
                                                             <Form.Control
                                                                 name="height"
                                                                 type="number"
@@ -526,7 +555,7 @@ export default function CreateOrder_v2(props) {
                                                                 className="input-inner-shadow"
                                                                 isInvalid={heightErr}
                                                                 onChange={handleHeightChange}
-                                                                placeholder={`${translateToString("ORDER_DETAILS",selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+                                                                placeholder={`${translateToString("ORDER_DETAILS", selectedItem.id != 4 ? "UP_TO" : "BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS", "CM")}`}
                                                             />
                                                             {!heightErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
 
@@ -538,7 +567,7 @@ export default function CreateOrder_v2(props) {
                                                     </div>
                                                     <div className="col-md-4">
                                                         <Form.Group>
-                                                        {translate("ORDER_DETAILS.LOAD_LENGTH")}
+                                                            {translate("ORDER_DETAILS.LOAD_LENGTH")}
                                                             <Form.Control
                                                                 name="length"
                                                                 type="number"
@@ -546,7 +575,7 @@ export default function CreateOrder_v2(props) {
                                                                 data-test="package-length"
                                                                 isInvalid={lengthErr}
                                                                 onChange={handleLengthChange}
-                                                                placeholder={`${translateToString("ORDER_DETAILS",selectedItem.id != 4 ? "UP_TO":"BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS","CM")}`}
+                                                                placeholder={`${translateToString("ORDER_DETAILS", selectedItem.id != 4 ? "UP_TO" : "BIGGER_THAN")} ${selectedItem.size.split(" x ")[1]} ${translateToString("ORDER_DETAILS", "CM")}`}
                                                             />
                                                             {!lengthErr && <span style={{ color: "#1f8379" }}> ({translate("CREATE_NEW_ORDER.OPTIONAL")})</span>}
 
@@ -740,7 +769,12 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="placeName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input" required />
+                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input"
+                                                                    onChange={(e) => handleReceiverNameChange(e.target.value)} required />
+                                                                {receiverNameExist &&
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_NAME_EXISTS")}</Alert>
+ 
+                                                                }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
                                                                 </Form.Control.Feedback>
@@ -750,7 +784,15 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="userPhone" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}>
-                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" data-test="receiver-phone-input" pattern="^0[0-9]{9}$" required />
+                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" data-test="receiver-phone-input"
+                                                                    pattern="^0[0-9]{9}$"
+                                                                    onChange={(e) => handleReceiverPhoneChange(e.target.value)}
+                                                                    required
+
+                                                                />
+                                                                {receiverPhoneExist &&
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_PHONE_EXISTS")}</Alert>
+                                                                }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ENTER_VALID_NUMBER")}
                                                                 </Form.Control.Feedback>

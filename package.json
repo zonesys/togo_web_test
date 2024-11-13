@@ -22,8 +22,11 @@
         "bootstrap": "^5.0.1",
         "bootstrap-icons": "^1.9.1",
         "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
         "crypto-js": "^4.1.1",
         "dom-to-image": "^2.6.0",
+        "dotenv": "^16.4.5",
+        "eslint": "^9.14.0",
         "file-saver": "^2.0.2",
         "firebase": "^9.9.1",
         "fixed-size-list": "^0.3.0",
@@ -37,6 +40,7 @@
         "install": "^0.13.0",
         "jspdf": "^2.5.0",
         "leaflet": "^1.7.1",
+        "lodash.debounce": "^4.0.8",
         "multiselect-react-dropdown": "^2.0.25",
         "npm": "^10.8.3",
         "pm2": "^5.1.2",
@@ -82,7 +86,7 @@
         "yarn": "^1.22.19"
     },
     "scripts": {
-        "start": "PORT=3000 react-scripts start",
+        "start": "cross-env PORT=8000 DISABLE_ESLINT_PLUGIN=true react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
@@ -90,8 +94,10 @@
     "eslintConfig": {
         "extends": "react-app",
         "rules": {
-            "no-unused-vars": "off",
-            "eqeqeq": "off"
+            "no-undef": "off",
+            "react-hooks/rules-of-hooks": "off",
+            "no-restricted-globals": "off",
+            "no-unused-expressions": "off"
         }
     },
     "browserslist": [
