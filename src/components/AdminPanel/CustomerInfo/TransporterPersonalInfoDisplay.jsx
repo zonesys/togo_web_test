@@ -17,7 +17,8 @@ import {
     lendMoney,
     collectMoney,
     getTempTransactions,
-    sendLoanVerifyCodeForAdmin
+    sendLoanVerifyCodeForAdmin,
+    getPrices
 } from "../../../APIs/AdminPanelApis";
 import { convert24TimeTo12 } from "../../../Util";
 import { useDispatch } from "react-redux";
@@ -43,6 +44,14 @@ export default function TransporterPersonalInfoDisplay({ id }) {
             });
         })
     }, [updatePersonalButtonLoading]) */
+    // Parent Page JavaScript
+  
+        const path = window.location.pathname;
+        const match = path.match(/\/customerInfo\/(\d+)\/\d+/); // Extract transporter ID from URL path
+
+    const transporterId = match[1];
+        console.log("Extracted Transporter ID:", transporterId);
+
 
     const styles = {
         cardHeaderLg: {
@@ -172,24 +181,25 @@ export default function TransporterPersonalInfoDisplay({ id }) {
         })
     }, [refreshBusinessLocations, refresh])
 
-    useEffect(() => { // nono
-        setPricesLoading(true);
+    // useEffect(() => { // nono
+    //     setPricesLoading(true);
 
-        getTransporterCitiesPricesForAdmin(id).then((res) => {
-            // console.log(res.data);
+    //     getPrices(id).then((res) => {
+    //         // console.log(res);
 
-            if (fromInputValue == '' && toInputValue == '') {
-                setPricesArr(res.data.response);
-            } else {
-                setPricesArr(res.data.response.filter(city => {
-                    return city.fromName.toLowerCase().replaceAll("أ", 'ا').replaceAll("إ", 'ا').includes(fromInputValue.toLowerCase()) &&
-                        city.toName.toLowerCase().replaceAll("أ", 'ا').replaceAll("إ", 'ا').includes(toInputValue.toLowerCase())
-                }));
-            }
+    //         if (fromInputValue == '' && toInputValue == '') {
+    //             setPricesArr(res.data.items);
+    //         } 
+    //         // else {
+    //         //     setPricesArr(res.items.filter(city => {
+    //         //         return city.fromName.toLowerCase().replaceAll("أ", 'ا').replaceAll("إ", 'ا').includes(fromInputValue.toLowerCase()) &&
+    //         //             city.toName.toLowerCase().replaceAll("أ", 'ا').replaceAll("إ", 'ا').includes(toInputValue.toLowerCase())
+    //         //     }));
+    //         // }
 
-            setPricesLoading(false);
-        })
-    }, [fromInputValue, toInputValue])
+    //         setPricesLoading(false);
+    //     })
+    // }, [fromInputValue, toInputValue])
 
     useEffect(() => {
         GetTransporterWorkingTimes(id).then((res) => {
@@ -574,7 +584,7 @@ export default function TransporterPersonalInfoDisplay({ id }) {
         <>
             <Tabs defaultActiveKey="PersonalInformation" id="uncontrolled-tab-example" className="tabPane">
                 <Tab eventKey="PersonalInformation" title="Personal Information">
-                    <Card className="customCardSm shadow m-5">
+                    <Card className="customCardSm shadow">
                         <Card.Body>
 
                             {info ? <Container fluid>
@@ -800,7 +810,7 @@ export default function TransporterPersonalInfoDisplay({ id }) {
                 <Tab eventKey="WorkingTimeAndBusinessLocation" title=" Working Time and Business Location">
                     <Row>
                         <Col xl={6}>
-                            <Card className="customCardSm shadow m-5">
+                            <Card className="customCardSm shadow ">
                                 <Card.Header>
                                     Business Times
                                 </Card.Header>
@@ -840,7 +850,7 @@ export default function TransporterPersonalInfoDisplay({ id }) {
                             </Card>
                         </Col>
                         <Col xl={6}>
-                            <Card className="customCardSm shadow m-5">
+                            <Card className="customCardSm shadow ">
                                 <Card.Header>
                                     Business Locations
                                 </Card.Header>
@@ -870,60 +880,23 @@ export default function TransporterPersonalInfoDisplay({ id }) {
                     </Row>
                 </Tab>
                 <Tab eventKey="citiesPrices" title="Prices Between Cities"> {/* nono */}
-                    <Card className="customCardLg shadow m-5">
-                        <Card.Header>
-                            <Table hover>
-                                <thead>
-                                    <tr>
-                                        <th scope="col" style={{ width: "30%", border: "none", color: "white" }}>
-                                            <Form.Group className="d-flex justify-content-center">
-                                                <Form.Label className="me-3 mt-1">From</Form.Label>
-                                                <Form.Control className="w-50" placeholder={"Search by name..."} onChange={(e) => {
-                                                    handleSearchFrom(e)
-                                                }} />
-                                            </Form.Group>
-                                        </th>
-                                        <th scope="col" style={{ width: "10%", border: "none", color: "white" }}></th>
-                                        <th scope="col" style={{ width: "30%", border: "none", color: "white" }}>
-                                            <Form.Group className="d-flex justify-content-center">
-                                                <Form.Label className="me-3 mt-1">To</Form.Label>
-                                                <Form.Control className="w-50" placeholder={"Search by name..."} onChange={(e) => {
-                                                    handleSearchTo(e)
-                                                }} />
-                                            </Form.Group></th>
-                                        <th scope="col" style={{ width: "30%", border: "none", color: "white", paddingTop: "-100px" }}><Form.Label className="t-1">Price</Form.Label></th>
-                                    </tr>
-                                </thead>
-                            </Table>
-                        </Card.Header>
+                    <Card className="customCardLg shadow">
+
+
                         <Card.Body style={{ height: "500px", overflowY: "scroll" }}>
-                            <Table hover>
-                                <tbody>
-                                    {
-                                        pricesLoading ? <tr><td colSpan="4"><Spinner animation="border" variant="success" /></td></tr> : pricesArr.map((item, index) => {
-                                            return <tr key={index}>
-                                                <td>{item.fromName}</td>
-                                                <td>{(localStorage.getItem("Language") || "en") === "en" ? <i className="bi bi-arrow-right"></i> : <i className="bi bi-arrow-left"></i>}</td>
-                                                <td>{item.toName}</td>
-                                                <td>
-                                                    <Form.Group className="d-flex justify-content-center" controlId={index}>
-                                                        <Form.Control style={{ width: "100px", textAlign: "center" }} type="number" placeholder={item.price} onChange={(e) => {
-                                                            handlePriceChange(item.transporterId, item.fromId, item.toId, e.target.value)
-                                                        }} />
-                                                        {/* <TbCurrencyShekel style={{ fontSize: "20px", marginTop: "10px" }} /> */}
-                                                        <GrEdit style={{ fontSize: "20px", marginTop: "10px", marginLeft: "5px" }} />
-                                                    </Form.Group>
-                                                </td>
-                                            </tr>
-                                        })
-                                    }
-                                </tbody>
-                            </Table>
+                            <iframe
+                                src={`https://api.dev.togo.ps/prices?transporter_id=${transporterId}`}
+                                id="prices-iframe"
+                                sandbox="allow-scripts allow-same-origin allow-forms"
+                                class="w-100 h-100"
+                            ></iframe>
                         </Card.Body>
+
+
                     </Card>
                 </Tab>
                 <Tab eventKey="VehiclesInformation" title="Vehicles Information">
-                    <Card className="customCardSm shadow m-5">
+                    <Card className="customCardSm shadow ">
                         <Card.Body>
                             {/* <Table>
                                 <thead>

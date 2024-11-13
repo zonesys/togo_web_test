@@ -585,6 +585,27 @@ export function getTransporterCitiesPricesForAdmin(transId) {
     return axios.post(apiUrl, params);
 }
 
+
+// export async function getPrices(transId) {
+//     const url = `https://api.dev.togo.ps/api/v1/prices?transporter_id=${transId}`;
+
+//     const config = {
+//         headers: {
+//             'x-api-key': process.env.NEXT_PUBLIC_TOGO_API_KEY, // Set your API key here
+//             'Content-Type': 'application/json'
+//         }
+//     };
+
+//     try {
+//         const res = await axios.get(url, config);
+//         return res.data;
+//     } catch (error) {
+//         console.error('Error fetching prices:', error);
+//         throw error;
+//     }
+// }
+
+
 export function updateTransporterCitiesPricesForAdmin(transId, fromId, toId, newPrice) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "updateTransporterCitiesPricesForAdmin");
