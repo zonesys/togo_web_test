@@ -635,13 +635,6 @@ export function getTransporterCitiesPricesForAdmin(transId) {
     return axios.post(apiUrl, params);
 }
 
-<<<<<<< Updated upstream
-=======
-
-
-
-
->>>>>>> Stashed changes
 export function updateTransporterCitiesPricesForAdmin(transId, fromId, toId, newPrice) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "updateTransporterCitiesPricesForAdmin");
