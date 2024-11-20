@@ -12,7 +12,8 @@ import {
     setClientDefaultAddress,
     getClientTempAddress,
     getPrivateAddresses,
-    sendCustomNotification
+    sendCustomNotification,
+    receiverNameOrPhoneExists
 } from "../../APIs/OrdersAPIs";
 import { GetTransporterClients } from "../../APIs/OrdersAPIs"
 import { ReactComponent as FoodIcon } from "../../assets/images/food.svg";
@@ -33,6 +34,9 @@ import "./CreateOrder_v2.css";
 import { useHistory } from "react-router";
 import CreateAddress from "../CreateAddress";
 import { FaSearch } from "react-icons/fa";
+import { useCallback } from "react";
+import debounce from "lodash.debounce";
+import { Alert } from "@material-ui/lab";
 
 export const PackageTypesIcons = {
     "1": FoodIcon,
@@ -98,6 +102,30 @@ export default function CreateOrder_v2(props) {
     const [deliverTypeArr, setDeliverTypeArr] = useState([]);
     const [isNewAddress, setIsNewAddress] = useState(true);
     const [dileveryAddress, setDileveryAddress] = useState({});
+
+
+    const [receiverNameExist, setReceiverNameExist] = useState(false)
+    const [receiverPhoneExist, setReceiverPhoneExist] = useState(false)
+
+    const handleReceiverNameChange = useCallback(
+        debounce(async (value) => {
+            if(!value) return;
+            const res = await receiverNameOrPhoneExists(value);
+            console.log({ "receiverNameExist": res.data.exists })
+            setReceiverNameExist(res.data.exists);
+        }, 500), // Adjust delay in milliseconds (e.g., 500ms)
+        []
+    );
+    const handleReceiverPhoneChange = useCallback(
+        debounce(async (value) => {
+            if(!value) return;
+            const res = await receiverNameOrPhoneExists(value);
+            console.log({ "receiverPhoneExist": res.data.exists })
+            setReceiverPhoneExist(res.data.exists);
+        }, 500), // Adjust delay in milliseconds (e.g., 500ms)
+        []
+    );
+
 
     const [loading, setLoading] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -167,7 +195,8 @@ export default function CreateOrder_v2(props) {
         });
     }
 
-    const getDeliveryAddresses = () => {
+    const getDeliveryAddresses = async () => {
+
         GetDefinedAddresses(inputValue).then((res) => {
             setLoading(false);
             setDeliverAddresses(res.data);
@@ -188,7 +217,7 @@ export default function CreateOrder_v2(props) {
         setDeliverTypeArr(tempArr);
     }
 
-    const createOrderHandler = (delivery_params, addresses_params, returned_params) => {
+    const createOrderHandler = async (delivery_params, addresses_params, returned_params) => {
 
         setLoadingSubmit(true)
 
@@ -742,7 +771,12 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="placeName" label={translate("CREATE_NEW_ORDER.NAME")}>
-                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input" required />
+                                                                <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input"
+                                                                    onChange={(e) => handleReceiverNameChange(e.target.value)} required />
+                                                                {receiverNameExist &&
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_NAME_EXISTS")}</Alert>
+ 
+                                                                }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
                                                                 </Form.Control.Feedback>
@@ -752,12 +786,15 @@ export default function CreateOrder_v2(props) {
                                                     <div className="col-lg-6">
                                                         <Form.Group>
                                                             <FloatingLabel className="mb-3" controlId="userPhone" label={translate("CREATE_NEW_ORDER.MOBILE_NUMBER")}>
-                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" data-test="receiver-phone-input" pattern="^0[0-9]{9}$" required onChange={(e) => {
-                                                                   const phone = e.target.value
-                                                                   if(phone.length == 10){
-                                                                    
-                                                                   }
-                                                                }} />
+                                                                <Form.Control className=" input-inner-shadow" type="tel" placeholder="..." name="receiverPhone" data-test="receiver-phone-input"
+                                                                    pattern="^0[0-9]{9}$"
+                                                                    onChange={(e) => handleReceiverPhoneChange(e.target.value)}
+                                                                    required
+
+                                                                />
+                                                                {receiverPhoneExist &&
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_PHONE_EXISTS")}</Alert>
+                                                                }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ENTER_VALID_NUMBER")}
                                                                 </Form.Control.Feedback>

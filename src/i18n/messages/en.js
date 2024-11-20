@@ -29,6 +29,8 @@ const EN_LOCALE = {
             "NAME": "Name",
             "ADDRESS": "Address",
             "MOBILE_NUMBER": "Mobile Number",
+            "RECEIVER_NAME_EXISTS":"The Receiver's name already exists, you can choose from the list of used addresses" ,
+            "RECEIVER_PHONE_EXISTS":"The Receiver's phone already exists, you can choose from the list of used addresses" ,
             "CHANGE_PICKUP_ADDRESS": "Change Pickup Address",
             "SET_DAFAULT_ADDRESS": "Set you default pickup address from your list",
             "SELECT": "Select",

@@ -45,7 +45,14 @@ export function getFunctions(functionType, pageNumber, transporterFunctionfilter
             headers: requestHeaders,
         });
 }
+export function receiverNameOrPhoneExists(info){
+    const params = new URLSearchParams();
+    params.append("CheckTypeFunction","receiverNameOrPhoneExists");
+    params.append("customer_id",localStorage.getItem("userId"))
+    params.append("search",info);
+    return axios.post(apiUrl, params, { headers: requestHeaders });
 
+}
 export function getClientDeliveredTotalAmounts() {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "getClientDeliveredTotalAmounts");
