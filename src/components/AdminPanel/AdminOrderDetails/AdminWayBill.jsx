@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useParams } from "react-router";
 // import { getBusinessLocation, getPersonalInfo } from "../../../Actions/ProfileActions";
 import translate from "../../../i18n/translate";
-import { getOrderDetailsForAdmin, getCustomerInfoForWayBill, checkForForeignId } from "../../../APIs/AdminPanelApis";
+import { getOrderDetailsForAdmin, getCustomerInfoForWayBill, checkForForeignId, getQrCodeForOrder, generateHashedId, encodeId } from "../../../APIs/AdminPanelApis";
 import { packageFormatter } from "../../Orders/OrdersTabularView";
 import whiteLogo from '../../../assets/whiteLogo.png';
 //import html2canvas from "html2canvas";
@@ -12,6 +12,7 @@ import jsPDF from "jspdf";
 import { Button } from "react-bootstrap";
 import albarq_logo from "../../../assets/barq_logo.png";
 import { imgBaseUrl } from '../../../Constants/GeneralCont';
+import QRCode from 'qrcode.react';
 
 var Barcode = require('react-barcode');
 
@@ -58,7 +59,20 @@ function Convert_HTML_To_PDF() {
 
 export default function AdminWayBill() {
     const { id } = useParams();
-    console.log("opened way bill admin")
+    console.log("opened way bill admin");
+
+    const [hashedId, setHashedId] = useState(null);
+
+    useEffect(() => {
+        const result = encodeId(id);
+
+        setHashedId(result); // Store the hashed ID in state
+
+        console.log("Generated Hashed ID:", result); // Log the result directly
+
+    }, [id]);
+
+
 
     const [orderDetails, setOrderDetails] = useState();
     const location = useLocation();
@@ -74,6 +88,7 @@ export default function AdminWayBill() {
     const [phone, setPhone] = useState("");
 
     const [foreignComapny, setForeignComapny] = useState("");
+
 
     useEffect(() => {
         checkForForeignId(id).then((res) => {
@@ -104,7 +119,7 @@ export default function AdminWayBill() {
             setLogoURL(res.data.logoURL);
             setFullName(res.data.FullName);
             setEmail(res.data.Email);
-           // setPhone(res.data.phone);
+            // setPhone(res.data.phone);
         })
     }, [])
 
@@ -121,6 +136,7 @@ export default function AdminWayBill() {
             console.log("order/receiver info --------------------");
             console.log(orderDetails); // temp test
             setOrderDetails(orderDetails);
+            console.log({ orderDetails });
             setPhone(orderDetails.senderPhone)
         });
 
@@ -131,7 +147,7 @@ export default function AdminWayBill() {
     const [showTrems, setShowTrems] = useState(true);
     const [containerWidth, setContainerWidth] = useState("1000px");
     const [isSelected, setIsSelected] = useState(true);
-    console.log({phone})
+    console.log({ phone })
     return (
         <>
             <div className="d-flex justify-content-center py-3 d-print-none">
@@ -141,7 +157,7 @@ export default function AdminWayBill() {
                     {/*<Button onClick={Convert_HTML_To_PDF} className="">PDF</Button>*/}
 
                     <Button style={{ width: "100px", borderRadius: "20px 0 0 20px" }} variant={isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(true); setContainerWidth("1000px"); setIsSelected(true) }} className="">Large</Button>
-                    <Button style={{ width: "100px", borderRadius: "0 20px 20px 0" }} variant={!isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(false); setContainerWidth("700px"); setIsSelected(false) }} className="">Medium</Button>
+                    <Button style={{ width: "100px", borderRadius: "0 20px 20px 0" }} variant={!isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(false); setContainerWidth("800px"); setIsSelected(false) }} className="">Medium</Button>
                 </div>
                 <Button variant="outline-primary" onClick={() => window.print()} style={{
                     /* marginRight: "5px",
@@ -240,7 +256,8 @@ export default function AdminWayBill() {
                                 <fieldset
                                     style={{
                                         all: "revert",
-                                        margin: "0"
+                                        margin: "0",
+                                        fontSize: "12px"
                                     }}
                                     className="border-dark"
                                 >
@@ -395,14 +412,19 @@ export default function AdminWayBill() {
                                         {
                                             foreignComapny == "" ? <>
                                                 {/* <p>{translate("WAYBILL.PRINT_DATE")}: {new Date().toDateString()} </p> */}
-                                                <div className="d-flex justify-content-center">
-                                                    {orderDetails && orderDetails.BarCode && <Barcode value={orderDetails.BarCode} />}
-                                                    {orderDetails && !orderDetails.BarCode && <Barcode value={id.padStart(8, 0)} />}
+                                                <div className="d-flex justify-content-center align-items-center flex-column">
+                                                    Track & Pay
+                                                    <QRCode
+                                                        value={`https://api.dev.togo.ps/ar/track/${hashedId}`}
+                                                        className="pt-2"
+                                                        size={showTrems ? 150 : 100}
+                                                    />
+
                                                 </div>
                                             </> : <div className="border border-dark border-2" style={{ textAlign: "center" }}>
                                                 <p className="p-2 border-bottom border-dark">{translate("WAYBILL.AMOUNT")}</p>
 
-                                                <div className="d-flex justify-content-center flex-column" style={{ height: "calc(100% - 38px)", padding: "30px 0 30px 0" }}>
+                                                <div className="d-flex justify-content-center flex-column amount-section" style={{ padding: "30px 0 30px 0" }}>
                                                     <h1 className="h1">{orderDetails?.CostLoad}</h1>
                                                     {orderDetails?.CostLoad && <p>{translate("WAYBILL.NIS")}</p>}
                                                     {!orderDetails?.CostLoad && <p>--</p>}
@@ -434,7 +456,7 @@ export default function AdminWayBill() {
                                                 {orderDetails?.OtherDetails}
                                             </p>
                                             <hr className="my-2" />
-                                            <p>{translate("ADMIN.MOBILE_NUMBER")}: { phone/* orderDetails?.PhoneCustomer */}</p>
+                                            <p>{translate("ADMIN.MOBILE_NUMBER")}: {phone/* orderDetails?.PhoneCustomer */}</p>
                                         </fieldset>
                                     </div>
 
@@ -460,16 +482,33 @@ export default function AdminWayBill() {
                                     </div>
                                 </div>
 
-                                <div className="d-flex pt-2">
-                                    <div className="w-75 m-inline-e-2">
-                                        <div className="border border-dark p-2 border-2">
-                                            <p>{translate("WAYBILL.NOTES")}: </p>
-                                            <p>{orderDetails?.DetailsLoad}</p>
-                                        </div>
+                                <div className="d-flex">
+                                    <div className="w-75 m-inline-e-2 d-flex flex-column justify-content-between h-100" style={{ rowGap: "0.5rem" }}>
 
-                                        <div className="d-flex pt-2">
-                                            <div className="w-75 m-inline-e-2">
-                                                <table className="table table-bordered border-2 border-dark">
+                                        <fieldset
+                                            style={{
+                                                all: "revert",
+                                                margin: "0",
+                                                paddingBottom: "8px",
+                                                height: "39px"
+                                            }}
+                                            className="border-dark"
+                                        >
+                                            <legend
+                                                style={{
+                                                    all: "revert",
+                                                    fontSize: "14px"
+                                                }}
+                                            >
+                                                {translate("WAYBILL.NOTES")}
+                                            </legend>
+                                            <p>{orderDetails?.DetailsLoad}</p>
+                                        </fieldset>
+
+
+                                        <div className="d-flex " style={{ height: "88px" }}  >
+                                            <div className="w-75 m-inline-e-2" style={{ height: "88px" }} >
+                                                <table className="table table-bordered border-2 border-dark mb-0" style={{ height: "88px" }}  >
                                                     <thead>
                                                         <tr>
                                                             <th style={{ fontSize: "1rem" }}>{translate("WAYBILL.LENGTH")}</th>
@@ -496,11 +535,13 @@ export default function AdminWayBill() {
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <div className="w-25">
-                                                <table className="table table-bordered border-2 border-dark">
+                                            <div className="w-25" style={{ height: "88px" }}  >
+                                                <table className="table table-bordered border-2 border-dark mb-0" style={{ height: "88px" }}  >
                                                     <thead>
                                                         <tr>
-                                                            <th style={{ fontSize: "1.2rem" }}>{translate("WAYBILL.SHIP")}</th>
+                                                            <th style={{ fontSize: showTrems ? "1.2rem" : "1rem" }}>
+                                                                {translate("WAYBILL.SHIP")}
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -510,6 +551,7 @@ export default function AdminWayBill() {
                                                     </tbody>
                                                 </table>
                                             </div>
+
                                             {/* edited (add delivery price to the bill) not needed! */}
                                             {/*<div className="w-25 ms-1">
         <table className="table table-bordered border-2 border-dark">
@@ -526,10 +568,15 @@ export default function AdminWayBill() {
         </table>
     </div>*/}
                                         </div>
+                                        <div className="border border-dark p-2  border-2 d-flex" >
+                                            <p>{translate("WAYBILL.ORDER_ID")}: </p>
+                                            <p className="mt-0 ms-1">{id}</p>
+                                        </div>
                                     </div>
-                                    <div className="border border-2 border-dark w-25 text-center mb-3"> {/* fofofo */}
-                                        {
-                                            foreignComapny == "" ? <>
+                                    {
+                                        foreignComapny == "" ? <>
+                                            <div className="border border-2 border-dark w-25 text-center mb-3 mt-2"> {/* fofofo */}
+
                                                 <p className="p-2 border-bottom border-dark">{translate("WAYBILL.AMOUNT")}</p>
 
                                                 <div className="d-flex justify-content-center flex-column" style={{ height: "calc(100% - 38px)" }}>
@@ -537,15 +584,44 @@ export default function AdminWayBill() {
                                                     {orderDetails?.CostLoad && <p>{translate("WAYBILL.NIS")}</p>}
                                                     {!orderDetails?.CostLoad && <p>--</p>}
                                                 </div>
-                                            </> :
-                                                <div className="d-flex justify-content-center">
-                                                    {orderDetails && orderDetails.BarCode && <Barcode value={orderDetails.BarCode} />}
-                                                    {orderDetails && !orderDetails.BarCode && <Barcode value={id.padStart(8, 0)} />}
+                                            </div>
+                                        </> :
+
+
+                                            <fieldset
+                                                style={{
+                                                    all: "revert",
+                                                    margin: "0",
+                                                    paddingBottom: "8px",
+                                                    height: "184px",
+                                                    width:"25%"
+                                                }}
+                                                className="border-dark">
+                                                <legend
+                                                    style={{
+                                                        all: "revert",
+                                                        fontSize: "14px"
+                                                    }}
+                                                >
+                                                    {translate("WAYBILL.QR")}
+                                                </legend>
+                                                <div className={`d-flex justify-content-center align-items-center h-100 flex-column `}>
+
+                                                    {/* Render QR code only if hashed_id is available */}
+
+                                                    <QRCode
+                                                        value={`https://api.dev.togo.ps/ar/track/${hashedId}`}
+                                                        // className="w-100 h-100"
+                                                        style={{objectFit:"cover",width:"170px",height:"170px"}}
+                                                        
+                                                    />
                                                 </div>
-                                        }
-                                    </div>
+                                            </fieldset>
+
+                                    }
+
                                 </div>
-                                {showTrems && <div className="d-flex">
+                                {showTrems && <div className="d-flex mt-3">
                                     <div className="w-50">
                                         <h1 className="h6">{translate("WAYBILL.TERMS_AND_CONDITIONS")}</h1>
                                         <ol style={{ fontSize: "8px", padding: "revert", listStyle: localStorage.getItem("Language") === "en" ? "normal" : "arabic-indic" }}>
@@ -557,6 +633,7 @@ export default function AdminWayBill() {
                                             <li>{translate("WAYBILL.CLOUSE_SIX")}</li>
                                         </ol>
                                     </div>
+
                                     <div className="w-50" style={{ direction: localStorage.getItem("Language") === "en" ? "rtl" : "ltr" }}>
                                         <h1 className="h6">{translate("WAYBILL.TERMS_AND_CONDITIONS_AR")}</h1>
                                         <ol style={{ fontSize: "8px", padding: "revert", listStyle: localStorage.getItem("Language") === "en" ? "arabic-indic" : "normal" }}>

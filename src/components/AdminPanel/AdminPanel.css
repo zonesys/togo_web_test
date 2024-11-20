@@ -361,11 +361,11 @@
     border-bottom: 4px solid #027941;
 }
 
-#superset-container{
+#superset-container {
     height: 100%;
 }
 
-#superset-container iframe{
+#superset-container iframe {
     width: 100%;
     height: 100%;
 }
@@ -376,4 +376,20 @@
 
 .super-nav .tab-content * {
     height: 100%;
+}
+
+.togo-barcode rect {
+    height: 50px;
+}
+
+.togo-barcode rect+text {
+    transform: translateY(-50px);
+}
+
+@media print {
+    .amount-section {
+        height: 176.4px;
+        font-size: 16px;
+        text-align: center;
+    }
 }
