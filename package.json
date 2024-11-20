@@ -43,15 +43,7 @@
         "jspdf": "^2.5.0",
         "leaflet": "^1.7.1",
         "lodash.debounce": "^4.0.8",
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-        "md5": "^2.3.0",
->>>>>>> Stashed changes
-=======
-        "md5": "^2.3.0",
->>>>>>> Stashed changes
-        "multiselect-react-dropdown": "^2.0.25",
+            "multiselect-react-dropdown": "^2.0.25",
         "npm": "^10.8.3",
         "pm2": "^5.1.2",
         "qrcode": "^1.4.4",
@@ -109,6 +101,7 @@
             "no-restricted-globals": "off",
             "no-unused-expressions": "off"
         }
+        
     },
     "browserslist": [
         ">0.2%",
