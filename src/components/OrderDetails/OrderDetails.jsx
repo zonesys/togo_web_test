@@ -341,6 +341,7 @@ const OrderDetails = () => {
             DateLoad, /* edited (DateLoad added) */
             DeliveryPrice, /* edited (DeliveryPrice added) */
             CostLoad, /* edited (CostLoad added) */
+            order_value,
             OriginalDeliveryId, /* edited (OriginalDeliveryId added) */
             DeliveryId, /* edited (DeliveryId added) */
             AssignToName, /* edited (AssignToName added) */
@@ -492,7 +493,10 @@ const OrderDetails = () => {
                                                     <td style={{ textAlign: "right" }}>
                                                         <span style={{ color: "#35b09d" }}>
                                                             {deliverFormatter({ DeliveryWays: deliveryWay })}
-                                                            {CostLoad && <Badge bg="secondary ms-1">{CostLoad} ILS</Badge>} {/* nono */}
+                                                            {CostLoad   && <Badge bg="secondary ms-1">{CostLoad} ILS</Badge>} {/* nono */}
+
+                                                            {order_value  && deliveryWay == "3" &&  <Badge bg="secondary ms-1">{order_value} ILS</Badge>} {/* nono */}
+
                                                             {CostLoad && currency == 2 && <Badge bg="secondary ms-1">{from_currency_value} JOD</Badge>} {/* nono */}
                                                         </span>
                                                         {order_status === 'Waiting for Bids' && <span style={{ float: "right", marginTop: "5px", marginLeft: "10px", cursor: "pointer" }}>
@@ -1001,7 +1005,7 @@ const OrderDetails = () => {
 
                         {/* Map card above (if there are no available offers) / Available Offers card (if there are available offers) */}
                         {/* if there are available offers then their card will apear and the map card will go below. if not, the map will be above */}
-                        <Col xl="5">
+                         <Col xl="5">
                             <Card className='shadow h-100 rounded-22'>
                                 <Card.Header style={styles.cardHeaderSm}>
                                     {!isTransporter() && (order_status === "Waiting for Bids" || order_status === "Order Assigned") && DeliveryId == null ? translate("ORDERS.AVAILABLE_OFFERS") : translate("TEMP.LOCATION")}
@@ -1018,7 +1022,7 @@ const OrderDetails = () => {
                                                 <th></th>
                                             </tr>
                                         </thead>
-                                        {order_status === "Waiting for Bids" && tripCost && tripCost.length !== 0 ? <tbody>
+                                        {  order_status === "Waiting for Bids" && tripCost && tripCost.length !== 0 ? <tbody>
                                             {tripCost.map((costs, index) => {
                                                 return <tr key={index}>
                                                     <td><img style={{
@@ -1133,7 +1137,7 @@ const OrderDetails = () => {
                                             </tr>
                                         </tbody>}
                                     </Table>
-                                </Card.Body> : <Card.Body className='mt-4'><Map className="" address1={senderAddress} address2={receiverAddress} /> </Card.Body>} {/* display Map card above if there are available offers */}
+                                </Card.Body> : <Card.Body className='mt-4'><Map className="" address1={senderAddress} address2={receiverAddress} /> </Card.Body>} 
                             </Card>
                         </Col>
 

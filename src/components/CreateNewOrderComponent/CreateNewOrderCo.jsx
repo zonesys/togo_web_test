@@ -760,7 +760,7 @@ export default function CreateNewOrder(props) {
                                                                             <Container fluid>
                                                                                 <Row className="mb-2">
                                                                                     <Col lg={11}>
-                                                                                        <span className="h4">{translate("CREATE_NEW_ORDER.SET_DAFAULT_ADDRESS")}:</span>
+                                                                                        <span className="h4">{translate("CREATE_NEW_ORDER.SET_DEFAULT_ADDRESS")}:</span>
                                                                                     </Col>
                                                                                     <Col lg={1}>
                                                                                         <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>

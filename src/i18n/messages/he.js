@@ -24,7 +24,7 @@ export default {
             "ADDRESS": "العنوان",
             "MOBILE_NUMBER": "رقم الجوال",
             "CHANGE_PICKUP_ADDRESS": "تغيير عنوان التحميل",
-            "SET_DAFAULT_ADDRESS": "إختر عنوان التحميل الإفتراضي من قائمة العناوين الخاصة بك",
+            "SET_DEFAULT_ADDRESS": "إختر عنوان التحميل الإفتراضي من قائمة العناوين الخاصة بك",
             "SELECT": "إختيار",
             "SET_DEFAULT": "تعيين",
             "DEFAULT_ADDRESS": "العنوان الإفتراضي",

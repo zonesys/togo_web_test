@@ -121,7 +121,6 @@ export default function WayBill() {
 
                     <Button style={{ width: "100px", borderRadius: localStorage.getItem("Language") === "en" ? "20px 0 0 20px" : "0 20px 20px 0" }} variant={isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(true); setContainerWidth("1000px"); setIsSelected(true) }} className="">Large</Button>
                     <Button style={{ width: "100px", borderRadius: localStorage.getItem("Language") === "en" ? "0 20px 20px 0" : "20px 0 0 20px" }} variant={!isSelected ? "primary" : "outline-primary"} onClick={() => { setShowTrems(false); setContainerWidth("700px"); setIsSelected(false) }} className="">Medium</Button>
-
                 </div>
                 <div>
                     <Button variant="outline-primary" onClick={() => window.print()} style={{

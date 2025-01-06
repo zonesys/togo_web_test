@@ -47,6 +47,7 @@ export default function Timeline(props) {
             // console.log(res.data);
 
             let tempArr = res.data.server_response.data.result.response;
+            console.log({tempArr})
             tempArr = tempArr?.filter(data => (
                 ((data.journal_id_name == "Customer Invoices" && data.debit != 0) || (data.journal_id_name != "Customer Invoices")) &&
                 ((data.journal_id_name == "Vendor Bills" && data.credit != 0) || (data.journal_id_name != "Vendor Bills"))

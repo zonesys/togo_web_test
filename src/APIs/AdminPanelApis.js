@@ -23,7 +23,7 @@ import md5 from "md5";
 
 // Encrypt function
 import Hashids from 'hashids';
-const hashids = new Hashids('your-unique-secret-salt', 12); // 12 is the minimum hash length
+const hashids = new Hashids('d41d8cd98f00b204e9800998ecf8427e', 12); // 12 is the minimum hash length
 
 
 export function encodeId(orderId) {

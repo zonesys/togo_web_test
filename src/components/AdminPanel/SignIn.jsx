@@ -105,9 +105,7 @@ export default function SignIn() {
         if (codeRef.current.value) {
             setLoadingCode(true);
             adminLogin(loginInfo.id, loginInfo.Token, codeRef.current.value).then(res => {
-
-                // check res.data
-                if (res.data == " - logged in successfully - ") {
+                if (res.data.trim() == "- logged in successfully -") {
                     localStorage.setItem("AdminFirstName", loginInfo.FirstName);
                     localStorage.setItem("AdminLastName", loginInfo.LastName);
                     localStorage.setItem("AdminEmail", loginInfo.Email);

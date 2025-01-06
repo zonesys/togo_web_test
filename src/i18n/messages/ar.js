@@ -5,7 +5,7 @@ export default {
 
         PRINT_ALL :{
             "NO_ORDERS":"لا يوجد طرود",
-            "ERROR_OCCURED":"حدث خطأ، يرجى اعادة تحميل الصفحة",
+            "ERROR_OCCURRED":"حدث خطأ، يرجى اعادة تحميل الصفحة",
             "PRINT_ALL":"طباعة الكل"
         },
         WITHDRAW_REQUEST: {
@@ -33,7 +33,7 @@ export default {
             "RECEIVER_NAME_EXISTS":"اسم المستلم موجود مسبقا ، يمكنك الاختيار من قائمة العناوين المستخدمة" ,
             "RECEIVER_PHONE_EXISTS":"رقم هاتف المستلم موجود مسبقا ، يمكنك الاختيار من قائمة العناوين المستخدمة" ,
             "CHANGE_PICKUP_ADDRESS": "تغيير عنوان التحميل",
-            "SET_DAFAULT_ADDRESS": "إختر عنوان التحميل الإفتراضي من قائمة العناوين الخاصة بك",
+            "SET_DEFAULT_ADDRESS": "إختر عنوان التحميل الإفتراضي من قائمة العناوين الخاصة بك",
             "SELECT": "إختيار",
             "SET_DEFAULT": "تعيين",
             "DEFAULT_ADDRESS": "العنوان الإفتراضي",
@@ -282,6 +282,7 @@ export default {
             "NO_ORDERS_FOUND": "لا يوجد طلبات",
             "DELIVERY": "توصيل فقط",
             "COD": "الدفع عند الاستلام",
+            "PREPAID": "الدفع قبل الاستلام",
             "PICKUP": "تحميل",
             "PAP": "تحميل ودفع",
             "FOOD": "طعام",
