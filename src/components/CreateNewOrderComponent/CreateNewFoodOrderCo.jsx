@@ -398,10 +398,10 @@ export default function CreateNewFoodOrderCo(props) {
                     <Form onSubmit={(e) => {
                         e.preventDefault();
 
-                        event.preventDefault();
-                        event.stopPropagation();
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                        const formData = new FormData(event.target), formDataObj = Object.fromEntries(formData.entries());
+                        const formData = new FormData(e.target), formDataObj = Object.fromEntries(formData.entries());
 
                         // console.log(formDataObj);
 

@@ -145,9 +145,9 @@ export default function TransporterPersonalInfoDisplay({ id }) {
 
     useEffect(() => {
         GetTransporterPersonalInfo(id).then((res) => {
-            /* console.log("=====================");
+            console.log("=====================");
             console.log("personal info:");
-            console.log(res.data.server_response); */
+            console.log(res.data.server_response);
             setIsBlocked(res.data.server_response.IsBlocked == 1 ? true : false);
             setOriginalProfileImage(res.data.server_response.img);
             setOriginalLicenceImage(res.data.server_response.LicenceImgPath);
@@ -176,7 +176,9 @@ export default function TransporterPersonalInfoDisplay({ id }) {
         setPricesLoading(true);
 
         getTransporterCitiesPricesForAdmin(id).then((res) => {
-            // console.log(res.data);
+            console.log("=====================");
+            console.log("cities prices:");
+            console.log(res.data);
 
             if (fromInputValue == '' && toInputValue == '') {
                 setPricesArr(res.data.response);
