@@ -25,7 +25,7 @@ export const PackageTypes = {
 export const DeliveryTypes = {
     "1": "DELIVERY",
     "2": "COD",
-    "3": "PICKUP",
+    "3": "PREPAID",
     "4": "PAP"
 };
 

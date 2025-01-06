@@ -646,7 +646,7 @@ const OrderCard = ({ order, handleSelect }) => {
 
                 <div className='second-row-full'>
                     <CustomIcon iconName="merchant_2" color="#848484" size="30" />
-                    <div className='text'>{order.clientBusinessName}</div>
+                    <div className='text'>{order.senderName}</div>
                 </div>
 
                 <div className='third-row-full'>

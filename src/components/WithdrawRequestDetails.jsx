@@ -9,19 +9,18 @@ import { Button } from "react-bootstrap";
 import translate from "../i18n/translate";
 import { Link } from "react-router-dom";
 
+
 export default function RequestDetails() {
+    const dispatch = useDispatch();
  //   const location = useLocation();
     const [orders, setOrders] = useState([]);
     const [columns, setColumns] = useState([]);
     const params = useParams();
     console.log(params);
-    if(!params)
-    return null;
     const orderIds = params.orderIds;
     const requestDate = params.reqDate;
-
-    const dispatch = useDispatch();
-
+    
+    
     useEffect(() => {
         getOrdersById(orderIds).then(response => {
             try {
@@ -31,12 +30,12 @@ export default function RequestDetails() {
                     return Object.assign({}, val, { net: netAmount[val.order_id] });
                 });
                 if (!data || data.length == 0) {
-                    dispatch(toastMessage("No orders"))
+                    // dispatch(toastMessage("No orders"))
                     setOrders(null);
                     return;
                 }
-             
-
+                
+                
                 const columns = [
                     {
                         dataField: "created_at",
@@ -79,7 +78,7 @@ export default function RequestDetails() {
                             }
                         }
                     },
-               
+                    
                     {
                         dataField: "net",
                         text: "Net Amount",
@@ -99,7 +98,7 @@ export default function RequestDetails() {
                             }
                         },
                         formatter: (cell, row) => {
-
+                            
                             return(
                                 <Link
                                 to={{
@@ -119,7 +118,7 @@ export default function RequestDetails() {
                                 {translate("ORDERS.SHOW")}
                                 </Link>
                             );
-                       
+                            
                         }
                     },
                 ]
@@ -128,17 +127,18 @@ export default function RequestDetails() {
             } catch (e) {
                 console.log("getOrdersById error: " + e);
                 dispatch(toastMessage("API Error"))
-
+                
             }
-
+            
         })
     }, []);
-
+    
+    if(!params) return null;
     return (
         <div style={{ height: null }} className="d-flex flex-column justify-content-center">
             {
                 requestDate && <h1 className="d-flex justify-content-center" style={{ marginBlock: "2%", fontSize: "20px" }}>Request Date : {requestDate}</h1>
-
+                
             }
 
 

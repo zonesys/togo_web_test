@@ -24,7 +24,7 @@ export function CancelOrder(props) {
                 
                 props.onSuccess && props.onSuccess();
                 
-                props.socket?.emit("newOrderCanceled", {
+                const res = props.socket?.emit("newOrderCanceled", {
                     userId: localStorage.getItem("userId"),
                     orderId: orderId
                 });

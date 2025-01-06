@@ -1,14 +1,64 @@
 import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
 import axios from "axios";
+import md5 from "md5";
+// export async function getQrCodeForOrder(orderId){
+//     const url = `https://api.dev.togo.ps/api/v1/generate-qr-code?order_id=${orderId}`;
+
+//         const config = {
+//             headers: {
+//                 'x-api-key': "TOGO-7fdCpUZyiBBICEy38lFihsIGorgTidDJ", // Set your API key here
+//                 'Content-Type': 'application/json'
+//             }
+//         };
+
+//         try {
+//             const res = await axios.get(url, config);
+//             return res.data;
+//         } catch (error) {
+//             console.error('Error fetching prices:', error);
+//             throw error;
+//         }
+// }
+
+
+// Encrypt function
+import Hashids from 'hashids';
+const hashids = new Hashids('d41d8cd98f00b204e9800998ecf8427e', 12); // 12 is the minimum hash length
+
+
+export function encodeId(orderId) {
+    const slug = hashids.encode(orderId);
+    return slug;
+}
+
+
+// export async function getPrices(transId) {
+//     const url = `https://api.dev.togo.ps/api/v1/prices?transporter_id=${transId}`;
+
+//     const config = {
+//         headers: {
+//             'x-api-key': process.env.NEXT_PUBLIC_TOGO_API_KEY, // Set your API key here
+//             'Content-Type': 'application/json'
+//         }
+//     };
+
+//     try {
+//         const res = await axios.get(url, config);
+//         return res.data;
+//     } catch (error) {
+//         console.error('Error fetching prices:', error);
+//         throw error;
+//     }
+// }
 export function reconcileOrders(foriegnOrders) {
 
     try {
         const params = new FormData();
         params.append("CheckTypeFunction", "reconcileOrders");
-        params.append("foreignOrders",JSON.stringify(foriegnOrders));
-       // params.append("foriegnIds",foriegnIds);
+        params.append("foreignOrders", JSON.stringify(foriegnOrders));
+        // params.append("foriegnIds",foriegnIds);
 
-        return axios.post(apiUrl, params,requestHeaders);
+        return axios.post(apiUrl, params, requestHeaders);
     } catch (e) {
         console.log("reconcileOrders http error: " + e);
     }
@@ -24,13 +74,13 @@ export function getAllOrders(searchStr) {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function changePackageMultiplier(orderId,newMultiplier){
+export function changePackageMultiplier(orderId, newMultiplier) {
     const params = new URLSearchParams();
-    params.append("CheckTypeFunction","change_order_multiplier");
+    params.append("CheckTypeFunction", "change_order_multiplier");
     params.append("admin_id", localStorage.getItem("Adminid"));
     params.append("admin_token", localStorage.getItem("AdminToken"));
     params.append("order_id", orderId);
-    params.append("new_multiplier",newMultiplier);
+    params.append("new_multiplier", newMultiplier);
     return axios.post(apiUrl, params, { headers: requestHeaders });
 
 }
@@ -88,7 +138,7 @@ export function GetAllMarkedOrders() {
     return axios.post(apiUrl, params, { headers: requestHeaders });
 }
 
-export function GetAllFinishedOrders(searchStr, filterDate,pageSize,pageOffset) {
+export function GetAllFinishedOrders(searchStr, filterDate, pageSize, pageOffset) {
     var params = new URLSearchParams();
     params.append("CheckTypeFunction", "GetAllFinishedOrders");
     params.append("id", localStorage.getItem("Adminid"));
@@ -615,7 +665,6 @@ export function updateTransporterCitiesPricesForAdmin(transId, fromId, toId, new
     params.append("fromId", fromId);
     params.append("toId", toId);
     params.append("newPrice", newPrice);
-
     return axios.post(apiUrl, params);
 }
 

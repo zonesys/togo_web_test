@@ -145,6 +145,8 @@ export default function CreateOrder_v2(props) {
 
     const [receiverPhoneExists, setReceiverPhoneExists] = useState(false);
     const codAmountRef = useRef();
+    const orderValueRef = useRef();
+
     const returnedAmountRef = useRef();
 
 
@@ -154,6 +156,7 @@ export default function CreateOrder_v2(props) {
         setDeliverTypeArr([
             { name: translate("ORDERS." + DeliveryTypes[2]), type: "2", active: /* !!id ? "" :  */"active" },
             { name: translate("ORDERS." + DeliveryTypes[1]), type: "1", active: "" },
+            { name: translate("ORDERS." + DeliveryTypes[3]), type: "3", active: "" },
             /* { name: translate("ORDERS." + DeliveryTypes[4]), type: "4", active: !!id ? "active" : "" }, */
         ])
     }, [])
@@ -383,6 +386,7 @@ export default function CreateOrder_v2(props) {
                                         // delivery params
                                         let delivery_params = {
                                             cod: formDataObj.codAmount != undefined ? formDataObj.codAmount : "",
+                                            order_value: formDataObj.orderValue != undefined ? formDataObj.orderValue : "",
                                             currency: formDataObj.currency != undefined ? formDataObj.currency : "1",
                                             delivery_type: deliveryType,
                                             load_type: packageType,
@@ -585,7 +589,6 @@ export default function CreateOrder_v2(props) {
                                                                 {lengthErr}
                                                             </Form.Control.Feedback>
                                                         </Form.Group>
-
                                                     </div>
                                                     <div style={{ color: "grey", fontSize: '1.5vh', margin: '1vh' }}>{translate("ORDER_DETAILS.PACKAGE_TYPE_WARNING")}</div>
                                                 </div> : <></>}
@@ -650,13 +653,15 @@ export default function CreateOrder_v2(props) {
                                                     <div className="toggleButtonsContainer">
                                                         {
                                                             deliverTypeArr.map((item, index) => {
-                                                                return <div key={index} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
+                                                                return <div key={index} style={{width : "250px", }} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
                                                                     <div className="radio"><div className="innerRadio"></div></div> {item.name}
                                                                 </div>
                                                             })
                                                         }
 
-                                                        {deliveryType === "2" && <div className="d-flex justify-content-center" style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", left: "230px", top: "87.5px", width: "180px" } : { position: "absolute", right: "240px", top: "87.5px", width: "180px" }}>
+                                                        {deliveryType === "2" && <div className="d-flex" style={
+                                                            
+                                                            (localStorage.getItem("Language") || "en") === "en" ? {  position: "absolute", left: "230px", top: "84px", width: "180px" , marginInline: "5%"} : { marginInline: "5%", position: "absolute", right: "240px", top: "87.5px", width: "180px" }}>
                                                             <Form.Control
                                                                 required={true}
                                                                 name="codAmount"
@@ -674,9 +679,26 @@ export default function CreateOrder_v2(props) {
                                                                 <option value={2}>JOD</option>
                                                             </Form.Select>}
                                                         </div>}
-
+                                                        {deliveryType === "3" && <div className="d-flex justify-content-center" style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", left: "230px", top: "213.5px", width: "180px" , marginInline: "5%" } : { position: "absolute", right: "240px", top: "87.5px", width: "180px" ,  marginInline: "5%" }}>
+                                                            <Form.Control
+                                                                required={true}
+                                                                name="orderValue"
+                                                                min="1"
+                                                                type="number"
+                                                                step="0.01"
+                                                                className="input-inner-shadow"
+                                                                data-test="amount-input"
+                                                                placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
+                                                                ref={orderValueRef}
+                                                                style={{ width: "100px" }}
+                                                            />
+                                                            {<Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example" data-test="currency-type-dropdown">
+                                                                <option value={1}>ILS</option>
+                                                                <option value={2}>JOD</option>
+                                                            </Form.Select>}
+                                                        </div>}
                                                         {/* PAP -> temp canceled */}
-                                                        {false && deliveryType === "4" && <div className="d-flex justify-content-center" style={{ position: "absolute", left: "230px", top: "200px", width: "180px" }}>
+                                                        {false && deliveryType === "4" && <div className="d-flex justify-content-center" style={{ position: "absolute", left: "230px", top: "200px", width: "180px" ,  marginInline: "10%" }}>
                                                             <Form.Control
                                                                 required={true}
                                                                 name="returnedAmount"
@@ -1066,7 +1088,7 @@ export default function CreateOrder_v2(props) {
                             <Container fluid>
                                 <Row className="mb-2">
                                     <Col lg={11}>
-                                        <span className="h4">{translate("CREATE_NEW_ORDER.SET_DAFAULT_ADDRESS")}:</span>
+                                        <span className="h4">{translate("CREATE_NEW_ORDER.SET_DEFAULT_ADDRESS")}:</span>
                                     </Col>
                                     <Col lg={1}>
                                         <CreateAddress onSuccess={() => { setRefresh(!refresh) }}>

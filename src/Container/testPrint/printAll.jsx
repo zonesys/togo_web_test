@@ -162,7 +162,7 @@ export default function PrintAll() {
                 {isLoading ? <Loader />
     
                     : isError ?
-                        <div style={{ margin: "20%" }} className="display-5" >{translate("PRINT_ALL.ERROR_OCCURED")} </div>
+                        <div style={{ margin: "20%" }} className="display-5" >{translate("PRINT_ALL.ERROR_OCCURRED")} </div>
     
                         : wayBillList.length == 0 ?
                             <div style={{ margin: "20%" }} className="display-5">{translate("PRINT_ALL.NO_ORDERS")}</div>

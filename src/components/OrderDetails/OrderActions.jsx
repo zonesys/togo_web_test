@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { Badge } from "react-bootstrap";
 
 export default function OrderActions({ actions }) {
-
     const formatAction = (record) => {
         if (record.action_id == 30 && record.title_en != "foreign delivery cost") {
             return <div className="d-flex justify-content-start">
