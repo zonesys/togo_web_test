@@ -225,7 +225,7 @@ export default function CreateOrder_v2(props) {
         setLoadingSubmit(true)
 
         createOrder_v2(JSON.stringify(delivery_params), JSON.stringify(addresses_params), JSON.stringify(returned_params)).then((res) => {
-
+            console.log({res})
             if (res.data.status == "error") {
                 console.log(res.data.error)
                 dispatch(toastNotification("Error!", "something went wrong!", "error"))

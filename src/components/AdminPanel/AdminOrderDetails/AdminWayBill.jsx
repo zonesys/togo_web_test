@@ -415,7 +415,7 @@ export default function AdminWayBill() {
                                                 <div className="d-flex justify-content-center align-items-center flex-column">
                                                     Track & Pay
                                                     <QRCode
-                                                        value={`https://api.dev.togo.ps/ar/track/${hashedId}`}
+                                                        value={`https://${process.env.REACT_APP_NEW_BACKEND_URL}/ar/track/${hashedId}`}
                                                         className="pt-2"
                                                         size={showTrems ? 150 : 100}
                                                     />
@@ -610,7 +610,7 @@ export default function AdminWayBill() {
                                                     {/* Render QR code only if hashed_id is available */}
 
                                                     <QRCode
-                                                        value={`https://api.dev.togo.ps/ar/track/${hashedId}`}
+                                                        value={`https://${process.env.REACT_APP_NEW_BACKEND_URL}/ar/track/${hashedId}`}
                                                         // className="w-100 h-100"
                                                         style={{objectFit:"cover",width:"170px",height:"170px"}}
                                                         

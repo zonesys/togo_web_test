@@ -2,7 +2,7 @@ import { apiUrl, requestHeaders } from "../Constants/GeneralCont";
 import axios from "axios";
 import md5 from "md5";
 // export async function getQrCodeForOrder(orderId){
-//     const url = `https://api.dev.togo.ps/api/v1/generate-qr-code?order_id=${orderId}`;
+//     const url = `https://process.env.REACT_APP_NEW_BACKEND_URL.ps/api/v1/generate-qr-code?order_id=${orderId}`;
 
 //         const config = {
 //             headers: {
@@ -33,7 +33,7 @@ export function encodeId(orderId) {
 
 
 // export async function getPrices(transId) {
-//     const url = `https://api.dev.togo.ps/api/v1/prices?transporter_id=${transId}`;
+//     const url = `https://process.env.REACT_APP_NEW_BACKEND_URL.ps/api/v1/prices?transporter_id=${transId}`;
 
 //     const config = {
 //         headers: {
@@ -637,7 +637,7 @@ export function getTransporterCitiesPricesForAdmin(transId) {
 
 
 // export async function getPrices(transId) {
-//     const url = `https://api.dev.togo.ps/api/v1/prices?transporter_id=${transId}`;
+//     const url = `https://process.env.REACT_APP_NEW_BACKEND_URL.ps/api/v1/prices?transporter_id=${transId}`;
 
 //     const config = {
 //         headers: {

@@ -7,7 +7,7 @@ export default function PaymentPage2() {
 
         <div>
             <iframe
-                src={"https://api.dev.togo.ps/aseel"}
+                src={`https://${process.env.REACT_APP_NEW_BACKEND_URL}/aseel`}
                 sandbox="allow-scripts allow-same-origin allow-popups"
             /> 
         </div>

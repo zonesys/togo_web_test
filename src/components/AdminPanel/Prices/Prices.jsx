@@ -7,7 +7,7 @@ const Prices = () => {
     <>
     {/* Hi */}
     <iframe
-      src={"https://api.dev.togo.ps/prices"}
+      src={`https://${process.env.REACT_APP_NEW_BACKEND_URL}/prices`}
       sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
       className='w-100 h-100'
     />

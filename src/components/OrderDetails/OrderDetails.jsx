@@ -234,6 +234,7 @@ const OrderDetails = () => {
     useEffect(() => {
         let isMounted = true;
         transactionsByOrder(localStorage.getItem("userId"), orderId).then(res => {
+            console.log({res})
             if (isMounted) {
                 let tempArr = res.data.server_response.data.result.response;
                 tempArr = tempArr.filter(data => ((data.journal_id_name == "Customer Invoices" && data.debit != 0) || data.journal_id_name != "Customer Invoices"));

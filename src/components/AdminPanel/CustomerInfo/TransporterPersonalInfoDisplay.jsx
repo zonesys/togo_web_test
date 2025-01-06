@@ -885,7 +885,7 @@ export default function TransporterPersonalInfoDisplay({ id }) {
 
                         <Card.Body style={{ height: "500px", overflowY: "scroll" }}>
                             <iframe
-                                src={`https://api.dev.togo.ps/prices?transporter_id=${transporterId}`}
+                                src={`https://${process.env.REACT_APP_NEW_BACKEND_URL}/prices?transporter_id=${transporterId}`}
                                 id="prices-iframe"
                                 sandbox="allow-scripts allow-same-origin allow-forms"
                                 class="w-100 h-100"
