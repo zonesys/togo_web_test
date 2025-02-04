@@ -1,6 +1,24 @@
 /* ----------( arrow time line )--------- * /
 
 /* Typography */
+
+
+.trans-strike-across {
+  position: relative; 
+}
+
+
+.trans-strike-across::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  margin-inline: 10px;
+  background: red; /* Or whatever color you like */
+  pointer-events: none;
+}
 .arrow .text {
 	color: #ffffff;
 	position: relative;

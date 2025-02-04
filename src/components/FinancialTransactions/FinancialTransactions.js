@@ -11,17 +11,34 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
 
 /* convert order number to a link to display order details */
-function orderIdFormatter(value) {
-  return <>
-    {Number(value) ? <Link
+function orderIdFormatter(value,row) {
+  return (
+  <div style={{padding : "5px"}}>
+    {row.state == "cancel" && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  backgroundColor: "red",
+                  color: '#fff',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Canceled
+              </span>
+            )}
+   {Number(value) ? <Link
       to={{
         pathname: `/account/Order/${value}`,
       }}
       className="orderLink"
     >
       {value}
-    </Link> : value}
-  </>
+    </Link> : value} 
+  </div>)
 }
 
 /* time formatter, to convert from 24 hrs system to 12 hrs system */
@@ -39,7 +56,8 @@ function timeFormatter(value) {
     time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
     time[0] = +time[0] % 12 || 12; // Adjust hours
   }
-  return time.join(''); // return adjusted time or original string
+  
+  return  time.join(''); // return adjusted time or original string
 }
 
 export default function Transactions() {
@@ -95,6 +113,29 @@ export default function Transactions() {
     },
     {
       dataField: 'move_name',
+    /*   formatter: (cell, row) => {
+        return (
+          <div style={{padding : "5px" ,}} >
+            {row.state == "cancel" && (
+              <span
+                style={{
+                  position: 'absolute',
+                  top: 2,
+                  left: 0,
+                  backgroundColor: "red",
+                  color: '#fff',
+                  padding: '2px 6px',
+                  borderRadius: '4px',
+                  fontWeight: 'bold'
+                }}
+              >
+                Canceled
+              </span>
+            )}
+            {cell}
+
+          </div>)
+      }, */
       text: translate("TRANSACTIONS.NAME")
     },
     {
@@ -136,13 +177,17 @@ export default function Transactions() {
           data={data}
           columns={columns}
           pagination={paginationFactory(paginationOptions)}
-          rowClasses={"custom-row-class"}
+          // rowClasses={"custom-row-class"}
+          rowClasses={(row, rowIndex) => {
+            return `custom-row-class ${row.state == "cancel" ? "trans-strike-across" : ""}`
+          }}
           columnClasses={"custom-column-class"}
           filter={filterFactory()}
           remote={{
             pagination: true, // Enable server-side pagination
             filter: true // Enable server-side filtering
           }}
+          
           onTableChange={(type, { page, sizePerPage, filters }) => {
             console.log({ type, page, sizePerPage, filters })
             if (type === 'pagination') {

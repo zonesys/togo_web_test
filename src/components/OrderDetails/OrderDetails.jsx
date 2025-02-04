@@ -1194,30 +1194,59 @@ const OrderDetails = () => {
                                         </thead>
                                         <tbody>
                                             { // popo
-                                                transactions?.map((item, index) => {
-                                                    return <tr
+                                                  transactions?.map((item, index) => {
+                                                    const dataStyle = {textAlign : "center" };
+                                               /*      if(item.state == "cancel")
+                                                        dataStyle["color"] = "red";  */
+                                                    return  (  
+
+                                                    <tr
                                                         key={index}
+                                                        className= {item.state == "cancel" ? "trans-strike-across": ""}
                                                     >
-                                                        <td>
-                                                            {item.move_name}
-                                                        </td>
-                                                        <td>
+                                                        <td style={dataStyle}>
+                                                        <div style={{ position: 'relative', paddingBlock: '5px' }}>
+                                                                {item.state == "cancel" && (
+                                                                    <span
+                                                                    style={{
+                                                                        position: 'absolute',
+                                                                        top: 0,
+                                                                        left: 0,
+                                                                        transform: 'translateY(-50%)',
+                                                                        backgroundColor: 'red',
+                                                                        color: '#fff',
+                                                                        padding: '2px 6px',
+                                                                        borderRadius: '4px',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                    >
+                                                                    Canceled
+                                                                    </span>
+                                                                )}
+                                                                {item.move_name}
+                                                                </div>
+                                                        
+                                                          </td>
+                                                        <td style={dataStyle}>
                                                             {item.create_date.split(" ")[0]}
                                                         </td>
-                                                        <td>
+                                                        <td style={dataStyle}>
                                                             {timeFormat(item.create_date.split(" ")[1])}
                                                         </td>
-                                                        <td>
+                                                        <td style={dataStyle}>
                                                             {item.journal_id_name}
                                                         </td>
-                                                        <td>
+                                                        <td style={dataStyle}>
                                                             <span style={{ fontWeight: item.credit > 0 ? "bold" : "", color: item.credit === 0 ? "lightgray" : "" }}>{item.credit !== 0 ? item.credit + " NIS" : 0}</span>
                                                         </td>
-                                                        <td>
+                                                        <td style={dataStyle}>
                                                             <span style={{ fontWeight: item.debit > 0 ? "bold" : "", color: item.debit === 0 ? "lightgray" : "" }}>{item.debit !== 0 ? item.debit + " NIS" : 0}</span>
                                                         </td>
 
                                                     </tr>
+                                                        )
+                                                    
+                                                 
                                                 })
                                             }
                                         </tbody>

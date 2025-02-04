@@ -35,7 +35,7 @@ export default function Account({ path  }) {
     useEffect(() => {
         if (localStorage.getItem("userId") != undefined)
             isUserLogedIn().then((res) => {
-                if (res.data === "Blocked" || res.data === "TokenError") {
+                if (res.data === "Blocked" || res.data && typeof res.data == "string" && res.data.trim() === "TokenError") {
                     handleLogout();
                 }
             })

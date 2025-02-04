@@ -6,7 +6,6 @@ export const AdminPrivateRoute = ({ component: Component, ...rest }) => {
     let signInPath = "/adminapp/signin";
     let mainInPath = "/adminapp/adminpanel/";
     let homePath = "/adminapp";
-
     return (<Route {...rest} render={(props) => {
         const { location: { pathname } } = props;
         // console.log(pathname)

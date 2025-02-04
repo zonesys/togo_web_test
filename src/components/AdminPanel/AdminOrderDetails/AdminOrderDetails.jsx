@@ -424,6 +424,7 @@ const AdminOrderDetails = () => {
             StuckOrderComment, /* edited (StuckOrderComment added) */
             CustomerId, /* edited (CustomerId added) */
             deliveryWay,
+            order_value,
             IsReturnAccepted,
             currency,
             from_currency_value,
@@ -563,7 +564,8 @@ const AdminOrderDetails = () => {
                                                     <td style={{ textAlign: "right" }}>
                                                         <span style={{ color: "#35b09d" }}>
                                                             {deliverFormatter({ DeliveryWays: deliveryWay })}
-                                                            {CostLoad && <Badge bg="secondary ms-1">{CostLoad} NIS</Badge>}
+                                                            {CostLoad && (deliveryWay == "2" || deliveryWay=="1")&& <Badge bg="secondary ms-1">{CostLoad} NIS</Badge>}
+                                                            {order_value && (deliveryWay == "3")&& <Badge bg="secondary ms-1">{order_value} NIS</Badge>}
                                                             {CostLoad && currency == 2 && <Badge bg="secondary ms-1">{from_currency_value} JOD</Badge>} {/* nono */}
                                                         </span>
                                                     </td>

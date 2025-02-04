@@ -1,8 +1,8 @@
-import React, { useLayoutEffect, useRef } from 'react';
-import { Box, Flex, Text, Input, InputGroup, Icon, InputLeftElement } from "@chakra-ui/react";
+import React, { useLayoutEffect, useRef, useState } from 'react';
+import { Box, Flex, Text, Input, InputGroup, Icon, InputLeftElement, Image } from "@chakra-ui/react";
 import styles from './Styles';
 import { CgFacebook } from 'react-icons/cg';
-import { MdEmail } from 'react-icons/md';
+import { MdEmail, MdPhone } from 'react-icons/md';
 import { AiFillInstagram, AiFillPhone } from 'react-icons/ai';
 import { useHistory, useLocation } from "react-router-dom";
 
@@ -30,6 +30,8 @@ import { EmailIcon, PhoneIcon, QuestionIcon } from '@chakra-ui/icons';
 import whiteLogo from '../../assets/whiteLogo.png';
 import translate from '../../i18n/translate';
 import LanguageSelector from '../../components/LanguageSelector/LanguageSelector';
+import visa_logo from "../../assets/images/visa-mastercard.png";
+import { Modal } from 'react-bootstrap';
 
 const barItems = [
     { label: "HOME", url: "/" },
@@ -39,11 +41,15 @@ const barItems = [
 function DownloadBadge() {
     return (
         <div>
-            <div style={{ width: "100px", display: "inline-block", verticalAlign: "middle" }}>
-                <img src={AppleBadge} style={{ padding: "8px" }} alt="android" />
+            <div style={{ /* width: "100px", */ display: "inline-block", verticalAlign: "middle" }}>
+                <a href='https://apps.apple.com/us/app/togo-client/id1672008247' target='_blank'>
+                    <img src={AppleBadge} height={150} width={120} style={{ padding: "8px" }} alt="android" />
+                </a>
             </div>
-            <div style={{ width: "100px", display: "inline-block", verticalAlign: "middle" }}>
-                <img src={GoogleBadge} alt="apple" />
+            <div style={{ /* width: "100px", */ display: "inline-block", verticalAlign: "middle" }}>
+                <a href='https://play.google.com/store/apps/details?id=pal.client.pal.togo_client&pcampaignid=web_share' target='_blank'>
+                    <img src={GoogleBadge} height={150} width={120} alt="apple" />
+                </a>
             </div>
         </div>
     )
@@ -61,12 +67,14 @@ export default function Home() {
         }
     };
     const location = useLocation();
+    const [showRefundModal, setShowRefundModal] = useState(false);
     const pathname = location.pathname;
     useLayoutEffect(() => {
         if (location.hash) {
             refDownloadSection.current.scrollIntoView({ behavior: "smooth", block: "start" });
         }
     })
+    const stepsIconWidth = "80px", stepsIconHeight = "80px";
     return (
         <>
             <Flex {...styles.barContainer}>
@@ -138,114 +146,90 @@ export default function Home() {
 
                 <Flex color="white" bgColor="#abe9cd" id="testdownload" ref={refDownloadSection}
                     bgImage="linear-gradient(315deg, #abe9cd 0%, #3eadcf 74%)">
-                    <Box
-                        w="55%"
-                        p="2rem"
-                        bgImage="linear-gradient(-55deg, transparent 26%, #eb6b9d 26%, #ee8c68 100%, #eb6b9d 43%)"
-                    >
-                        <Text textAlign="center" size="2xl">
-                            Join Transporter team
-                        </Text>
-                        <Steps vertical current={5} className="my-steps">
-                            <Steps.Item
-                                icon={<DownloadSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
-                                title="Download Transporters app available on"
-                                description={<DownloadBadge />}
-                            />
-                            <Steps.Item
-                                icon={<MysterySvg width="30px" height="30px" style={{ display: "inline-block" }} />}
-                                title="Check available orders"
-                            />
-                            <Steps.Item
-                                icon={<MakeDeal width="30px" height="30px" style={{ display: "inline-block" }} />}
-                                title="Make a deal"
-                            />
-                            <Steps.Item
-                                icon={<WaitDeal width="30px" height="30px" style={{ display: "inline-block" }} />}
-                                title="Wait for approval"
-                            />
-                            <Steps.Item
-                                icon={<DeliverDeal width="30px" height="30px" style={{ display: "inline-block" }} />}
-                                title="Deliver the order"
-                            />
-                        </Steps>
 
-                    </Box>
-                    <Box w="45%" p="2rem">
-                        <Text textAlign="center" size="2xl">Join Client Team</Text>
-                        <Steps vertical current={5} className="my-steps">
+                    <Box w="100%" /* marginInline="3%" */ className="mainBox">
+                        <Steps horizontal current={5} className="my-steps"  >
                             <Steps.Item
-                                icon={<DownloadSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
+                                icon={<DownloadSvg width={stepsIconWidth} height={stepsIconHeight} id="firstIcon" />}
                                 title="Download Client app available on"
-                                description={<DownloadBadge />}
+                                description={ <DownloadBadge />}
                             />
+                          
+                           
                             <Steps.Item
-                                icon={<CreatePackageSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
+                                icon={<CreatePackageSvg width={stepsIconWidth} height={stepsIconHeight} />}
                                 title="Create orders"
+
                             />
                             <Steps.Item
-                                icon={<WaitSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
+                                icon={<WaitSvg width={stepsIconWidth} height={stepsIconHeight} /* style={{ display: "inline-block" }}  */ />}
                                 title="Wait for deals" />
                             <Steps.Item
-                                icon={<AcceptDealSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
+                                icon={<AcceptDealSvg width={stepsIconWidth} height={stepsIconHeight} /* style={{ display: "inline-block" }} */ />}
                                 title="Accept a deal"
                             />
                             <Steps.Item
-                                icon={<ThumbsUpSvg width="30px" height="30px" style={{ display: "inline-block" }} />}
+                                icon={<ThumbsUpSvg width={stepsIconWidth} height={stepsIconHeight} /* style={{ display: "inline-block" }} */ />}
                                 title="Approve transferance"
                             />
+
                         </Steps>
                     </Box>
                 </Flex>
 
-                <Flex color="white" p="2rem" alignItems="center" id="contactus">
-                    <Box w="40%">
-                        <Text size="3xl">
-                            Get in touch let us know about your thoughts and suggestions!
-                        </Text>
-                    </Box>
-                    <Box flex="1" marginLeft="2rem">
-                        <InputGroup id="email" marginBottom="10px">
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<EmailIcon color="gray.300" />}
-                            />
-                            <Input type="email" placeholder="Email address" />
-                        </InputGroup>
-                        <InputGroup marginBottom="10px">
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<PhoneIcon color="gray.300" />}
-                            />
-                            <Input type="tel" placeholder="Enter your phone number for later contact" />
-                        </InputGroup>
-                        <InputGroup marginBottom="10px">
-                            <InputLeftElement
-                                pointerEvents="none"
-                                children={<QuestionIcon color="gray.300" />}
-                            />
-                            <Input type="text" placeholder="Enter your comments, ideas or questions here" />
-                        </InputGroup>
-
-
-                    </Box>
-                </Flex>
-                <Flex bgColor="white" p="2rem">
+                <Flex bgColor="white" p="10px">
                     <Box marginY="auto">
                         <Text className="custom-link" onClick={() => {
                             history.push("/privacy-policy")
-                        }}>Privacy Policy</Text>
+                        }}>{translate("HOME.PRIVACY_POLICY")}</Text>
                     </Box>
-                    <Box marginLeft="auto">
-                        <Text>Follow us</Text>
+                    <Box marginY="auto"  >
+                        <Text style={{ marginInline: "40px" }} className="custom-link" onClick={() => {
+                            //  history.push("/privacy-policy")
+                            setShowRefundModal(true)
+                        }}>{translate("HOME.RETURN_POLICY")}</Text>
+                    </Box>
+                    <Box>
+                        <Image src={visa_logo} alt="Visa Logo" width={200} height={100} />
+                    </Box>
+                    <Box marginY="auto" display={"flex"} justifyContent={"center"} alignItems={"center"} >
+                        <Icon as={MdEmail} w={25} h={25} />
+
+                        <Text style={{ fontSize: "1rem" }}>Info@togo.ps</Text>
+                    </Box>
+
+                    <Box marginY="auto" style={{ marginInline: "40px" }} display={"flex"} justifyContent={"center"} alignItems={"center"} >
+                        <Icon as={MdPhone} w={25} h={25} />
+
+                        <Text style={{ fontSize: "1rem" }}>0562900322</Text>
+                    </Box>
+
+
+                    {<Box marginY="auto">
                         <Flex {...styles.contactHeaderContainer} className="contact-header">
-                            <Icon as={CgFacebook} w={25} h={25} />
-                            <Icon as={AiFillInstagram} w={25} h={25} />
-                            <Icon as={AiFillPhone} w={25} h={25} />
-                            <Icon as={MdEmail} w={25} h={25} />
+                            {/* <Text  style={{fontSize: "1rem" ,}}>Follow us</Text> */}
+                            <a href="#" target="_blank" style={{ marginInlineEnd: "30px" }}>
+                                <Icon as={CgFacebook} w={25} h={25} />
+                            </a>
+                            <a href='https://www.instagram.com/togo_delivery_pal?igsh=bHJ4bjNkaHFnaGc1' target='_blank'>
+                                <Icon as={AiFillInstagram} w={25} h={25} />
+                            </a>
+                            {/* <Icon as={AiFillPhone} w={25} h={25} /> */}
+                            {/* <Icon as={MdEmail} w={25} h={25} /> */}
                         </Flex>
-                    </Box>
+                    </Box>}
                 </Flex>
+                <Modal show={showRefundModal} centered onHide={() => {
+                    setShowRefundModal(false)
+                }}>
+                    <Modal.Header>
+                        <h6 className='display-6'>{translate("HOME.RETURN_POLICY")}</h6>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <p>{translate("HOME.RETURN_POLICY_CONTENT")}</p>
+                    </Modal.Body>
+
+                </Modal>
             </Box>
         </>
     );

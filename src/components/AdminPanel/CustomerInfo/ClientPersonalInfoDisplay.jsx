@@ -1227,9 +1227,8 @@ function ClientNetweokMemberCar({ clientId, member, handleClose, onSuccess }) {
 
         AddTransporterToClientNetworkFoAdmin(transPhone, clientId).then((res) => {
 
-            // console.log(res.data);
-
-            if (res.data == "Inserted") {
+             console.log(res.data.trim() == "Inserted");
+            if (res.data.trim() == "Inserted") {
 
                 dispatch(toastNotification("Invitation sent", "Invitation sent successfully!", "info"));
 

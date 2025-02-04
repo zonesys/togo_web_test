@@ -112,6 +112,8 @@ Table tr th {
 
 .custom-row-class td {
   border: none;
+  text-align: center;
+
 }
 
 .custom-column-class {

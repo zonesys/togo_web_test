@@ -3,9 +3,9 @@ module.exports = {
       {
         name: 'togo',
         exec_mode: 'cluster',
-        instances: 'max', // Or a number of instances
-        script: 'server.js',
-        args: 'start',
+        // instances: 'max', // Or a number of instances
+        script: 'npm',
+        args: 'run start',
         env: {
             NODE_ENV: 'production',
             PORT: 8000 // Or your preferred port

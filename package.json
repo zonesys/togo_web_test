@@ -43,7 +43,8 @@
         "jspdf": "^2.5.0",
         "leaflet": "^1.7.1",
         "lodash.debounce": "^4.0.8",
-            "multiselect-react-dropdown": "^2.0.25",
+        "md5": "^2.3.0",
+        "multiselect-react-dropdown": "^2.0.25",
         "npm": "^10.8.3",
         "pm2": "^5.1.2",
         "qrcode": "^1.4.4",
@@ -88,7 +89,7 @@
         "yarn": "^1.22.19"
     },
     "scripts": {
-        "start": "cross-env PORT=8000 DISABLE_ESLINT_PLUGIN=true react-scripts start",
+        "start": "PORT=8000 DISABLE_ESLINT_PLUGIN=true react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
@@ -101,7 +102,6 @@
             "no-restricted-globals": "off",
             "no-unused-expressions": "off"
         }
-        
     },
     "browserslist": [
         ">0.2%",

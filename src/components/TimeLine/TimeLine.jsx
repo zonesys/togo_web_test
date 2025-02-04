@@ -259,12 +259,32 @@ export default function Timeline(props) {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    transactions?.map((item, index) => {
+                                                     transactions?.map((item, index) => {
                                                         return <tr
                                                             key={index}
+                                                            className={item.state == "cancel" ?"trans-strike-across":""}
                                                         >
                                                             <td>
+                                                            <div style={{ position: 'relative', padding: '0.5rem' }}>
+                                                                {item.state == "cancel" && (
+                                                                    <span
+                                                                    style={{
+                                                                        position: 'absolute',
+                                                                        top: 0,
+                                                                        left: 0,
+                                                                        transform: 'translateY(-50%)',
+                                                                        backgroundColor: 'red',
+                                                                        color: '#fff',
+                                                                        padding: '2px 6px',
+                                                                        borderRadius: '4px',
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                    >
+                                                                    Canceled
+                                                                    </span>
+                                                                )}
                                                                 {item.move_name}
+                                                                </div>
                                                             </td>
                                                             <td>
                                                                 {item.create_date.split(" ")[0]}

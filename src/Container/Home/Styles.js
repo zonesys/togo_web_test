@@ -4,7 +4,7 @@ export default {
     mainContainer: {
         w: "100%",
         h: "92vh",
-        bgImage: `url(${homeBg})`,
+        //bgImage: `url(${homeBg})`,
         bgPosition: "center",
         bgRepeat: "no-repeat",
         bgSize: "cover",

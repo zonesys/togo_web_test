@@ -41,7 +41,8 @@ export function getAuthenticationQR() {
             if (response.data === "Function Not Found") {
                 return "null";
             }
-            return response.data;
+            const qr = response.data;
+            return qr;
         })
         .catch((error) => {
             console.log(error);

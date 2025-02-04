@@ -18,6 +18,7 @@ class QRCodeGenerator extends Component {
 
     getAuthenticationQR = () => {
         getAuthenticationQR().then((qrUUID) => {
+            
             this.setState({
                 qrUUID,
             });
@@ -33,7 +34,8 @@ class QRCodeGenerator extends Component {
             300000000
         );
         this.checkSuccessInterval = setInterval(() => {
-            checkAccess(this.state.qrUUID).then((res) => {
+            checkAccess(this.state.qrUUID.trim()).then((res) => {
+                
                 res && history.push("/account/main/");
                 // res && console.log("logged in !!!!!!!!!!!!");
                 // res && refreshPage();

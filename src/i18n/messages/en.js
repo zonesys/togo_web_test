@@ -2,6 +2,7 @@ import {LOCALES_TYPES} from "../locales";
 
 const EN_LOCALE = {
     [LOCALES_TYPES.ENGLISH]: {
+      
         PRINT_ALL :{
             "PRINT_ALL":"Print All",
             "NO_ORDERS":"No Orders",
@@ -344,6 +345,8 @@ const EN_LOCALE = {
             "DELIVERY_TYPE" : "Delivery Type",
             "PACKAGE_TYPE" : "Package Type",
             "PACKAGE_TYPE_WARNING":"ℹ️ Note: delivery fee is subject to change by the delivery company according to package size.",
+            "MUST_INLCUDE_DP":"ℹ️ Must include delivery price",
+            "WILL_SEND_SMS" : "ℹ️ A payment link will be sent to receiver's phone number",
             "LOAD_HEIGHT" : "Load Height",
             "LOAD_WIDTH" : "Load Width",
             "LOAD_LENGTH" : "Load Length",
@@ -407,13 +410,17 @@ const EN_LOCALE = {
             "A_NEW_RETURNED_ORDER": "A new order with the same info will be create as returned order!",
         },
         HOME: {
-            "MAIN_HEADER_TEXT": "Do you have a Resturant, Shop or a person who wants to have something delivered ? ",
+            "MAIN_HEADER_TEXT": "Do you have an Online Store , Shop or you want something delivered ? ",
             "MAIN_HEADER_SUB_TEXT": "You are on the right place, using our TOGO service will help you find transporters to bring or deliver your stuff.",
             "DETAIL_ONE": "Reach everybody, size does not matter and pay less fees",
             "DETAIL_TWO": "Place orders ahead and track them",
             "DETAIL_THREE": "Save your time using our app there is more there",
             "DETAIL_FOUR": "Seamless transactions, choose preferred method (Cash on Delivery, Pay and Pickup ... etc)",
-            "DETAIL_FIVE": "Deliver and receive packages around the clock"
+            "DETAIL_FIVE": "Deliver and receive packages around the clock",
+            "PRIVACY_POLICY" : "Privacy Policy",
+            "PRIVACY_POLICY_CONTENT" : "",
+            "RETURN_POLICY" : "Return Policy",
+            "RETURN_POLICY_CONTENT" : "Togo does not provide exchange or return services as part of its policy, and any agreement regarding returns or exchanges is the direct responsibility of the sender and the recipient, with Togo not bearing any liability."
         },
         ADMIN: {
             "CREATE_TEAM": "Create Team",

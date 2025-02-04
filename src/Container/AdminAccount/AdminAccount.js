@@ -45,7 +45,6 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
         { "id": 11, "name": "Prices", "active": "", "route": "prices" },
         /* { "id": 8, "name": "Test", "active": "", "route": "test_2" }, *//* test */
     ])
-
     useEffect(() => {
 
         const tempRout = window.location.href.split("adminapp/")[1];
@@ -63,7 +62,6 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
     }, [])
 
     const handleLink = (link, index) => {
-
         let tempArr = [...links]
 
         for (let i = 0; i < tempArr.length; i++) {
@@ -74,15 +72,16 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
         }
 
         setLinks(tempArr);
-
+        console.log("pushed to main");
         history.push("/adminapp/" + link);
     }
 
     useEffect(() => {
         if (localStorage.getItem("Adminid") != undefined)
             isAdminLogedIn().then((res) => {
-                if (res.data === "TokenError") {
-                    handleLogOut();
+                console.log({res})
+                if (res.data && typeof res.data == "string" && res.data.trim() === "TokenError") {
+                   handleLogOut();
                 }
             })
     }, [])
@@ -185,9 +184,10 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
                     </div>
                 </div>
             </nav>
-
-            <AdminPrivateRoute exact path={`${path}/adminpanel/*`} component={AdminPanel} /> {/* main page */}
-            {<AdminPrivateRoute path={`${path}/food-orders`} component={FoodOrders} />}
+             
+       
+             <AdminPrivateRoute exact path={`${path}/adminpanel/*`} component={AdminPanel} /> {/* main page */}
+            <AdminPrivateRoute path={`${path}/food-orders`} component={FoodOrders} />
             <AdminPrivateRoute exact path={`${path}`} component={AdminPanel} /> {/* root path */}
             <AdminPrivateRoute path={`${path}/signin`} component={SignIn} /> {/* sign in page */}
             <AdminPrivateRoute path={`${path}/customerInfo/:id/:type`} component={CustomerInfo} /> {/* view customer info page */}
@@ -206,6 +206,8 @@ export default function AdminAccount({ /* match: { path } */ path, notReload }) 
             <AdminPrivateRoute path={`${path}/reconcile`} component={Reconcile} />
             <AdminPrivateRoute path={`${path}/finished-orders`} component={FinishedOrders} />
             <AdminPrivateRoute path={`${path}/prices`} component={Prices} />
+                       
+
         </>
     );
 };

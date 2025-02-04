@@ -2,7 +2,11 @@
     margin-inline-end: 9.5rem;
 }
 
+body{
+    overflow: hidden;
+    overflow-y: visible!important;
 
+}
 .search-input::placeholder {
     color: #cececeab;
     font-family: 'neosansarabic';
@@ -15,19 +19,89 @@
     opacity: 0.5;
 }
 
+.my-steps {
+    margin-block: 2%;
+    padding-inline: 2%;
+
+
+
+}
+.mainBox{
+    display: "flex" ;
+    align-items:"center" ; 
+    justify-content: "center" ;
+  
+}
+
+.my-steps .rs-steps-item-icon-wrapper{
+    display: flex;
+    align-items: center;
+    width: 80px; height: 80px;
+} 
 .my-steps .rs-steps-item-title{ 
     color: white;
+   
+}
+
+.rs-steps-horizontal .rs-steps-item:first-child{
+    flex-basis: 40%!important;
+}
+.rs-steps-horizontal  .rs-steps-item:first-child .rs-steps-item-title:after{
+    top: 155%;
+   
+
+}
+.rs-steps-horizontal .rs-steps-item-title:after{
+    border-color: white!important;
+}
+.my-steps  .rs-steps-item:nth-child(2) .rs-steps-item-title{ 
+     margin-left: 8px;
 }
 .my-steps .rs-steps-item-tail{
     border-color: white;
 }
+.rs-steps-horizontal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.rs-steps-horizontal .rs-steps-item{
+    padding-left: 80px;
+    display: flex;
+    align-items: center;
+    min-height: 80px;
+    height: auto
+ }
+ 
+ .rs-steps-horizontal .rs-steps-item-content{
+    height: auto;
+ }
+.rs-steps-horizontal .rs-steps-item:not(:first-child){
+   padding-left: 100px;
+   display: flex;
+    align-items: center;
+    min-height: 80px;
+    height: fit-content;
+}
+
 
 .custom-link {
-    color: lightblue;
+    color: black;
     cursor: pointer;
     font-size: 1rem;
 }
 
 .custom-link:hover {
     color: blue;
+}
+.css-uz83kf{
+    justify-content: space-between;
+    column-gap: 24px;
+    padding: 8px 48px!important;
+}
+.css-1cvz3ri{
+    object-fit: cover;
+}
+.css-1bvc4cc{
+    margin-right: 0;
 }

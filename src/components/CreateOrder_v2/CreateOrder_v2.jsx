@@ -109,7 +109,7 @@ export default function CreateOrder_v2(props) {
 
     const handleReceiverNameChange = useCallback(
         debounce(async (value) => {
-            if(!value) return;
+            if (!value) return;
             const res = await receiverNameOrPhoneExists(value);
             console.log({ "receiverNameExist": res.data.exists })
             setReceiverNameExist(res.data.exists);
@@ -118,7 +118,7 @@ export default function CreateOrder_v2(props) {
     );
     const handleReceiverPhoneChange = useCallback(
         debounce(async (value) => {
-            if(!value) return;
+            if (!value) return;
             const res = await receiverNameOrPhoneExists(value);
             console.log({ "receiverPhoneExist": res.data.exists })
             setReceiverPhoneExist(res.data.exists);
@@ -151,14 +151,15 @@ export default function CreateOrder_v2(props) {
 
 
     useEffect(() => {
-
-        // delivery types
-        setDeliverTypeArr([
+        const orderTypeOptions = [
             { name: translate("ORDERS." + DeliveryTypes[2]), type: "2", active: /* !!id ? "" :  */"active" },
             { name: translate("ORDERS." + DeliveryTypes[1]), type: "1", active: "" },
-            { name: translate("ORDERS." + DeliveryTypes[3]), type: "3", active: "" },
-            /* { name: translate("ORDERS." + DeliveryTypes[4]), type: "4", active: !!id ? "active" : "" }, */
-        ])
+            /* { name: translate("ORDERS." + DeliveryTypes[3]), type: "3", active: "" }, */
+        ]
+        if (parseInt(localStorage.getItem("userId")) == 41) {
+            orderTypeOptions.push({ name: translate("ORDERS." + DeliveryTypes[3]), type: "3", active: "" })
+        }
+        setDeliverTypeArr(orderTypeOptions)
     }, [])
 
     // get client's default address
@@ -225,7 +226,7 @@ export default function CreateOrder_v2(props) {
         setLoadingSubmit(true)
 
         createOrder_v2(JSON.stringify(delivery_params), JSON.stringify(addresses_params), JSON.stringify(returned_params)).then((res) => {
-            console.log({res})
+            console.log({ res })
             if (res.data.status == "error") {
                 console.log(res.data.error)
                 dispatch(toastNotification("Error!", "something went wrong!", "error"))
@@ -653,52 +654,71 @@ export default function CreateOrder_v2(props) {
                                                     <div className="toggleButtonsContainer">
                                                         {
                                                             deliverTypeArr.map((item, index) => {
-                                                                return <div key={index} style={{width : "250px", }} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
+                                                                return <div key={index} style={{ width: "250px", }} data-test="radio" className={"toggleButton " + item.active + ((localStorage.getItem("Language") || "en") === "en" ? " me-2" : " ms-2")} onClick={() => { handleDeliveryTypeClick(index, item.type) }}>
                                                                     <div className="radio"><div className="innerRadio"></div></div> {item.name}
                                                                 </div>
                                                             })
                                                         }
 
-                                                        {deliveryType === "2" && <div className="d-flex" style={
-                                                            
-                                                            (localStorage.getItem("Language") || "en") === "en" ? {  position: "absolute", left: "230px", top: "84px", width: "180px" , marginInline: "5%"} : { marginInline: "5%", position: "absolute", right: "240px", top: "87.5px", width: "180px" }}>
-                                                            <Form.Control
-                                                                required={true}
-                                                                name="codAmount"
-                                                                min="1"
-                                                                type="number"
-                                                                step="0.01"
-                                                                className="input-inner-shadow"
-                                                                data-test="amount-input"
-                                                                placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
-                                                                ref={codAmountRef}
-                                                                style={{ width: "100px" }}
-                                                            />
-                                                            {<Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example" data-test="currency-type-dropdown">
-                                                                <option value={1}>ILS</option>
-                                                                <option value={2}>JOD</option>
-                                                            </Form.Select>}
+                                                        {deliveryType === "2" && <div className="d-flex align-items-center" style={
+
+                                                            (localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", left: "230px", top: "84px", /* width: "180px" ,  */marginInline: "5%" } : { marginInline: "5%", position: "absolute", right: "240px", top: "87.5px"/* , width: "180px" */ }}>
+
+                                                            <div style={{ height: "40px" }}>
+                                                                <Form.Control
+                                                                    required={true}
+                                                                    name="codAmount"
+                                                                    min="1"
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    className="input-inner-shadow"
+                                                                    data-test="amount-input"
+                                                                    placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
+                                                                    ref={codAmountRef}
+                                                                    style={{ width: "100px" }}
+                                                                />
+                                                            </div>
+
+                                                            {
+                                                                <div style={{ height: "40px" }}>
+                                                                    <Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example" data-test="currency-type-dropdown">
+                                                                        <option value={1}>ILS</option>
+                                                                        <option value={2}>JOD</option>
+                                                                    </Form.Select>
+                                                                </div>
+                                                            }
+                                                            <div style={{ color: "grey", fontSize: '15px', marginInline: '15px' }}>{translate("ORDER_DETAILS.MUST_INLCUDE_DP")}</div>
+
                                                         </div>}
-                                                        {deliveryType === "3" && <div className="d-flex justify-content-center" style={(localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", left: "230px", top: "213.5px", width: "180px" , marginInline: "5%" } : { position: "absolute", right: "240px", top: "87.5px", width: "180px" ,  marginInline: "5%" }}>
-                                                            <Form.Control
-                                                                required={true}
-                                                                name="orderValue"
-                                                                min="1"
-                                                                type="number"
-                                                                step="0.01"
-                                                                className="input-inner-shadow"
-                                                                data-test="amount-input"
-                                                                placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
-                                                                ref={orderValueRef}
-                                                                style={{ width: "100px" }}
-                                                            />
+                                                        {deliveryType === "3" && <div className="d-flex align-items-center" style={ (localStorage.getItem("Language") || "en") === "en" ? { position: "absolute", left: "230px", top: "213.5px", /* width: "180px", */ marginInline: "5%" } : { position: "absolute", right: "230px", top: "213.5px", /* width: "180px", */ marginInline: "5%" }}>
+                                                            
+                                                            <div style={{height: "40px"}}>
+                                                                <Form.Control
+                                                                    required={true}
+                                                                    name="orderValue"
+                                                                    min="1"
+                                                                    type="number"
+                                                                    step="0.01"
+                                                                    className="input-inner-shadow"
+                                                                    data-test="amount-input"
+                                                                    placeholder={intl.formatMessage({ id: "ORDERS.AMOUNT" })}
+                                                                    ref={orderValueRef}
+                                                                    style={{ width: "100px" }}
+                                                                />
+                                                            </div>
+                                 
+                                                            <div style={{height: "40px"}}>
                                                             {<Form.Select style={{ cursor: "pointer" }} className="shadow ms-2" name="currency" required aria-label="Default select example" data-test="currency-type-dropdown">
                                                                 <option value={1}>ILS</option>
                                                                 <option value={2}>JOD</option>
                                                             </Form.Select>}
+                                                            </div>
+                                                          
+                                                            <div style={{ color: "grey", fontSize: '15px', marginInline: '15px' }}>{translate("ORDER_DETAILS.WILL_SEND_SMS")}</div>
+
                                                         </div>}
                                                         {/* PAP -> temp canceled */}
-                                                        {false && deliveryType === "4" && <div className="d-flex justify-content-center" style={{ position: "absolute", left: "230px", top: "200px", width: "180px" ,  marginInline: "10%" }}>
+                                                        {false && deliveryType === "4" && <div className="d-flex justify-content-center" style={{ position: "absolute", left: "230px", top: "200px", width: "180px", marginInline: "10%" }}>
                                                             <Form.Control
                                                                 required={true}
                                                                 name="returnedAmount"
@@ -796,8 +816,8 @@ export default function CreateOrder_v2(props) {
                                                                 <Form.Control className=" input-inner-shadow" type="text" placeholder="..." name="placeName" data-test="receiver-name-input"
                                                                     onChange={(e) => handleReceiverNameChange(e.target.value)} required />
                                                                 {receiverNameExist &&
-                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_NAME_EXISTS")}</Alert>
- 
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER", "RECEIVER_NAME_EXISTS")}</Alert>
+
                                                                 }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ADD_PLACE_NAME")}
@@ -815,7 +835,7 @@ export default function CreateOrder_v2(props) {
 
                                                                 />
                                                                 {receiverPhoneExist &&
-                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER","RECEIVER_PHONE_EXISTS")}</Alert>
+                                                                    <Alert severity="info">{translateToString("CREATE_NEW_ORDER", "RECEIVER_PHONE_EXISTS")}</Alert>
                                                                 }
                                                                 <Form.Control.Feedback type="invalid">
                                                                     {translate("CREATE_NEW_ORDER.PLEASE_ENTER_VALID_NUMBER")}
